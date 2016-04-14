@@ -1,4 +1,8 @@
+.DS_Store
 *.class
+bin/
+Non_Commit/
+*.pyc
 
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
@@ -10,3 +14,26 @@
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
+
+#logs
+*Log.out*
+*.log
+#end logs
+
+#ide files
+target/
+.project
+.settings
+.settings/
+*.project
+.checkstyle
+.pydevproject
+*.pydevproject
+.idea/*
+*/.idea/*
+*.idea/*
+.idea
+*.iml
+#end ide files
+
+*.ini
