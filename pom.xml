@@ -55,13 +55,13 @@
         <surefireVersion>2.17</surefireVersion>
 
         <!-- testing -->
-        <testLevel>85</testLevel>
-        <minTestLevel>70</minTestLevel>
-        <averageTestLevel>90</averageTestLevel>
-        <projectBranchLevel>${averageTestLevel}</projectBranchLevel>
-        <projectLineLevel>${averageTestLevel}</projectLineLevel>
-        <packageBranchLevel>${averageTestLevel}</packageBranchLevel>
-        <packageLineLevel>${averageTestLevel}</packageLineLevel>
+        <testLevel>0</testLevel>
+        <minTestLevel>0</minTestLevel>
+        <averageTestLevel>0</averageTestLevel>
+        <projectBranchLevel>0</projectBranchLevel>
+        <projectLineLevel>0</projectLineLevel>
+        <packageBranchLevel>0</packageBranchLevel>
+        <packageLineLevel>0</packageLineLevel>
 
         <!-- config locations -->
         <checkstyleLocation>${absoluteConfigLocation}/checkstyle.xml</checkstyleLocation>
@@ -165,40 +165,6 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-pmd-plugin</artifactId>
-                <version>${pmdVersion}</version>
-                <executions>
-                    <execution>
-                        <id>pmd</id>
-                        <phase>validate</phase>
-                        <goals>
-                            <goal>check</goal>
-                        </goals>
-                        <configuration>
-                            <rulesets>
-                                <ruleset>${pmdRuleset}</ruleset>
-                            </rulesets>
-                            <excludeFromFailureFile>${pmdExclude}</excludeFromFailureFile>
-                            <!-- <skip>${skip.pmd.check}</skip> -->
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>cpd</id>
-                        <phase>validate</phase>
-                        <goals>
-                            <goal>cpd-check</goal>
-                        </goals>
-                        <configuration>
-                            <excludeFromFailureFile>${cpdExclude}</excludeFromFailureFile>
-                        </configuration>
-                    </execution>
-                </executions>
-                <configuration>
-                    <verbose>true</verbose>
-                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
