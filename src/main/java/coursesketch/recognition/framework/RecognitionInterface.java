@@ -2,6 +2,7 @@ package coursesketch.recognition.framework;
 
 import protobuf.srl.commands.Commands;
 import protobuf.srl.sketch.Sketch;
+import protobuf.srl.sketch.Sketch.SrlSketch;
 
 /**
  * Created by David Windows on 4/13/2016.
@@ -26,14 +27,14 @@ public interface RecognitionInterface {
      * @param sketchId The Id that uniquely identifies a single sketch.
      * @param sketch The sketch being set.
      */
-    public void setSketch(String sketchId, Sketch sketch);
+    public void setSketch(String sketchId, SrlSketch sketch);
 
     /**
      * Adds a template to be saved for use in recognition later.
      *
      * @param template The template that is being saved.
      */
-    public void addTemplate(Sketch template);
+    public void addTemplate(SrlSketch template);
 
     /**
      * Adds a template to be saved for use in recognition later.
@@ -65,5 +66,5 @@ public interface RecognitionInterface {
      * @param sketch The sketch that is being recognized.
      * @return A sketch representing the recognized result.
      */
-    public Sketch recognize(String sketchId, Sketch sketch);
+    public SrlSketch recognize(String sketchId, SrlSketch sketch);
 }
