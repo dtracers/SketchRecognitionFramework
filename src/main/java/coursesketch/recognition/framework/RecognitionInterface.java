@@ -14,25 +14,28 @@ public interface RecognitionInterface {
      * Adds a single
      * @param sketchId The Id that uniquely identifies a single sketch.
      * @param update a single update that is being added.
+     * @return A list representing the changes that occurred.
      * @throws RecognitionException Thrown if there is a recognition Problem.
      */
-    public void addUpdate(String sketchId, Commands.SrlUpdate update) throws RecognitionException;
+    public Commands.SrlUpdateList addUpdate(String sketchId, Commands.SrlUpdate update) throws RecognitionException;
 
     /**
      *
      * @param sketchId The Id that uniquely identifies a single sketch.
      * @param updateList The update list being set.
+     * @return A list representing the changes that occurred.
      * @throws RecognitionException Thrown if there is a recognition Problem.
      */
-    public void setUpdateList(String sketchId, Commands.SrlUpdateList updateList) throws RecognitionException;
+    public Commands.SrlUpdateList setUpdateList(String sketchId, Commands.SrlUpdateList updateList) throws RecognitionException;
 
     /**
      *
      * @param sketchId The Id that uniquely identifies a single sketch.
      * @param sketch The sketch being set.
+     * @return A sketch representing the recognized result.
      * @throws RecognitionException Thrown if there is a recognition Problem.
      */
-    public void setSketch(String sketchId, SrlSketch sketch) throws RecognitionException;
+    public SrlSketch setSketch(String sketchId, SrlSketch sketch) throws RecognitionException;
 
     /**
      * Adds a template to be saved for use in recognition later.
