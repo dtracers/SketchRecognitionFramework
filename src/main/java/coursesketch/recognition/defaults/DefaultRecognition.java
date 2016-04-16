@@ -31,7 +31,7 @@ public abstract class DefaultRecognition implements RecognitionInterface {
         templateDatabase.addTemplate(interpretation, template);
     }
 
-    protected List<Sketch.SrlObject> getTemplates(final Sketch.SrlInterpretation interpretation) {
+    protected List<Sketch.RecognitionTemplate> getTemplates(final Sketch.SrlInterpretation interpretation) {
         return templateDatabase.getTemplate(interpretation);
     }
 }
