@@ -38,7 +38,7 @@
     <properties>
         <parentConfigLocationDir>${basedir}</parentConfigLocationDir>
         <protocLocation>/usr/local/bin/protoc</protocLocation>
-        <protobufVersion>[2.6.1,)</protobufVersion>
+        <protobufVersion>2.6.1</protobufVersion>
         <mockitoVersion>1.9.5</mockitoVersion>
         <puppyVersion>[5.6,)</puppyVersion>
         <junitVersion>4.11</junitVersion>
