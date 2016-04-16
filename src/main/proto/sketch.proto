@@ -71,3 +71,13 @@ message SrlAttributes {
     repeated string keys = 1;
     repeated string values = 2;
 }
+
+message RecognitionTemplate {
+    optional string templateId = 1;
+    oneof TemplateType {
+        SrlStroke stroke = 2;
+        SrlShape shape = 3;
+        SrlSketch sketch = 4;
+    }
+    optional SrlInterpretation interpretation = 5;
+}
