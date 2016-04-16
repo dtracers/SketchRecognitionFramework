@@ -132,7 +132,8 @@
                         </configuration>
                         <goals>
                             <goal>compile</goal>
-                            <goal>testCompile</goal>
+                            <goal>test-compile</goal>
+                            <goal>compile-python</goal>
                         </goals>
                     </execution>
                 </executions>
