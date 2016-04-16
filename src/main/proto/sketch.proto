@@ -75,9 +75,9 @@ message SrlAttributes {
 message RecognitionTemplate {
     optional string templateId = 1;
     // oneof TemplateType {
-        SrlStroke stroke = 2;
-        SrlShape shape = 3;
-        SrlSketch sketch = 4;
+        optional SrlStroke stroke = 2;
+        optional SrlShape shape = 3;
+        optional SrlSketch sketch = 4;
     // }
     optional SrlInterpretation interpretation = 5;
 }
