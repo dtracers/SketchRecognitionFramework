@@ -39,5 +39,5 @@ public interface TemplateDatabaseInterface {
      * @param interpretation The interpretation of the template.
      * @return Returns a list of SrlObjects based on the interpretation.
      */
-    public List<Sketch.SrlObject> getTemplate(Sketch.SrlInterpretation interpretation);
+    public List<Sketch.RecognitionTemplate> getTemplate(Sketch.SrlInterpretation interpretation);
 }
