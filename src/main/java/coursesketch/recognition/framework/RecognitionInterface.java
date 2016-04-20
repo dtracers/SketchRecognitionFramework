@@ -6,6 +6,8 @@ import protobuf.srl.commands.Commands;
 import protobuf.srl.sketch.Sketch;
 import protobuf.srl.sketch.Sketch.SrlSketch;
 
+import java.util.List;
+
 /**
  * Created by David Windows on 4/13/2016.
  */
@@ -82,5 +84,12 @@ public interface RecognitionInterface {
      * @return A sketch representing the recognized result.
      * @throws RecognitionException Thrown if there is a recognition Problem.
      */
-    public SrlSketch recognize(String sketchId, SrlSketch sketch) throws RecognitionException;;
+    public SrlSketch recognize(String sketchId, SrlSketch sketch) throws RecognitionException;
+
+    /**
+     * Generates other possible templates using this method.
+     *
+     * @return A list of modified versions of the original sketch that is used to guess templates.
+     */
+    public List<Sketch.RecognitionTemplate> generateTemplates(Sketch.RecognitionTemplate original);
 }
