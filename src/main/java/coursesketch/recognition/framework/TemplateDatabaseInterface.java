@@ -40,4 +40,14 @@ public interface TemplateDatabaseInterface {
      * @return Returns a list of SrlObjects based on the interpretation.
      */
     public List<Sketch.RecognitionTemplate> getTemplate(Sketch.SrlInterpretation interpretation);
+
+    /**
+     * @return All templates stored.
+     */
+    public List<Sketch.RecognitionTemplate> getTemplate();
+
+    /**
+     * @return All interpretations stored.
+     */
+    public List<Sketch.SrlInterpretation> getAllInterpretations();
 }
