@@ -13,6 +13,10 @@ import java.util.List;
  * Created by gigemjt on 4/16/16.
  */
 public abstract class DefaultRecognition implements RecognitionInterface {
+
+    /**
+     * The template database that is used to store templates and other recognition information.
+     */
     private final TemplateDatabaseInterface templateDatabase;
 
     public DefaultRecognition(TemplateDatabaseInterface templateDatabase) {
@@ -33,5 +37,9 @@ public abstract class DefaultRecognition implements RecognitionInterface {
 
     protected List<Sketch.RecognitionTemplate> getTemplates(final Sketch.SrlInterpretation interpretation) {
         return templateDatabase.getTemplate(interpretation);
+    }
+
+    protected TemplateDatabaseInterface getTemplateDatabase() {
+        return templateDatabase;
     }
 }

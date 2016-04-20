@@ -28,7 +28,7 @@
 
     <!-- Checks whether files end with a new line. -->
     <!-- See http://checkstyle.sf.net/config_misc.html#NewlineAtEndOfFile -->
-    <module name="NewlineAtEndOfFile"/>
+    <!-- <module name="NewlineAtEndOfFile"/> -->
 
     <!-- Checks that property files contain the same keys. -->
     <!-- See http://checkstyle.sf.net/config_misc.html#Translation -->
@@ -164,7 +164,7 @@
 
         <!-- Checks for class design -->
         <!-- See http://checkstyle.sf.net/config_design.html -->
-        <module name="DesignForExtension"/>
+        <!-- <module name="DesignForExtension"/> -->
         <module name="FinalClass"/>
         <module name="InterfaceIsType"/>
         <module name="VisibilityModifier"/>
