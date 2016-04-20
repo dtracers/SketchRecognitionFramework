@@ -80,4 +80,15 @@ message RecognitionTemplate {
         optional SrlSketch sketch = 4;
     // }
     optional SrlInterpretation interpretation = 5;
+
+    /**
+     * How the template should be used for training.
+     */
+    optional TemplateType type = 6 [default = UNKNOWN];
+
+    enum TemplateType {
+        POSITIVE = 1;
+        UNKNOWN = 0;
+        NEGATIVE = -1;
+    }
 }
