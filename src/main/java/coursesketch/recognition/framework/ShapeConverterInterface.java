@@ -47,7 +47,7 @@ public interface ShapeConverterInterface {
      * @return A map in a format that can be stored in the database.
      * @throws ShapeConversionException thrown during a failed conversion.
      */
-    Map makeDbInterpreation(final Sketch.SrlInterpretation srlInterpretation) throws ShapeConversionException;
+    Map makeDbInterpretation(final Sketch.SrlInterpretation srlInterpretation) throws ShapeConversionException;
 
     /**
      * Parses the interpretation from the database.
