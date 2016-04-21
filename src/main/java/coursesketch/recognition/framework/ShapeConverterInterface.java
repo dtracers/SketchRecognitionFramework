@@ -8,14 +8,14 @@ import java.util.Map;
 /**
  * Created by David Windows on 4/20/2016.
  */
-public interface ShapeConverterInterface {
+public interface ShapeConverterInterface<E extends Map> {
     /**
      * Used to create a wrapper around shape, stroke and point.
      *
      * @return A map in a format that can be stored in the database.
      * @throws ShapeConversionException thrown during a failed conversion.
      */
-    Map makeDbObject(Sketch.SrlObject object) throws ShapeConversionException;
+    E makeDbObject(Sketch.SrlObject object) throws ShapeConversionException;
 
     /**
      * Used to create a shape for the database
@@ -23,7 +23,7 @@ public interface ShapeConverterInterface {
      * @return A map in a format that can be stored in the database.
      * @throws ShapeConversionException thrown during a failed conversion.
      */
-    Map makeDbShape(Sketch.SrlShape srlShape) throws ShapeConversionException;
+    E makeDbShape(Sketch.SrlShape srlShape) throws ShapeConversionException;
 
     /**
      * Used to create a stroke for the database
@@ -31,7 +31,7 @@ public interface ShapeConverterInterface {
      * @return A map in a format that can be stored in the database.
      * @throws ShapeConversionException thrown during a failed conversion.
      */
-    Map makeDbStroke(final Sketch.SrlStroke srlStroke) throws ShapeConversionException;
+    E makeDbStroke(final Sketch.SrlStroke srlStroke) throws ShapeConversionException;
 
     /**
      * Used to create a point for the database
@@ -39,7 +39,7 @@ public interface ShapeConverterInterface {
      * @return A map in a format that can be stored in the database.
      * @throws ShapeConversionException thrown during a failed conversion.
      */
-    Map makeDbPoint(final Sketch.SrlPoint srlPoint) throws ShapeConversionException;
+    E makeDbPoint(final Sketch.SrlPoint srlPoint) throws ShapeConversionException;
 
     /**
      * Used to create an interpretation for the database
@@ -47,7 +47,7 @@ public interface ShapeConverterInterface {
      * @return A map in a format that can be stored in the database.
      * @throws ShapeConversionException thrown during a failed conversion.
      */
-    Map makeDbInterpretation(final Sketch.SrlInterpretation srlInterpretation) throws ShapeConversionException;
+    E makeDbInterpretation(final Sketch.SrlInterpretation srlInterpretation) throws ShapeConversionException;
 
     /**
      * Parses the interpretation from the database.
@@ -55,7 +55,7 @@ public interface ShapeConverterInterface {
      * @return A parsed interpretation.
      * @throws ShapeConversionException thrown during a failed conversion.
      */
-    Sketch.SrlInterpretation parseInterpretation(final Map interpretationObject) throws ShapeConversionException;
+    Sketch.SrlInterpretation parseInterpretation(final E interpretationObject) throws ShapeConversionException;
 
     /**
      * Parses the wrapper around a shape, point, or stroke from the database.
@@ -63,7 +63,7 @@ public interface ShapeConverterInterface {
      * @return A parsed object.
      * @throws ShapeConversionException thrown during a failed conversion.
      */
-    Sketch.SrlObject parseObject(final Map someObject) throws ShapeConversionException;
+    Sketch.SrlObject parseObject(final E someObject) throws ShapeConversionException;
 
     /**
      * Parses the shape from the database.
@@ -71,7 +71,7 @@ public interface ShapeConverterInterface {
      * @return A parsed shape.
      * @throws ShapeConversionException thrown during a failed conversion.
      */
-    Sketch.SrlShape parseShape(final Map shapeObject) throws ShapeConversionException;
+    Sketch.SrlShape parseShape(final E shapeObject) throws ShapeConversionException;
 
     /**
      * Parses the stroke from the database.
@@ -79,7 +79,7 @@ public interface ShapeConverterInterface {
      * @return A parsed stroke.
      * @throws ShapeConversionException thrown during a failed conversion.
      */
-    Sketch.SrlStroke parseStroke(final Map strokeObject) throws ShapeConversionException;
+    Sketch.SrlStroke parseStroke(final E strokeObject) throws ShapeConversionException;
 
     /**
      * Parses the point from the database.
@@ -87,5 +87,5 @@ public interface ShapeConverterInterface {
      * @return A parsed point.
      * @throws ShapeConversionException thrown during a failed conversion.
      */
-    Sketch.SrlPoint parsePoint(final Map pointObject) throws ShapeConversionException;
+    Sketch.SrlPoint parsePoint(final E pointObject) throws ShapeConversionException;
 }
