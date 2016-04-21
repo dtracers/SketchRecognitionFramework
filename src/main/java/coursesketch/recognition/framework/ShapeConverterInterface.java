@@ -8,7 +8,7 @@ import java.util.Map;
 /**
  * Created by David Windows on 4/20/2016.
  */
-public interface ShapeConverterInterface<E extends Map> {
+public interface ShapeConverterInterface<E> {
     /**
      * Used to create a wrapper around shape, stroke and point.
      *
