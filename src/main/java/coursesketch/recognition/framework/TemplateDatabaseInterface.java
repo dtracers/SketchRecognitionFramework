@@ -48,7 +48,7 @@ public interface TemplateDatabaseInterface {
     /**
      * @return All templates stored.
      */
-    public List<Sketch.RecognitionTemplate> getTemplate() throws TemplateException;
+    public List<Sketch.RecognitionTemplate> getAllTemplates() throws TemplateException;
 
     /**
      * @return All interpretations stored.
