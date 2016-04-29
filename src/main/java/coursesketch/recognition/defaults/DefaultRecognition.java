@@ -23,16 +23,16 @@ public abstract class DefaultRecognition implements RecognitionInterface {
         this.templateDatabase = templateDatabase;
     }
 
-    public void addTemplate(final Sketch.SrlInterpretation interpretation, final SrlSketch template) throws TemplateException {
-        templateDatabase.addTemplate(interpretation, template);
+    public void addTemplate(final String templateId, final Sketch.SrlInterpretation interpretation, final SrlSketch template) throws TemplateException {
+        templateDatabase.addTemplate(templateId, interpretation, template);
     }
 
-    public void addTemplate(final Sketch.SrlInterpretation interpretation, final Sketch.SrlShape template) throws TemplateException {
-        templateDatabase.addTemplate(interpretation, template);
+    public void addTemplate(final String templateId, final Sketch.SrlInterpretation interpretation, final Sketch.SrlShape template) throws TemplateException {
+        templateDatabase.addTemplate(templateId, interpretation, template);
     }
 
-    public void addTemplate(final Sketch.SrlInterpretation interpretation, final Sketch.SrlStroke template) throws TemplateException {
-        templateDatabase.addTemplate(interpretation, template);
+    public void addTemplate(final String templateId, final Sketch.SrlInterpretation interpretation, final Sketch.SrlStroke template) throws TemplateException {
+        templateDatabase.addTemplate(templateId, interpretation, template);
     }
 
     protected List<Sketch.RecognitionTemplate> getTemplates(final Sketch.SrlInterpretation interpretation) {

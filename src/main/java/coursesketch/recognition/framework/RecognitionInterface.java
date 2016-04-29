@@ -46,7 +46,7 @@ public interface RecognitionInterface {
      * @param template The template that is being saved.
      * @throws TemplateException Thrown if there is a recognition Problem.
      */
-    public void addTemplate(Sketch.SrlInterpretation interpretation, SrlSketch template) throws TemplateException;
+    public void addTemplate(String templateId, Sketch.SrlInterpretation interpretation, SrlSketch template) throws TemplateException;
 
     /**
      * Adds a template to be saved for use in recognition later.
@@ -55,7 +55,7 @@ public interface RecognitionInterface {
      * @param template The template that is being saved.
      * @throws TemplateException Thrown if there is a recognition Problem.
      */
-    public void addTemplate(Sketch.SrlInterpretation interpretation, Sketch.SrlShape template) throws TemplateException;
+    public void addTemplate(String templateId, Sketch.SrlInterpretation interpretation, Sketch.SrlShape template) throws TemplateException;
 
     /**
      * Adds a template to be saved for use in recognition later.
@@ -64,7 +64,7 @@ public interface RecognitionInterface {
      * @param template The template that is being saved.
      * @throws TemplateException Thrown if there is a recognition Problem.
      */
-    public void addTemplate(Sketch.SrlInterpretation interpretation, Sketch.SrlStroke template) throws TemplateException;
+    public void addTemplate(String templateId, Sketch.SrlInterpretation interpretation, Sketch.SrlStroke template) throws TemplateException;
 
     /**
      * Recognizes the sketch as a list of changes producing a list of changes as a result.
