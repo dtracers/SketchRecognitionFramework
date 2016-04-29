@@ -42,6 +42,14 @@ public interface ShapeConverterInterface<E> {
     E makeDbPoint(final Sketch.SrlPoint srlPoint) throws ShapeConversionException;
 
     /**
+     * Parses the RecognitionTemplate from the database.
+     *
+     * @return A parsed recognition template.
+     * @throws ShapeConversionException thrown during a failed conversion.
+     */
+    Sketch.RecognitionTemplate parseRecognitionTemplate(final E recognitionTemplate) throws ShapeConversionException;
+
+    /**
      * Used to create an interpretation for the database
      *
      * @return A map in a format that can be stored in the database.
@@ -56,6 +64,14 @@ public interface ShapeConverterInterface<E> {
      * @throws ShapeConversionException thrown during a failed conversion.
      */
     Sketch.SrlInterpretation parseInterpretation(final E interpretationObject) throws ShapeConversionException;
+
+    /**
+     * Parses the Sketch from the database.
+     *
+     * @return A parsed sketch.
+     * @throws ShapeConversionException thrown during a failed conversion.
+     */
+    Sketch.SrlSketch parseSketch(final E sketchObject) throws ShapeConversionException;
 
     /**
      * Parses the wrapper around a shape, point, or stroke from the database.
