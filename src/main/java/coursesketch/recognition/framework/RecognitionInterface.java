@@ -89,7 +89,9 @@ public interface RecognitionInterface {
     /**
      * Generates other possible templates using this method.
      *
+     * @param original The template that is modified to produce new similar templates.
      * @return A list of modified versions of the original sketch that is used to guess templates.
+     * @throws RecognitionException Thrown if there is a recognition Problem.
      */
-    public List<Sketch.RecognitionTemplate> generateTemplates(Sketch.RecognitionTemplate original);
+    public List<Sketch.RecognitionTemplate> generateTemplates(Sketch.RecognitionTemplate original) throws RecognitionException;
 }

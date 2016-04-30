@@ -18,7 +18,7 @@ public class RecognitionException extends Exception {
      * Creates an exception with a cause.
      *
      * @param message The message of the exception.
-     * @param cause
+     * @param cause The cause of this exception.
      */
     public RecognitionException(final String message, final Throwable cause) {
         super(message, cause);
