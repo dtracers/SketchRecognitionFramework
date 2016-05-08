@@ -77,6 +77,7 @@
         <pmdFile>exclude-pmd.properties</pmdFile>
         <cpdFile>exclude-cpd.properties</cpdFile>
         <absoluteConfigLocation>${parentConfigLocationDir}/config</absoluteConfigLocation>
+        <pythonOutputDirectory>${project.build.directory}/generated-sources/protobuf/python</pythonOutputDirectory>
     </properties>
 
     <repositories>
@@ -149,16 +150,21 @@
                 <executions>
                     <execution>
                         <phase>generate-sources</phase>
-                        <configuration>
-                            <checkStaleness>true</checkStaleness>
-                            <staleMillis>10000</staleMillis>
-                            <protocExecutable>${protocLocation}</protocExecutable>
-                        </configuration>
                         <goals>
                             <goal>compile</goal>
                             <goal>test-compile</goal>
                             <goal>compile-python</goal>
                         </goals>
+                    </execution>
+                    <execution>
+                        <id>compile python</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>compile-python</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${pythonOutputDirectory}</outputDirectory>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
