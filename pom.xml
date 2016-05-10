@@ -77,7 +77,7 @@
         <pmdFile>exclude-pmd.properties</pmdFile>
         <cpdFile>exclude-cpd.properties</cpdFile>
         <absoluteConfigLocation>${parentConfigLocationDir}/config</absoluteConfigLocation>
-        <pythonOutputDirectory>${basedir}/src/main/python/generated_proto</pythonOutputDirectory>
+        <pythonOutputDirectory>${basedir}/src/main/resources/generated_proto</pythonOutputDirectory>
     </properties>
 
     <repositories>
@@ -153,12 +153,11 @@
                         <goals>
                             <goal>compile</goal>
                             <goal>test-compile</goal>
-                            <goal>compile-python</goal>
                         </goals>
                     </execution>
                     <execution>
-                        <id>compile python</id>
-                        <phase>generate-sources</phase>
+                        <id>pypile</id>
+                        <phase>initialize</phase>
                         <goals>
                             <goal>compile-python</goal>
                         </goals>
@@ -259,12 +258,11 @@
         </plugins>
         <resources>
             <resource>
-                <directory>src/main/resources</directory>
+                <directory>${basedir}/src/main/resources/generated_proto</directory>
                 <includes>
                     <include>*.py</include>
                 </includes>
-                <targetPath>${pythonOutputDirectory}</targetPath>
-                <filtering>false</filtering>
+                <filtering>true</filtering>
             </resource>
         </resources>
     </build>
