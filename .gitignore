@@ -37,3 +37,4 @@ target/
 #end ide files
 
 *.ini
+generated_proto/
