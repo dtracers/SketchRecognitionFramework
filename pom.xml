@@ -162,6 +162,7 @@
                             <goal>compile-python</goal>
                         </goals>
                         <configuration>
+						    <checkStaleness>false</checkStaleness>
                             <outputDirectory>${pythonOutputDirectory}</outputDirectory>
                         </configuration>
                     </execution>
