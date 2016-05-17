@@ -1,5 +1,7 @@
 //jscs:disable jsDoc
 
+var pbjs = require('protobufjs/cli/pbjs.js');
+
 module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-jscs');
     grunt.loadNpmTasks('grunt-regex-check');
@@ -10,7 +12,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-text-replace');
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-mkdir');
-    grunt.loadTasks('config/gruntTasks/');
+
 
     var gruntOptions = {
         skipTests: (process.env.GRUNT_SKIP_TESTS || false) === 'true'
@@ -181,7 +183,7 @@ module.exports = function(grunt) {
                     }
                 ]
             }
-        },
+        }
     });
 
     /******************************************
@@ -202,6 +204,22 @@ module.exports = function(grunt) {
         grunt.task.run([
             'jsdoc'
         ]);
+    });
+
+    //jscs:disable
+    grunt.registerTask('buildProto', function() {
+        var protoFiles = grunt.file.expand([ 'src/**/proto/**/*.proto' ]);
+        grunt.log.write('Attempting to compile proto files:');
+        grunt.log.write(protoFiles);
+        for (var i = 0; i < protoFiles.length; i++) {
+            grunt.log.write('cimpiling protofile ' + protoFiles[i]);
+            grunt.log.write('');
+            var options = [ '--source=proto', '--target=js', '--path=src/main/proto' ];
+            var files = [ protoFiles[i] ];
+            var args = protoFiles.concat(options);
+                // .concat([ '> ' + protoFiles[i].replace('.proto', '.js') ]);
+            pbjs.main(args);
+        }
     });
 
     // Sets up tasks related to setting the system for the rest of the tasks.
@@ -226,6 +244,7 @@ module.exports = function(grunt) {
     grunt.registerTask('build', function() {
         printTaskGroup();
         grunt.task.run([
+            'buildProto',
             'setupProd',
             'polyfill'
         ]);
@@ -235,7 +254,7 @@ module.exports = function(grunt) {
     grunt.registerTask('setupProd', function() {
         printTaskGroup();
         grunt.task.run([
-            'copy:main',
+            'copy:main'
         ]);
     });
 
