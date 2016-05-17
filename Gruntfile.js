@@ -1,8 +1,5 @@
 //jscs:disable jsDoc
 
-var rewriteRulesSnippet = require('grunt-connect-rewrite/lib/utils').rewriteRequest;
-var selenium = require('selenium-standalone');
-
 module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-jscs');
     grunt.loadNpmTasks('grunt-regex-check');
@@ -11,7 +8,6 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-babel');
     grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-text-replace');
-    grunt.loadNpmTasks('grunt-wiredep');
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-mkdir');
     grunt.loadTasks('config/gruntTasks/');
@@ -116,12 +112,10 @@ module.exports = function(grunt) {
                     {
                         // copies the website files used in production for prod use
                         expand: true,
-                        src: [ 'src/**', '!src/test/**',
-                            // we do not want these copied as they are legacy.
-                            '!src/html/**', '!src/js/**',
+                        src: [ 'src/main/web/**', '!src/test/**',
+
                             // we do not want these copied as they are not meant for production.
                             '!src/**/debug/**' ],
-
                         dest: 'target/website/'
                     },
                     {
@@ -172,28 +166,6 @@ module.exports = function(grunt) {
             }
         },
         replace: {
-            bowerLoad: {
-                src: '<%= fileConfigOptions.prodHtml %>',
-                overwrite: true,
-                replacements: [
-                    {
-                        // looks for <head>
-                        from: /(^|\s)<head>($|\s)/g,
-                        to: '\n<head>\n<!-- bower:js -->\n<!-- endbower -->\n'
-                    }
-                ]
-            },
-            bowerSlash: {
-                src: '<%= fileConfigOptions.prodHtml %>',
-                overwrite: true,
-                replacements: [
-                    {
-                        // looks for the bower_components url in scripts and replaces it with a /
-                        from: /=['"].*bower_components/g,
-                        to: '="/bower_components'
-                    }
-                ]
-            },
             isUndefined: {
                 src: '<%= fileConfigOptions.prodFiles %>',
                 overwrite: true,
@@ -223,16 +195,6 @@ module.exports = function(grunt) {
     /******************************************
      * TASK WORKFLOW SETUP
      ******************************************/
-
-    // sets up tasks relating to starting the server
-    grunt.registerTask('server', function() {
-        printTaskGroup();
-        grunt.task.run([
-            'seleniumStandalone:run',
-            'configureRewriteRules',
-            'connect:development'
-        ]);
-    });
 
     // sets up tasks related to creating documentation
     grunt.registerTask('documentation', function() {
@@ -264,9 +226,7 @@ module.exports = function(grunt) {
     grunt.registerTask('build', function() {
         printTaskGroup();
         grunt.task.run([
-            'preBuild',
             'setupProd',
-            'bower',
             'polyfill'
         ]);
     });
@@ -276,18 +236,6 @@ module.exports = function(grunt) {
         printTaskGroup();
         grunt.task.run([
             'copy:main',
-        ]);
-    });
-
-    // sets up tasks related to loading up bower
-    grunt.registerTask('bower', function() {
-        printTaskGroup();
-        grunt.task.run([
-            'replace:bowerLoad',
-            'wiredep',
-            'replace:bowerRunOnce',
-            'replace:bowerSlash',
-            'replace:runOncePlugins'
         ]);
     });
 
