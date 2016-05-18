@@ -51,8 +51,19 @@ message SrlPoint {
     optional string name = 3;
     required double x = 4;
     required double y = 5;
+
+    /**
+      * Points can have pressure depending on the input device.   It is a value between 0 and 1.
+      */
     optional double pressure = 6;
+    /**
+     * Points can have size depending on the input device.  This does not have an upper limit but the default value is 1.
+     */
     optional double size = 7;
+    /**
+     * Gives the instantaneous speed calculated from this and the previous
+     * point.
+     */
     optional double speed = 8;
 }
 

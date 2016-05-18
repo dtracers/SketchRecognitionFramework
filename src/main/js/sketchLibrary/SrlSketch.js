@@ -145,12 +145,4 @@
     }
 
     protobufUtils.Inherits(SrlSketch, SketchMessage);
-
-    var newInstance = new SrlSketch();
-
-    console.log(newInstance);
-    console.log(newInstance.prototype);
-
-    newInstance.encode();
-
 })(module.exports);
