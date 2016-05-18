@@ -179,6 +179,7 @@
 
                     <execution>
                         <id>install node and npm</id>
+                        <phase>initialize</phase>
                         <goals>
                             <goal>install-node-and-npm</goal>
                         </goals>
@@ -190,6 +191,7 @@
 
                     <execution>
                         <id>npm install</id>
+                        <phase>initialize</phase>
                         <goals>
                             <goal>npm</goal>
                         </goals>
@@ -201,6 +203,7 @@
 
                     <execution>
                         <id>bower install</id>
+                        <phase>generate-sources</phase>
                         <goals>
                             <goal>bower</goal>
                         </goals>

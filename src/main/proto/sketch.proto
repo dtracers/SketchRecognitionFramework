@@ -10,15 +10,19 @@ message SrlSketch {
  */
 message SrlObject {
     required ObjectType type = 1;
-    enum ObjectType {
-        SHAPE = 0;
-        STROKE = 1;
-        POINT = 2;
-        LINE = 3; // not supported at this time.
-    }
     required bytes object = 2;
     // TODO: add attributes field (named protoAttributes)
     // it was put in the object and not the shape and stroke because both use it and this saves on code space.
+}
+
+/**
+ * The object type of the shape.
+ */
+enum ObjectType {
+    SHAPE = 0;
+    STROKE = 1;
+    POINT = 2;
+    SKETCH = 3;
 }
 
 message SrlShape {

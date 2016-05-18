@@ -1,6 +1,7 @@
 //jscs:disable jsDoc
 
 var pbjs = require('protobufjs/cli/pbjs.js');
+var exec = require('child_process').exec;
 
 module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-jscs');
@@ -12,6 +13,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-text-replace');
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-mkdir');
+    grunt.loadNpmTasks('grunt-exec');
 
 
     var gruntOptions = {
@@ -87,13 +89,33 @@ module.exports = function(grunt) {
         mkdir: {
             all: {
                 options: {
-                    create: [ 'target/unitTest', 'target/screenshots' ]
+                    create: [ 'target/unitTest', 'target/screenshots', 'target/website/proto' ]
                 }
             }
         },
         /**
          * BUILDERS
          */
+        exec: {
+            build_proto: {
+                cmd: function() {
+                    var inputFiles = [ 'src/**/proto/**/*.proto' ];
+                    var protoFiles = grunt.file.expand(inputFiles);
+                    var jsFiles = grunt.file.expandMapping(protoFiles, 'src/main/js/generated_proto', { flatten: true, ext: '.js' });
+                    var command = '';
+                    for (var i = 0; i < protoFiles.length; i++) {
+                        grunt.log.write('cimpiling protofile ' + protoFiles[i]);
+                        grunt.log.write('');
+                        var jsFile = jsFiles[i].dest;
+                        command+= '"./node_modules/.bin/pbjs" ' + protoFiles[i] + ' --source=proto' +
+                        //    ' --exports=proto_' + jsFile.replace(/^.*[\\\/]/, '').slice(0, -3) +
+                            ' --target=commonjs --path=src/main/proto > ' + jsFile + ' & ';
+                    }
+                    console.log(command);
+                    return command + 'echo "completed compile"';
+                }
+            }
+        },
         babel: {
             options: {
                 sourceMap: true
@@ -121,30 +143,11 @@ module.exports = function(grunt) {
                         dest: 'target/website/'
                     },
                     {
-                        // copies other important files that appear in the top level directory
-                        expand: true,
-                        src: [ 'index.html', 'favicon.ico', 'bower.json' ],
-                        dest: 'target/website/'
-                    },
-                    {
                         // copies the bower components to target
                         expand: true,
-                        src: [ 'bower_components/**', '!bower_components/**/test/**', '!bower_components/**/tests/**',
-                            '!bower_components/**/examples/**' ],
+                        src: [ 'bower_components/protobufjs/**', 'bower_components/bytebuffer/**', 'bower_components/long/**' ],
                         dest: 'target/website/'
                     },
-                    {
-                        // copies the google app engine directory file
-                        expand: true,
-                        src: 'app.yaml',
-                        dest: 'target/website/'
-                    },
-                    {
-                        // copies the rest of the google app engine files
-                        expand: true,
-                        src: [ 'testFiles.py', 'main.py' ],
-                        dest: 'target/website/'
-                    }
                 ]
             },
             /**
@@ -208,18 +211,10 @@ module.exports = function(grunt) {
 
     //jscs:disable
     grunt.registerTask('buildProto', function() {
-        var protoFiles = grunt.file.expand([ 'src/**/proto/**/*.proto' ]);
-        grunt.log.write('Attempting to compile proto files:');
-        grunt.log.write(protoFiles);
-        for (var i = 0; i < protoFiles.length; i++) {
-            grunt.log.write('cimpiling protofile ' + protoFiles[i]);
-            grunt.log.write('');
-            var options = [ '--source=proto', '--target=js', '--path=src/main/proto' ];
-            var files = [ protoFiles[i] ];
-            var args = protoFiles.concat(options);
-                // .concat([ '> ' + protoFiles[i].replace('.proto', '.js') ]);
-            pbjs.main(args);
-        }
+        printTaskGroup();
+        grunt.task.run([
+            'exec:build_proto'
+        ]);
     });
 
     // Sets up tasks related to setting the system for the rest of the tasks.
