@@ -16,6 +16,43 @@
     var SrlShape = undefined;
     var modulesLoaded = false;
 
+    /**
+     * Decodes the data and preserves the bytebuffer for later use.
+     *
+     * @param {ArrayBuffer} data
+     *            a compiled set of data in the protobuf object.
+     * @param {Message} proto - The protobuf object that is being decoded.
+     * @param {Function} [onError] - A callback that is called when an error occurs regarding marking and resetting.
+     *            (optional). This will be called before the result is returned
+     *
+     * @return {Message | undefined} decoded protobuf object.  (This may return undefined)
+     */
+    var decode = function(data, proto, onError) {
+        if (module.exports.isUndefined(data) || data === null || typeof data !== 'object') {
+            throw 'Data type is not supported:' + typeof data;
+        }
+        try {
+            data.mark();
+        } catch (exception) {
+            if (onError) {
+                onError(exception);
+            }
+        }
+        var decoded = undefined;
+
+        var protoClass = proto;
+
+        decoded = protoClass.decode(data);
+        try {
+            data.reset();
+        } catch (exception) {
+            if (onError) {
+                onError(exception);
+            }
+        }
+        return decoded;
+    };
+
     function loadModules() {
         if (protobufUtils.isUndefined(SrlPoint)) {
             SrlPoint = require('./../sketchLibrary/SrlPoint');
@@ -42,14 +79,13 @@
         var objectType = object.type;
         switch (objectType) {
             case ObjectType.SHAPE:
-                return SrlShape.createFromProtobuf(protobufUtils.decode(object.object, ShapeMessage));
+                return SrlShape.createFromProtobuf(decode(object.object, ShapeMessage));
             case ObjectType.STROKE:
-                return SrlStroke.createFromProtobuf(protobufUtils.decode(object.object, StrokeMessage));
+                return SrlStroke.createFromProtobuf(decode(object.object, StrokeMessage));
             case ObjectType.POINT:
-                return SrlPoint.createFromProtobuf(protobufUtils.decode(object.object, PointMessage));
+                return SrlPoint.createFromProtobuf(decode(object.object, PointMessage));
         }
     };
-
 
     /**
      * Used locally to encode an SRL_Object into its protobuf type.
@@ -97,6 +133,7 @@
         }
     };
 
+    module.exports.decode = decode;
     module.exports.encodeSrlObject = encodeSrlObject;
     module.exports.decodeSrlObject = decodeSrlObject;
     module.exports.convertToUpgradedSketchObject = convertToUpgradedSketchObject;

@@ -557,5 +557,23 @@
     };
 
 
+    /**
+     * Converts an array buffer to an upgraded SrlStroke
+     * @param {ArrayBuffer} data
+     * @return {SrlStroke}
+     */
+    SrlStroke.decode = function (data) {
+        return SrlStroke.createFromProtobuf(objectConversionUtils.decode(data, StrokeMessage));
+    };
+
+    /**
+     * Creates a byte version of the protobuf data.
+     *
+     * @return {ArrayBuffer}
+     */
+    SrlStroke.prototype.toArrayBuffer = function () {
+        return this.sendToProtobuf().toArrayBuffer();
+    };
+
     module.exports = SrlStroke;
 })(module);

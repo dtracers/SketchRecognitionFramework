@@ -292,5 +292,23 @@
         return proto;
     };
 
+    /**
+     * Converts an array buffer to an upgraded SrlShape
+     * @param {ArrayBuffer} data
+     * @return {SrlShape}
+     */
+    SrlShape.decode = function (data) {
+        return SrlShape.createFromProtobuf(objectConversionUtils.decode(data, ShapeMessage));
+    };
+
+    /**
+     * Creates a byte version of the protobuf data.
+     *
+     * @return {ArrayBuffer}
+     */
+    SrlShape.prototype.toArrayBuffer = function () {
+        return this.sendToProtobuf().toArrayBuffer();
+    };
+
     module.exports = SrlShape;
 })(module);

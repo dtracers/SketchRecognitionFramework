@@ -341,5 +341,24 @@
         return proto;
     };
 
+    /**
+     * Converts an array buffer to an upgraded SrlPoint.
+     *
+     * @param {ArrayBuffer} data
+     * @return {SrlPoint}
+     */
+    SrlPoint.decode = function (data) {
+        return SrlPoint.createFromProtobuf(objectConversionUtils.decode(data, PointMessage));
+    };
+
+    /**
+     * Creates a byte version of the protobuf data.
+     *
+     * @return {ArrayBuffer}
+     */
+    SrlPoint.prototype.toArrayBuffer = function () {
+        return this.sendToProtobuf().toArrayBuffer();
+    };
+
     module.exports = SrlPoint;
 })(module);
