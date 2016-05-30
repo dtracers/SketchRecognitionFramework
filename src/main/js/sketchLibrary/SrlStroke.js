@@ -1,7 +1,7 @@
 /**
  * Created by David Windows on 5/17/2016.
  */
-(function (exports) {
+(function (module) {
 
     var protoSketch = require("./../generated_proto/sketch");
     var protobufUtils = require("./../protobufUtils/classCreator");
@@ -9,7 +9,7 @@
     var sketch = protoSketch.protobuf.srl.sketch;
 
     var StrokeMessage = sketch.SrlStroke;
-    var SrlPoint = require('./SrlPoint').SrlPoint;
+    var SrlPoint = require('./SrlPoint');
 
     /**
      * ******************************
@@ -512,4 +512,50 @@
             }
         };
     }
-})(module.exports);
+    protobufUtils.Inherits(SrlStroke, StrokeMessage);
+
+    /**
+     * Creates an SRL protobuf version of a stroke.
+     */
+    SrlStroke.prototype.sendToProtobuf = function() {
+        var proto = new StrokeMessage();
+        proto.id = this.getId();
+        var n = this.getTime();
+        proto.setTime('' + n);
+        proto.name = this.getName();
+        var array = [];
+        var points = this.getPoints();
+        for (var i = 0; i < points.length; i++) {
+            array.push(points[i]);
+        }
+        proto.setPoints(array); // THIS FUNCTION SUCKS!
+        return proto;
+    };
+
+    /**
+     * Static function that returns an {@link SrlStroke}.
+     *
+     * @param {StrokeMessage} stroke - The proto object that is being turned into a sketch object.
+     * @returns {SrlStroke} The upgraded stroke version.
+     */
+    SrlStroke.createFromProtobuf = function(stroke) {
+        var pointList = stroke.getPoints();
+        var srlStroke = new SrlStroke();
+        for (var i in pointList) {
+            if (pointList.hasOwnProperty(i)) {
+                var point = pointList[i];
+                var currentPoint = SrlStroke.createFromProtobuf(point);
+                srlStroke.addPoint(currentPoint);
+            }
+        }
+        if (!srlStroke) {
+            srlStroke = new SrlStroke();
+        }
+        srlStroke.finish();
+        srlStroke.setId(stroke.getId());
+        return srlStroke;
+    };
+
+
+    module.exports = SrlStroke;
+})(module);

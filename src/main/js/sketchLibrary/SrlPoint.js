@@ -1,7 +1,7 @@
 /**
  * Created by David Windows on 5/17/2016.
  */
-(function (exports) {
+(function (module) {
 
     var protoSketch = require("./../generated_proto/sketch");
     var protobufUtils = require("./../protobufUtils/classCreator");
@@ -291,8 +291,55 @@
             return this.getY();
         };
     }
-
     protobufUtils.Inherits(SrlPoint, PointMessage);
 
-    exports = SrlPoint;
-})(module.exports);
+    /**
+     * Static function that returns an {@link SrlPoint}.
+     *
+     * @param {PointMessage} proto - The proto object that is being turned into a sketch object.
+     */
+    SrlPoint.createFromProtobuf = function(proto) {
+        var point = new SrlPoint(proto.x, proto.y);
+        point.setId(proto.id);
+
+        if (proto.time) {
+            point.setTime(parseInt(proto.time.toString(), 10));
+        }
+        if (proto.name) {
+            point.setName(proto.name);
+        }
+        if (proto.size) {
+            point.setSize(proto.size);
+        }
+        if (proto.pressure) {
+            point.setPressure(proto.pressure);
+        }
+        if (proto.speed) {
+            point.setSpeed(proto.speed);
+        }
+        return point;
+    };
+
+    /**
+     * Creates a pure protobuf version of the SrlPoint.
+     *
+     * Basically this removes the extra methods.
+     * This is not actually needed anywhere because the point is not itself a protobuf object.
+     * @returns {PointMessage}
+     */
+    SrlPoint.prototype.sendToProtobuf = function() {
+        var proto = new PointMessage();
+        proto.id = this.getId();
+        var n = this.getTime();
+        proto.setTime('' + n);
+        proto.name = this.getName();
+        proto.x = this.getX();
+        proto.y = this.getY();
+        proto.pressure = this.getPressure();
+        proto.size = this.getSize();
+        proto.speed = this.getSpeed();
+        return proto;
+    };
+
+    module.exports = SrlPoint;
+})(module);

@@ -1,8 +1,10 @@
-(function (exports) {
+(function (module) {
 
     var protoSketch = require("./../generated_proto/sketch");
     var protobufUtils = require("./../protobufUtils/classCreator");
-    var SrlBoundingBox = require('./SrlBoundingBox').SrlBoundingBox;
+    var objectConversionUtils = require("./../protobufUtils/sketchProtoConverter");
+    var SrlBoundingBox = require('./SrlBoundingBox');
+    var arrayUtils = require('./ArrayUtils');
 
     var sketch = protoSketch.protobuf.srl.sketch;
 
@@ -25,19 +27,24 @@
         var objectIdMap = new Map();
         var boundingBox = new SrlBoundingBox();
 
-        this.addObject = function(srlObject) {
-            console.log('add id ', srlObject.getId());
-            objectList.push(srlObject);
-            objectIdMap.set(srlObject.getId(), srlObject);
+        /**
+         * Adds an SrlObject to the sketch.
+         *
+         * @param srlObject
+         */
+        this.add = function(srlObject) {
+            var upgraded = objectConversionUtils.convertToUpgradedSketchObject(srlObject);
+            console.log('add id ', upgraded.getId());
+            objectList.push(upgraded);
+            objectIdMap.set(upgraded.getId(), upgraded);
         };
-        this.addSubObject = this.addObject; // backwards compatablity
 
         /**
          * Adds all objects in the array to the sketch.
          */
-        this.addAllSubObjects = function(array) {
+        this.addAll = function(array) {
             for (var i = 0; i < array.length; i++) {
-                this.addObject(array[i]);
+                this.add(array[i]);
             }
         };
 
@@ -45,7 +52,7 @@
          * Given an object, remove this instance of the object.
          */
         this.removeSubObject = function(srlObject) {
-            var result = removeObjectFromArray(objectList, srlObject);
+            var result = arrayUtils.removeObjectFromArray(objectList, srlObject);
             //var result = objectList.removeObject(srlObject);
             if (result) {
                 objectIdMap.delete(result.getId());
@@ -80,7 +87,7 @@
         };
 
         this.removeSubObjectAtIndex = function(index) {
-            return removeObjectByIndex(objectList, index);
+            return arrayUtils.removeObjectByIndex(objectList, index);
         };
 
         /**
@@ -137,12 +144,25 @@
             var oldList = objectList;
             objectList = [];
             objectIdMap = new Map();
-            boundingBox = new SRL_BoundingBox();
+            boundingBox = new SrlBoundingBox();
             return oldList;
         };
 
         this.clearSketch = this.resetSketch;
     }
-
     protobufUtils.Inherits(SrlSketch, SketchMessage);
-})(module.exports);
+
+    SrlSketch.prototype.sendToProtobuf = function() {
+        var protoSketch = CourseSketch.prutil.ProtoSrlSketch();
+
+        var subObjects = this.getList();
+        var protoSubObjects = [];
+
+        for (var i = 0; i < subObjects.length; i++) {
+            protoSubObjects.push(objectConversionUtils.encodeSrlObject(subObjects[i]));
+        }
+        protoSketch.sketch = protoSubObjects;
+        return protoSketch;
+    };
+    module.exports = SrlSketch;
+})(module);

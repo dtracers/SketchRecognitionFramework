@@ -73,6 +73,10 @@ message SrlInterpretation {
     required string label = 1;
     required double confidence = 2;
     optional double complexity = 3;
+    optional string interpretationId = 4;
+    optional string recognizerId = 5;
+    optional string isEndState = 6;
+    optional string isForced = 7;
 }
 
 message SrlBoundingBox {

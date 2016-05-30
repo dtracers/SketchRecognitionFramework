@@ -1,4 +1,4 @@
-(function (exports) {
+(function (module) {
     var protoSketch = require("./../generated_proto/sketch");
     var protobufUtils = require("./../protobufUtils/classCreator");
 
@@ -110,7 +110,7 @@
         }.bind(this);
 
         this.addSubObject = function (subObject) {
-            console.log('combing ');
+            console.log('combining ');
             console.log(subObject);
             this.union(subObject.getBoundingBox());
         };
@@ -150,8 +150,55 @@
         this.toString = function () {
             return 'SrlBoundingBox: (' + this.getX() + ', ' + this.getY() + ') Width: ' + this.getWidth() + ' Height: ' + this.getHeight();
         };
+
+        /**
+         * @returns {Number} Leftmost point.
+         */
+        this.getLeft = function () {
+            return internalLeft;
+        };
+
+        /**
+         * @returns {number} Rightmost point.
+         */
+        this.getRight = function () {
+            return internalRight;
+        };
+
+        /**
+         * @returns {Number} The Topmost point.
+         */
+        this.getTop = function () {
+            return internalTop;
+        };
+
+        /**
+         * @returns {Number} The Bottommost point.
+         */
+        this.getBottom = function () {
+            return internalTop;
+        };
+
+        /**
+         * This returns the length of the diagonal of the bounding box. This might
+         * be a better measure of perceptual size than area
+         *
+         * @return {Number} Euclidean distance of bounding box diagonal
+         */
+        this.getLengthOfDiagonal = function() {
+            return Math.sqrt(this.getHeight() * this.getHeight() + this.getWidth() * this.getWidth());
+        };
+
+        /**
+         * Returns the angle of the diagonal of the bounding box of the shape
+         *
+         * @return {Number} angle of the diagonal of the bounding box of the shape
+         */
+        this.getBoundingBoxDiagonalAngle = function() {
+            return Math.atan(this.getHeight() / this.getWidth());
+        };
     }
     protobufUtils.Inherits(SrlBoundingBox, BoundingBoxMessage);
 
-    exports.SrlBoundingBox = SrlBoundingBox;
-})(module.exports);
+    module.exports = SrlBoundingBox;
+})(module);
