@@ -1,6 +1,9 @@
 {
   "name": "SketchRecognitionFramework",
   "version": "0.0.5",
+  "dependencies": {
+    "stacktrace-js": "1.2.0"
+  },
   "devDependencies": {
     "grunt": "~0.4.2",
     "grunt-cli": "~0.1.9",

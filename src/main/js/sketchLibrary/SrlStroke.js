@@ -5,6 +5,7 @@
 
     var protoSketch = require("./../generated_proto/sketch");
     var protobufUtils = require("./../protobufUtils/classCreator");
+    var objectConversionUtils = require("./../protobufUtils/sketchProtoConverter");
 
     var sketch = protoSketch.protobuf.srl.sketch;
 

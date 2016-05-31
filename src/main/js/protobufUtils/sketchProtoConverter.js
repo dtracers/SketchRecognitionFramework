@@ -28,7 +28,7 @@
      * @return {Message | undefined} decoded protobuf object.  (This may return undefined)
      */
     var decode = function(data, proto, onError) {
-        if (module.exports.isUndefined(data) || data === null || typeof data !== 'object') {
+        if (protobufUtils.isUndefined(data) || data === null || typeof data !== 'object') {
             throw 'Data type is not supported:' + typeof data;
         }
         try {
@@ -79,11 +79,11 @@
         var objectType = object.type;
         switch (objectType) {
             case ObjectType.SHAPE:
-                return SrlShape.createFromProtobuf(decode(object.object, ShapeMessage));
+                return SrlShape.decode(object.object);
             case ObjectType.STROKE:
-                return SrlStroke.createFromProtobuf(decode(object.object, StrokeMessage));
+                return SrlStroke.decode(object.object);
             case ObjectType.POINT:
-                return SrlPoint.createFromProtobuf(decode(object.object, PointMessage));
+                return SrlPoint.decode(object.object);
         }
     };
 
@@ -107,7 +107,7 @@
             proto.type = ObjectType.POINT;
         }
 
-        proto.object = object.sendToProtobuf().toArrayBuffer();
+        proto.object = object.toArrayBuffer();
         return proto;
     }
 

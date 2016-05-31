@@ -5,6 +5,8 @@
 
     var protoSketch = require("./../generated_proto/sketch");
     var protobufUtils = require("./../protobufUtils/classCreator");
+    var objectConversionUtils = require("./../protobufUtils/sketchProtoConverter");
+    var SketchException = require('./SketchLibraryException');
 
     var sketch = protoSketch.protobuf.srl.sketch;
 
@@ -62,14 +64,14 @@
          * @param {Number} x
          */
         this.setX = function(x) {
-            throw "can't call set x must call setP";
+            throw new SketchException("can't call set x must call setP");
         };
 
         /**
          * @param {Number} y
          */
         this.setY = function(y) {
-            throw "can't call set y must call setP";
+            throw new SketchException("can't call set y must call setP");
         };
 
         /**
