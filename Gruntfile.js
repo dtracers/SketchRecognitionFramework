@@ -136,7 +136,7 @@ module.exports = function(grunt) {
                     {
                         // copies the website files used in production for prod use
                         expand: true,
-                        src: [ 'src/main/web/**', '!src/test/**',
+                        src: [ 'src/main/js/**', '!src/test/**',
 
                             // we do not want these copied as they are not meant for production.
                             '!src/**/debug/**' ],
