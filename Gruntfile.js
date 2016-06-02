@@ -136,18 +136,17 @@ module.exports = function(grunt) {
                     {
                         // copies the website files used in production for prod use
                         expand: true,
-                        src: [ 'src/main/js/**', '!src/test/**',
-
-                            // we do not want these copied as they are not meant for production.
-                            '!src/**/debug/**' ],
-                        dest: 'target/website/'
+                        src: [ '**' ],
+                        dest: 'target/website/',
+                        cwd: 'src/main/js'
                     },
                     {
                         // copies the bower components to target
                         expand: true,
-                        src: [ 'bower_components/protobufjs/**', 'bower_components/bytebuffer/**', 'bower_components/long/**' ],
-                        dest: 'target/website/'
-                    },
+                        src: [ '**/*.js' ],
+                        dest: 'target/website/',
+                        cwd: 'bower_components'
+                    }
                 ]
             },
             /**
