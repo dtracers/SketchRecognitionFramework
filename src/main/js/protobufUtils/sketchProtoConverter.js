@@ -2,13 +2,19 @@
  * Created by David Windows on 5/17/2016.
  */
 define(['./../generated_proto/sketch', // protoSketch
+    './../generated_proto/commands', // protoCommands
+    './../generated_proto/sketchUtil', // protoCommands
     './../protobufUtils/classCreator', // protobufUtils
     "require" // require
     ], function (
+    protoCommands,
     protoSketch,
+    protoSketchUtil,
     protobufUtils,
     require) {
     var sketch = protoSketch.protobuf.srl.sketch;
+    var Commands = protoCommands.protobuf.srl.commands;
+    var sketchUtil = protoSketchUtil.protobuf.srl.utils;
 
     var ObjectType = sketch.ObjectType;
     var ObjectMessage = sketch.SrlObject;
@@ -137,11 +143,98 @@ define(['./../generated_proto/sketch', // protoSketch
         }
     };
 
+    /**
+     * Given a protobuf Command array an SrlUpdate is created.
+     *
+     * It is important to node that an SrlUpdate implies that the commands
+     * happened at the same time.
+     *
+     * @param {Array<SrlCommand>} commands - A list of commands stored as an array.
+     * @return {SrlUpdate} An update that holds the list of given commands.
+     */
+    var createUpdateFromCommands = function createUpdateFromCommands(commands) {
+        var update = new Commands.SrlUpdate();
+        update.setCommands(commands);
+        var n = protobufUtils.createTimeStamp();
+        update.setTime('' + n);
+        update.setUpdateId(protobufUtils.generateUuid());
+        return update;
+    };
+
+    /**
+     * Given a protobuf Command array an SrlUpdate is created.
+     *
+     * It is important to node that an SrlUpdate implies that the commands
+     * happened at the same time.
+     *
+     * @return {SrlUpdate} An empty update.
+     */
+    var createBaseUpdate = function createBaseUpdate() {
+        var update = new Commands.SrlUpdate();
+        var n = protobufUtils.createTimeStamp();
+        update.commands = [];
+        update.setTime('' + n);
+        update.setUpdateId(protobufUtils.generateUuid());
+        return update;
+    };
+
+    /**
+     * Creates a command given the commandType and if the user created.
+     *
+     * @param {CommandType} commandType - The enum object of the commandType (found at
+     *            CourseSketch.prutil.CommandType).
+     * @param {Boolean} userCreated - True if the user created this command, false if the
+     *            command is system created.
+     * @returns {SrlCommand} Creates a command with basic data.
+     */
+    var createBaseCommand = function createBaseCommand(commandType, userCreated) {
+        var command = new Commands.SrlCommand();
+        command.setCommandType(commandType);
+        command.setIsUserCreated(userCreated);
+        command.commandId = protobufUtils.generateUuid(); // unique ID
+        return command;
+    };
+
+    /**
+     * Creates a new sketch command.
+     *
+     * @param {String} id - the id of the sketch, undefined if you want a random id given.
+     * @param {Number} x - the x location of the sketch as an offset of its parent sketch.
+     * @param {Number} y - the y location of the sketch as an offset of its parent sketch.
+     * @param {Number} width - the width of the sketch.
+     * @param {Number} height - the height of the sketch.
+     *
+     * @return {SrlCommand} a create sketch command
+     */
+    var createNewSketch = function createNewSketch(id, x, y, width, height) {
+        var command = createBaseCommand(Commands.CommandType.CREATE_SKETCH, false);
+        var idChain = sketchUtil.IdChain();
+        if (!protobufUtils.isUndefined(id)) {
+            idChain.idChain = [ id ];
+        } else {
+            idChain.idChain = [ protobufUtils.generateUuid() ];
+        }
+        var createSketchAction = new Commands.ActionCreateSketch();
+        createSketchAction.sketchId = idChain;
+        createSketchAction.x = x || (x === 0 ? 0 : -1);
+        createSketchAction.y = y || (y === 0 ? 0 : -1);
+        createSketchAction.width = width || (width === 0 ? 0 : -1);
+        createSketchAction.height = height || (height === 0 ? 0 : -1);
+        command.setCommandData(createSketchAction.toArrayBuffer());
+        return command;
+    };
+
     return {
         decode: decode,
         encodeSrlObject: encodeSrlObject,
         decodeSrlObject: decodeSrlObject,
-        convertToUpgradedSketchObject: convertToUpgradedSketchObject
+        convertToUpgradedSketchObject: convertToUpgradedSketchObject,
+        commands: {
+            createUpdateFromCommands: createUpdateFromCommands,
+            createBaseUpdate: createBaseUpdate,
+            createBaseCommand: createBaseCommand,
+            createNewSketch: createNewSketch
+        }
     };
 
 });

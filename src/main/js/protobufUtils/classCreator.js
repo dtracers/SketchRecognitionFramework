@@ -63,9 +63,37 @@ define([], function () {
         }
     };
 
+    /**
+     * Generates an rfc4122 version 4 compliant solution.
+     *
+     * found at http://stackoverflow.com/a/2117523/2187510 and further improved at
+     * http://stackoverflow.com/a/8809472/2187510
+     * @returns {String} A unique id.
+     */
+    function generateUuid() {
+        var d = new Date().getTime();
+        var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+            var r = (d + Math.random() * 16) % 16 | 0;
+            d = Math.floor(d / 16);
+            return (c === 'x' ? r : (r & 0x7 | 0x8)).toString(16);
+        });
+        return uuid;
+    }
+
+    /**
+     * Creates a number that represents the current time in milliseconds since jan 1st 1970.
+     *
+     * @return {Number} milliseconds since jan 1st 1970
+     */
+    function createTimeStamp() {
+        return new Date().getTime();
+    }
+
     return {
         isUndefined: isUndefined,
-        Inherits: Inherits
+        Inherits: Inherits,
+        generateUuid: generateUuid,
+        createTimeStamp: createTimeStamp
     };
 
 });
