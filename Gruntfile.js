@@ -89,7 +89,7 @@ module.exports = function(grunt) {
         mkdir: {
             all: {
                 options: {
-                    create: [ 'target/unitTest', 'target/screenshots', 'target/website/proto' ]
+                    create: [ 'target/unitTest', 'target/screenshots', 'target/website/proto', 'src/main/js/generated_proto' ]
                 }
             }
         },
