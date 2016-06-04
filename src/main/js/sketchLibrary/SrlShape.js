@@ -1,17 +1,22 @@
 /**
  * Created by David Windows on 5/17/2016.
  */
-(function (module) {
-
-    var protoSketch = require("./../generated_proto/sketch");
-    var protobufUtils = require("./../protobufUtils/classCreator");
-    var objectConversionUtils = require("./../protobufUtils/sketchProtoConverter");
+define(['./../generated_proto/sketch', // protoSketch
+    './../protobufUtils/classCreator', // protobufUtils
+    './../protobufUtils/sketchProtoConverter', // objectConversionUtils
+    './SketchLibraryException', // SketchException
+    './SrlBoundingBox' // SrlBoundingBox
+], function (
+    protoSketch,
+    protobufUtils,
+    objectConversionUtils,
+    SketchException,
+    SrlBoundingBox
+) {
 
     var sketch = protoSketch.protobuf.srl.sketch;
 
     var ShapeMessage = sketch.SrlShape;
-    var SrlStroke = require('./SrlStroke');
-    var SrlBoundingBox = require('./SrlBoundingBox');
 
     /**
      * ******************************
@@ -310,5 +315,5 @@
         return this.sendToProtobuf().toArrayBuffer();
     };
 
-    module.exports = SrlShape;
-})(module);
+    return SrlShape;
+});

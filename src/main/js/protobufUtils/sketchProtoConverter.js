@@ -1,9 +1,13 @@
 /**
  * Created by David Windows on 5/17/2016.
  */
-(function (module) {
-    var protoSketch = require("./../generated_proto/sketch");
-    var protobufUtils = require("./classCreator");
+define(['./../generated_proto/sketch', // protoSketch
+    './../protobufUtils/classCreator', // protobufUtils
+    "require" // require
+    ], function (
+    protoSketch,
+    protobufUtils,
+    require) {
     var sketch = protoSketch.protobuf.srl.sketch;
 
     var ObjectType = sketch.ObjectType;
@@ -133,9 +137,11 @@
         }
     };
 
-    module.exports.decode = decode;
-    module.exports.encodeSrlObject = encodeSrlObject;
-    module.exports.decodeSrlObject = decodeSrlObject;
-    module.exports.convertToUpgradedSketchObject = convertToUpgradedSketchObject;
+    return {
+        decode: decode,
+        encodeSrlObject: encodeSrlObject,
+        decodeSrlObject: decodeSrlObject,
+        convertToUpgradedSketchObject: convertToUpgradedSketchObject
+    };
 
-})(module);
+});

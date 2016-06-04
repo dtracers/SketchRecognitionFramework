@@ -1,15 +1,16 @@
 /**
  * Created by David Windows on 5/17/2016.
  */
-(function (module) {
-
-    var protoSketch = require("./../generated_proto/sketch");
-    var protobufUtils = require("./../protobufUtils/classCreator");
+define(['./../generated_proto/sketch', // protoSketch
+    './../protobufUtils/classCreator' // protobufUtils
+], function (
+    protoSketch,
+    protobufUtils) {
 
     var sketch = protoSketch.protobuf.srl.sketch;
 
     var InterpretationMessage = sketch.SrlInterpretation;
 
-    module.exports = InterpretationMessage;
+    return InterpretationMessage;
 
-})(module);
+});

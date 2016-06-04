@@ -1,10 +1,9 @@
 /**
  * Created by dtracers on 5/17/2016.
  */
-(function (module) {
-    var StackTrace = require('stacktrace-js');
+define(['stacktrace-js'], function (StackTrace) {
     var errback = function(err) { console.log(err.message); };
-    module.exports = function SketchLibraryException(message, cause) {
+    return function SketchLibraryException(message, cause) {
 
         this.name = 'SketchLibraryException';
         /**
@@ -77,4 +76,4 @@
         this.setCause(cause);
         this.createStackTrace();
     };
-})(module);
+});

@@ -1,10 +1,17 @@
-(function (module) {
-
-    var protoSketch = require("./../generated_proto/sketch");
-    var protobufUtils = require("./../protobufUtils/classCreator");
-    var objectConversionUtils = require("./../protobufUtils/sketchProtoConverter");
-    var SrlBoundingBox = require('./SrlBoundingBox');
-    var arrayUtils = require('./ArrayUtils');
+define(['./../generated_proto/sketch', // protoSketch
+    './../protobufUtils/classCreator', // protobufUtils
+    './../protobufUtils/sketchProtoConverter', // objectConversionUtils
+    './SketchLibraryException', // SketchException
+    './SrlBoundingBox', // SrlBoundingBox
+    './ArrayUtils' // arrayUtils
+], function (
+    protoSketch,
+    protobufUtils,
+    objectConversionUtils,
+    SketchException,
+    SrlBoundingBox,
+    arrayUtils
+) {
 
     var sketch = protoSketch.protobuf.srl.sketch;
 
@@ -164,5 +171,5 @@
         protoSketch.sketch = protoSubObjects;
         return protoSketch;
     };
-    module.exports = SrlSketch;
-})(module);
+    return SrlSketch;
+});

@@ -1,3 +1,5 @@
+require('node-define');
+require('node-amd-require');
 var assert = require('chai').assert;
 
 var basePath = '../../../';

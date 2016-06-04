@@ -1,4 +1,4 @@
-(function (module) {
+define([], function () {
 
     /**
      * Removes the object from an array.
@@ -43,8 +43,9 @@
         return object instanceof Array || (Array.isArray && Array.isArray(object));
     }
 
-    module.exports.removeObjectFromArray = removeObjectFromArray;
-    module.exports.removeObjectByIndex = removeObjectByIndex;
-    module.exports.isArray = isArray;
-
-})(module);
+    return {
+        removeObjectFromArray: removeObjectFromArray,
+        removeObjectByIndex: removeObjectByIndex,
+        isArray: isArray
+    }
+});

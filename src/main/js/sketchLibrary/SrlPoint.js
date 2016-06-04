@@ -1,12 +1,16 @@
 /**
  * Created by David Windows on 5/17/2016.
  */
-(function (module) {
-
-    var protoSketch = require("./../generated_proto/sketch");
-    var protobufUtils = require("./../protobufUtils/classCreator");
-    var objectConversionUtils = require("./../protobufUtils/sketchProtoConverter");
-    var SketchException = require('./SketchLibraryException');
+define(['./../generated_proto/sketch', // protoSketch
+    './../protobufUtils/classCreator', // protobufUtils
+    './../protobufUtils/sketchProtoConverter', // objectConversionUtils
+    './SketchLibraryException' // SketchException
+    ], function (
+    protoSketch,
+    protobufUtils,
+    objectConversionUtils,
+    SketchException
+    ) {
 
     var sketch = protoSketch.protobuf.srl.sketch;
 
@@ -362,5 +366,5 @@
         return this.sendToProtobuf().toArrayBuffer();
     };
 
-    module.exports = SrlPoint;
-})(module);
+    return SrlPoint;
+});

@@ -93,6 +93,7 @@ module.exports = function(grunt) {
                 }
             }
         },
+
         /**
          * BUILDERS
          */
@@ -108,8 +109,8 @@ module.exports = function(grunt) {
                         grunt.log.write('');
                         var jsFile = jsFiles[i].dest;
                         command+= '"./node_modules/.bin/pbjs" ' + protoFiles[i] + ' --source=proto' +
-                        //    ' --exports=proto_' + jsFile.replace(/^.*[\\\/]/, '').slice(0, -3) +
-                            ' --target=commonjs --path=src/main/proto > ' + jsFile + ' & ';
+                                ' --dependency="protobufjs"' +
+                            ' --target=amd --path=src/main/proto > ' + jsFile + ' & ';
                     }
                     console.log(command);
                     return command + 'echo "completed compile"';

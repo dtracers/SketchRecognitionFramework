@@ -4,6 +4,8 @@
   "dependencies": {
     "stacktrace-js": "0.6.4",
     "protobufjs": "dcodeIO/protobuf.js#c7bf7fc571a9bb1a8c63a2e33f5fddd897f4b098",
+    "bytebuffer": "5.0.1",
+    "long": "3.1.0",
     "requirejs": "2.2.0"
   },
   "private": true

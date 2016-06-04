@@ -1,6 +1,8 @@
-(function (module) {
-    var protoSketch = require("./../generated_proto/sketch");
-    var protobufUtils = require("./../protobufUtils/classCreator");
+define(['./../generated_proto/sketch', // protoSketch
+    './../protobufUtils/classCreator' // protobufUtils
+    ], function (
+    protoSketch,
+    protobufUtils) {
 
     var sketch = protoSketch.protobuf.srl.sketch;
 
@@ -200,5 +202,5 @@
     }
     protobufUtils.Inherits(SrlBoundingBox, BoundingBoxMessage);
 
-    module.exports = SrlBoundingBox;
-})(module);
+    return SrlBoundingBox;
+});
