@@ -51,9 +51,12 @@ define(['stacktrace-js'], function (StackTrace) {
          * Assigns the stacktrace object to an existing stacktrace.
          */
         this.createStackTrace = function() {
+            // TODO: Fix issues with stack trace.
+            /*
             StackTrace.get().then(function (stackframes) {
                 this.stackTrace = stackframes;
             }).catch(errback);
+            */
         };
 
         /**

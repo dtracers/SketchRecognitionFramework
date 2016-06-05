@@ -5,12 +5,14 @@ define(['./../generated_proto/sketch', // protoSketch
     './../generated_proto/commands', // protoCommands
     './../generated_proto/sketchUtil', // protoCommands
     './../protobufUtils/classCreator', // protobufUtils
+    './../sketchLibrary/SketchLibraryException', // protobufUtils
     "require" // require
     ], function (
-    protoCommands,
     protoSketch,
+    protoCommands,
     protoSketchUtil,
     protobufUtils,
+    SketchException,
     require) {
     var sketch = protoSketch.protobuf.srl.sketch;
     var Commands = protoCommands.protobuf.srl.commands;
@@ -26,6 +28,12 @@ define(['./../generated_proto/sketch', // protoSketch
     var SrlShape = undefined;
     var modulesLoaded = false;
 
+    function ProtobufDecodingException(message, cause) {
+        this.name = 'ProtobufDecodingException';
+        this.superConstructor(message, cause);
+    }
+    protobufUtils.Inherits(ProtobufDecodingException, SketchException);
+
     /**
      * Decodes the data and preserves the bytebuffer for later use.
      *
@@ -39,7 +47,7 @@ define(['./../generated_proto/sketch', // protoSketch
      */
     var decode = function(data, proto, onError) {
         if (protobufUtils.isUndefined(data) || data === null || typeof data !== 'object') {
-            throw 'Data type is not supported:' + typeof data;
+            throw new ProtobufDecodingException('Data type is not supported:' + typeof data);
         }
         try {
             data.mark();
@@ -59,6 +67,10 @@ define(['./../generated_proto/sketch', // protoSketch
             if (onError) {
                 onError(exception);
             }
+        }
+
+        if (protobufUtils.isUndefined(decoded) || decoded === null) {
+            throw new ProtobufDecodingException('Unable to decode the data into anything. ' + protoClass);
         }
         return decoded;
     };
