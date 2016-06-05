@@ -1,22 +1,18 @@
 /**
  * Created by David Windows on 5/17/2016.
  */
-define(['./../generated_proto/sketch', // protoSketch
-    './../generated_proto/commands', // protoCommands
-    './../generated_proto/sketchUtil', // protoCommands
+define(['./../sketchLibrary/ProtoSketchFramework', // ProtoSketchFramework
     './../protobufUtils/classCreator', // protobufUtils
-    './../sketchLibrary/SketchLibraryException', // protobufUtils
+    './../sketchLibrary/SketchLibraryException', // SketchException
     "require" // require
     ], function (
-    protoSketch,
-    protoCommands,
-    protoSketchUtil,
+    ProtoSketchFramework,
     protobufUtils,
     SketchException,
     require) {
-    var sketch = protoSketch.protobuf.srl.sketch;
-    var Commands = protoCommands.protobuf.srl.commands;
-    var sketchUtil = protoSketchUtil.protobuf.srl.utils;
+    var sketch = ProtoSketchFramework.Sketch;
+    var Commands = ProtoSketchFramework.Commands;
+    var sketchUtil = ProtoSketchFramework.GeneralProtos;
 
     var ObjectType = sketch.ObjectType;
     var ObjectMessage = sketch.SrlObject;
