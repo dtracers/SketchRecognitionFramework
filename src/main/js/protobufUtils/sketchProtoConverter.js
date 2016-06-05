@@ -45,6 +45,10 @@ define(['./../sketchLibrary/ProtoSketchFramework', // ProtoSketchFramework
         if (protobufUtils.isUndefined(data) || data === null || typeof data !== 'object') {
             throw new ProtobufDecodingException('Data type is not supported:' + typeof data);
         }
+
+        if (protobufUtils.isUndefined(proto) || proto === null || typeof proto !== 'object') {
+            throw new ProtobufDecodingException('Proto is not a valid object:' + typeof proto);
+        }
         try {
             data.mark();
         } catch (exception) {

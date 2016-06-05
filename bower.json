@@ -2,7 +2,7 @@
   "name": "coursesketchwebclient",
   "version": "0.0.1",
   "dependencies": {
-    "stacktrace-js": "1.2.0",
+    "stacktrace-js": "0.6.4",
     "protobufjs": "trunerd/protobuf.js#75852bda552dd221b18f0026f8ae3db18e8324b0",
     "bytebuffer": "5.0.1",
     "long": "3.1.0",

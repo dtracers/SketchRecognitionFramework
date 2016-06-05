@@ -2,7 +2,7 @@
   "name": "SketchRecognitionFramework",
   "version": "0.0.5",
   "dependencies": {
-    "stacktrace-js": "1.2.0"
+    "stacktrace-js": "0.6.4"
   },
   "devDependencies": {
     "grunt": "~0.4.2",
@@ -34,7 +34,8 @@
     "grunt-exec": "0.4.6",
     "requirejs": "2.2.0",
     "node-define": "0.1.1",
-    "node-amd-require": "0.2.2"
+    "node-amd-require": "0.2.2",
+    "babel-polyfill": "6.9.1"
   }
 }
 

@@ -3,7 +3,15 @@
  */
 define(['stacktrace-js'], function (StackTrace) {
     var errback = function(err) { console.log(err.message); };
-    return function SketchLibraryException(message, cause) {
+
+    /**
+     * @class SketchLibraryException
+     * Defines the base exception class that can be extended by all other exceptions.
+     * @param message The optional message of the exception.
+     * @param cause The optional cause of the exception.
+     * @constructor
+     */
+    function SketchLibraryException(message, cause) {
 
         this.name = 'SketchLibraryException';
         /**
@@ -44,20 +52,15 @@ define(['stacktrace-js'], function (StackTrace) {
          * Used to log the stacktrace object in BaseException.
          */
         this.printStackTrace = function() {
-            console.log(printStackTrace().join('\n\n'));
+            if (typeof this.stackTrace === "undefined") {
+                this.createStackTrace();
+            }
+            console.log(this.stackTrace.join('\n\n'));
         };
 
         /**
          * Assigns the stacktrace object to an existing stacktrace.
          */
-        this.createStackTrace = function() {
-            // TODO: Fix issues with stack trace.
-            /*
-            StackTrace.get().then(function (stackframes) {
-                this.stackTrace = stackframes;
-            }).catch(errback);
-            */
-        };
 
         /**
          * Sets the cause of baseException to the causeValue passed in.
@@ -78,5 +81,11 @@ define(['stacktrace-js'], function (StackTrace) {
         this.setMessage(message);
         this.setCause(cause);
         this.createStackTrace();
+    }
+
+    SketchLibraryException.prototype.createStackTrace = function() {
+        this.stackTrace = StackTrace();
     };
+
+    return SketchLibraryException;
 });
