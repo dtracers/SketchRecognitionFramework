@@ -244,9 +244,9 @@ define(['./../generated_proto/sketch', // protoSketch
         var array = [];
         var points = this.getPoints();
         for (var i = 0; i < points.length; i++) {
-            array.push(points[i]);
+            array.push(points[i].sendToProtobuf());
         }
-        proto.setPoints(array); // THIS FUNCTION SUCKS!
+        proto.setPoints(array); // this should verify the points are created correctly.
         return proto;
     };
 
@@ -262,7 +262,7 @@ define(['./../generated_proto/sketch', // protoSketch
         for (var i in pointList) {
             if (pointList.hasOwnProperty(i)) {
                 var point = pointList[i];
-                var currentPoint = SrlStroke.createFromProtobuf(point);
+                var currentPoint = SrlPoint.createFromProtobuf(point);
                 srlStroke.addPoint(currentPoint);
             }
         }
@@ -271,6 +271,7 @@ define(['./../generated_proto/sketch', // protoSketch
         }
         srlStroke.finish();
         srlStroke.setId(stroke.getId());
+        srlStroke.setTime(stroke.getTime());
         return srlStroke;
     };
 

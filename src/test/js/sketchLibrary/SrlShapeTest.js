@@ -37,10 +37,15 @@ describe('Shape Tests', function () {
             for (var i = 0; i < 10; i++) {
                 var stroke = new SrlStroke();
                 stroke.id = 'stroke' + i;
-                stroke.addPoint(new SrlPoint(x, y));
+                var point = new SrlPoint(x, y);
+                point.setTime(50);
+                point.setId('point' + i);
+                stroke.addPoint(point);
                 strokeList.push(stroke);
+                stroke.setTime(60);
                 var shape = new SrlShape();
                 shape.id = 'shape' + i;
+                shape.setTime(70);
                 shapeList.push(shape);
             }
         });
@@ -72,6 +77,17 @@ describe('Shape Tests', function () {
             shapeList[0].removeSubObjectById(shapeList[1].getId());
             expect(shapeList[0].getRecursiveStrokes()).to.have.members([strokeList[0]]);
             expect(shapeList[0].getRecursiveSubObjects()).to.have.members([strokeList[0]]);
+        });
+
+        it('should be able to encode and decode from binary protobuf correctly', function () {
+            for (var i = 0; i < 9; i++) {
+                shapeList[i].add(strokeList[i]);
+                shapeList[i].add(shapeList[i + 1]);
+            }
+            var buffer = shapeList[0].toArrayBuffer();
+            var shape = SrlShape.decode(buffer);
+            // have deep members errors out.  But contents were identical anyways
+            expect(JSON.stringify([shape.getRecursiveSubObjects()])).to.be.deep.equal(JSON.stringify([shapeList[0].getRecursiveSubObjects()]));
         });
     });
 });

@@ -281,7 +281,7 @@ define(['./../generated_proto/sketch', // protoSketch
     SrlShape.createFromProtobuf = function(shape) {
         var interpretations = shape.interpretations;
         var subObjects = shape.subComponents;
-        var newShape = new SRL_Shape();
+        var newShape = new SrlShape();
         for (var i = 0; i < interpretations.length; i++) {
             var protoInter = interpretations[i];
             newShape.addInterpretation(protoInter.label, protoInter.confidence, protoInter.complexity);
@@ -289,11 +289,11 @@ define(['./../generated_proto/sketch', // protoSketch
 
         for (i = 0; i < subObjects.length; i++) {
             var protoObject = subObjects[i];
-            newShape.addSubObject(objectConversionUtils.convertToUpgradedSketchObject(protoObject));
+            newShape.add(objectConversionUtils.convertToUpgradedSketchObject(protoObject));
         }
         newShape.setId(shape.getId());
         newShape.setName(shape.getName());
-
+        newShape.setTime(shape.getTime());
         return newShape;
     };
 
