@@ -5,13 +5,17 @@ define(['./../generated_proto/sketch', // protoSketch
     './../protobufUtils/classCreator', // protobufUtils
     './../protobufUtils/sketchProtoConverter', // objectConversionUtils
     './SketchLibraryException', // SketchException
-    './SrlBoundingBox' // SrlBoundingBox
+    './SrlBoundingBox', // SrlBoundingBox
+    './SrlStroke', // SrlStroke
+    './ArrayUtils' // arrayUtils
 ], function (
     protoSketch,
     protobufUtils,
     objectConversionUtils,
     SketchException,
-    SrlBoundingBox
+    SrlBoundingBox,
+    SrlStroke,
+    arrayUtils
 ) {
 
     var sketch = protoSketch.protobuf.srl.sketch;
@@ -55,7 +59,7 @@ define(['./../generated_proto/sketch', // protoSketch
         /**
          * Returns the center x of a shape.
          *
-         * @return center x of a shape
+         * @return {Number} center x of a shape
          */
         this.getCenterX = function() {
             return (this.getMinX() + this.getMaxX()) / 2.0;
@@ -64,7 +68,7 @@ define(['./../generated_proto/sketch', // protoSketch
         /**
          * Returns the center y of a shape
          *
-         * @return center y of a shape
+         * @return {Number} center y of a shape
          */
         this.getCenterY = function() {
             return (this.getMinY() + this.getMaxY()) / 2.0;
@@ -85,7 +89,7 @@ define(['./../generated_proto/sketch', // protoSketch
          * @return the height of the object
          */
         this.getHeight = function() {
-            return this.bondingBox().getHeight();// getMaxY() - getMinY();
+            return this.getBoundingBox().getHeight();// getMaxY() - getMinY();
         };
 
         /**
@@ -148,51 +152,26 @@ define(['./../generated_proto/sketch', // protoSketch
         };
 
         /**
-         * Adds a subObject to this object. This usually happens during recognition,
-         * when a new object is made up from one or more objects
+         * Adds a subObject to this object.
          *
-         * @param subObject
+         * If proto objects are added they are automatically converted to this libraryies version of the proto object.
+         *
+         * @param {SrlStroke | SrlShape | SrlObject} subObject
          */
         this.add = function(subObject) {
             var upgradedObject = objectConversionUtils.convertToUpgradedSketchObject(subObject);
+            if (!(upgradedObject instanceof SrlStroke || upgradedObject instanceof SrlShape)) {
+                throw new SketchException("Can only add SrlStroke or SrlShape or their protobuf equivalent and SrlObject");
+            }
             boundingBox.addSubObject(upgradedObject);
             upgradedSubComponents.push(upgradedObject);
-        };
-
-        /**
-         * Goes through every object in this list of objects. (Brute force).
-         *
-         * @return the object if it exist, returns false otherwise.
-         */
-        this.getSubObjectById = function(objectId) {
-            for (var i = 0; i < upgradedSubComponents.length; i++) {
-                var object = m_subObjects[i];
-                if (object.getId === objectId) {
-                    return object;
-                }
-            }
-            return false;
-        };
-
-        /**
-         * Goes through every object in this list of objects. (Brute force).
-         *
-         * @return the object if it exist, returns false otherwise.
-         */
-        this.removeSubObjectById = function(objectId) {
-            for (var i = 0; i < m_subObjects.length; i++) {
-                var object = m_subObjects[i];
-                if (object.getId() === objectId) {
-                    return removeObjectByIndex(m_subObjects, i);
-                }
-            }
         };
 
         /**
          * Given an object, remove this instance of the object.
          */
         this.removeSubObject = function(srlObject) {
-            return removeObjectFromArray(m_subObjects, srlObject);
+            return arrayUtils.removeObjectFromArray(upgradedSubComponents, srlObject);
         };
 
         /**
@@ -201,49 +180,98 @@ define(['./../generated_proto/sketch', // protoSketch
          * @return {Array<SrlObject>} list of objects that make up this object
          */
         this.getSubObjects = function() {
-            return m_subObjects;
+            return upgradedSubComponents;
         };
 
-        /**
-         * Gets a list of all of the objects that make up this object. This is a
-         * recursive search through all of the subobjects. This objects is also
-         * included on the list.
-         *
-         * @return {List<SrlObject>} a list of objects.
-         */
-        this.getRecursiveSubObjectList = function() {
-            var completeList = [];
-            completeList.push(this);
-            for (var i = 0; i < m_subObjects.length; i++) {
-                for (var j = 0; j < m_subObjects[i].length; j++) {
-                    completeList.push(m_subObjects[i].getRecursiveSubObjectList()[j]);
-                }
-            }
-            return completeList;
-        };
-
-        /**
-         * Gets a list of all of the strokes that make up this object. It searches
-         * recursively to get all of the strokes of this object. If it does not have
-         * any strokes, the list will be empty.
-         *
-         * @return {List<SrlStroke>} a list of all strokes contains in the shape
-         */
-        this.getRecursiveStrokes = function() {
-            var completeList = [];
-            console.log("TODO - need to implement a .getRecursiveSubObjectList()");
-            throw 'Function not supported: getRecursiveStrokes';
-            /*
-             * for(SRL_Object o : getRecursiveSubObjectList()){ try {
-             * if(this.getClass() == Class.forName("SRL_Stroke")){
-             * completeList.add((SRL_Stroke)o); } } catch (ClassNotFoundException e) {
-             * e.printStackTrace(); } } //
-             *
-             * return completeList;
-             */
-        };
+        this.toString = function () {
+            return "id: " + this.getId() + '\n' +
+                'name:' + this.getName() + '\n' +
+                'boundingBox: ' +boundingBox + '\n' +
+                'subComponents' + upgradedSubComponents + '\n'
+        }
     }
     protobufUtils.Inherits(SrlShape, ShapeMessage);
+
+    /**************************************
+     * OBJECT METHODS
+     *************************************/
+
+
+    /**
+     * Goes through every object in this list of objects. (Brute force).
+     *
+     * @return {SrlShape | SrlStroke} The object if it exist, returns false otherwise.
+     */
+    SrlShape.prototype.getSubObjectById = function(objectId) {
+        var upgradedSubComponents = this.getSubObjects();
+        for (var i = 0; i < upgradedSubComponents.length; i++) {
+            var object = upgradedSubComponents[i];
+            if (object.getId() === objectId) {
+                return object;
+            }
+        }
+        return undefined;
+    };
+
+    /**
+     * Goes through every object in this list of objects. (Brute force).
+     *
+     * @return {SrlShape | SrlStroke} The object if it exist, returns false otherwise.
+     */
+    SrlShape.prototype.removeSubObjectById = function(objectId) {
+        var upgradedSubComponents = this.getSubObjects();
+        for (var i = 0; i < upgradedSubComponents.length; i++) {
+            var object = upgradedSubComponents[i];
+            if (object.getId() === objectId) {
+                return arrayUtils.removeObjectByIndex(upgradedSubComponents, i);
+            }
+        }
+    };
+
+    /**
+     * @return {SrlShape | SrlStroke} The object that is a result of the given IdChain.
+     */
+    SrlShape.prototype.getSubObjectByIdChain = function(idList) {
+        if (idList.length <= 0) {
+            throw "input list is empty";
+        }
+        var returnShape = this.getSubObjectById(idList[0]);
+        for (var i = 1; i < idList.length; i++) {
+            returnShape = returnShape.getSubObjectById(idList[i]);
+        }
+        return returnShape;
+    };
+
+    /**
+     * Gets a list of all of the objects that make up this object. This is a
+     * recursive search through all of the subobjects. This objects is also
+     * included on the list.
+     *
+     * @return {Array<SrlObject>} a list of objects.
+     */
+    SrlShape.prototype.getRecursiveSubObjects = function() {
+        var completeList = [];
+        var upgradedSubComponents = this.getSubObjects();
+        for (var i = 0; i < upgradedSubComponents.length; i++) {
+            completeList.push(upgradedSubComponents[i]);
+            completeList = completeList.concat(upgradedSubComponents[i].getRecursiveSubObjects());
+        }
+        return completeList;
+    };
+
+    /**
+     * Gets a list of all of the strokes that make up this object. It searches
+     * recursively to get all of the strokes of this object. If it does not have
+     * any strokes, the list will be empty.
+     *
+     * @return {Array<SrlStroke>} a list of all strokes contains in the shape
+     */
+    SrlShape.prototype.getRecursiveStrokes = function() {
+        var completeList = this.getRecursiveSubObjects();
+        return completeList.filter(function (arg) {
+            return arg instanceof SrlStroke;
+        })
+    };
 
     /**
      * Static function that returns an {@link SRL_Shape}.
@@ -314,6 +342,5 @@ define(['./../generated_proto/sketch', // protoSketch
     SrlShape.prototype.toArrayBuffer = function () {
         return this.sendToProtobuf().toArrayBuffer();
     };
-
     return SrlShape;
 });

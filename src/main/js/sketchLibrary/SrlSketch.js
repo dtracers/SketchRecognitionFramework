@@ -35,9 +35,11 @@ define(['./../generated_proto/sketch', // protoSketch
         var boundingBox = new SrlBoundingBox();
 
         /**
-         * Adds an SrlObject to the sketch.
+         * Adds a subObject to this object.
          *
-         * @param srlObject
+         * If proto objects are added they are automatically converted to this libraryies version of the proto object.
+         *
+         * @param {SrlStroke | SrlShape | SrlObject} subObject
          */
         this.add = function(srlObject) {
             var upgraded = objectConversionUtils.convertToUpgradedSketchObject(srlObject);
@@ -48,6 +50,8 @@ define(['./../generated_proto/sketch', // protoSketch
 
         /**
          * Adds all objects in the array to the sketch.
+         *
+         * @param {Array<SrlShape | SrlStroke>} the objects being added to the sketch.
          */
         this.addAll = function(array) {
             for (var i = 0; i < array.length; i++) {
@@ -57,10 +61,12 @@ define(['./../generated_proto/sketch', // protoSketch
 
         /**
          * Given an object, remove this instance of the object.
+         *
+         * @param {SrlShape | SrlStroke} The object being removed from the sketch.
+         * @return {SrlShape | SrlStroke} The object that was removed.
          */
         this.removeSubObject = function(srlObject) {
             var result = arrayUtils.removeObjectFromArray(objectList, srlObject);
-            //var result = objectList.removeObject(srlObject);
             if (result) {
                 objectIdMap.delete(result.getId());
             }
@@ -68,8 +74,10 @@ define(['./../generated_proto/sketch', // protoSketch
         };
 
         /**
-         * Given an objectId, remove the object. (Slower than if you already have an
-         * instance of the object)
+         * Given an objectId, remove the object.
+         *
+         * @param {String} objectId
+         * @return {SrlShape | SrlStroke} The object that was removed.
          */
         this.removeSubObjectById = function(objectId) {
             var object = this.getSubObjectById(objectId);
@@ -82,64 +90,24 @@ define(['./../generated_proto/sketch', // protoSketch
         };
 
         /**
-         * Returns the object based off of its id.
+         * @return {SrlShape | SrlStroke} The object based off of its id.
          */
         this.getSubObjectById = function(objectId) {
-            console.log('OBJECT ID MAP', objectIdMap);
             return objectIdMap.get(objectId);
         };
 
+        /**
+         * @return {SrlShape | SrlStroke} The object based off of its index in the sketch.
+         */
         this.getSubObjectAtIndex = function(index) {
             return objectList[index];
         };
 
+        /**
+         * @return {SrlShape | SrlStroke} The object based off of its index.
+         */
         this.removeSubObjectAtIndex = function(index) {
             return arrayUtils.removeObjectByIndex(objectList, index);
-        };
-
-        /**
-         * Returns the object that is a result of the given IdChain
-         */
-        this.getSubObjectByIdChain = function(idList) {
-            if (idList.length <= 0) {
-                throw "input list is empty";
-            }
-            var returnShape = this.getSubObjectById(idList[0]);
-            for (var i = 1; i < idList.length; i++) {
-                returnShape = returnShape.getSubObjectById(idList[i]);
-            }
-            return returnShape;
-        };
-
-        /**
-         * Removes an object by the given IdChain.
-         *
-         * The last id in the chain is the object that is removed. The second to
-         * last id in the chain is where it is removed from.
-         *
-         * If there is only one item in the list then the item is removed from the
-         * sketch. In all cases except exceptions the item that is removed is
-         * returned from this method.
-         */
-        this.removeSubObjectByIdChain = function(idList) {
-            if (!isArray(idList)) {
-                throw "input list is not an array: ";
-            }
-
-            if (idList.length <= 0) {
-                throw "input list is empty";
-            }
-            // there is only 1 item in the list so remove from top level
-            if (idList.length === 1) {
-                return this.removeSubObjectById(idList[0]);
-            }
-
-            var parentShape = this.getSubObjectById(idList[0]);
-            for (var i = 1; i < idList.length - 1; i++) {
-                parentShape = parentShape.getSubObjectById(idList[i]);
-            }
-            var returnShape = parentShape.removeSubObjectById(idList[idList.length - 1]);
-            return returnShape;
         };
 
         /**
@@ -158,6 +126,51 @@ define(['./../generated_proto/sketch', // protoSketch
         this.clearSketch = this.resetSketch;
     }
     protobufUtils.Inherits(SrlSketch, SketchMessage);
+
+    /***********************
+     * OBJECT METHODS
+     *********************/
+
+    /**
+     * Removes an object by the given IdChain.
+     *
+     * The last id in the chain is the object that is removed. The second to
+     * last id in the chain is where it is removed from.
+     *
+     * If there is only one item in the list then the item is removed from the
+     * sketch. In all cases except exceptions the item that is removed is
+     * returned from this method.
+     */
+    SrlSketch.prototype.removeSubObjectByIdChain = function(idList) {
+        if (idList.length <= 0) {
+            throw new SketchException("input list is empty");
+        }
+        // there is only 1 item in the list so remove from top level
+        if (idList.length === 1) {
+            return this.removeSubObjectById(idList[0]);
+        }
+
+        var parentShape = this.getSubObjectById(idList[0]);
+        for (var i = 1; i < idList.length - 1; i++) {
+            parentShape = parentShape.getSubObjectById(idList[i]);
+        }
+        var returnShape = parentShape.removeSubObjectById(idList[idList.length - 1]);
+        return returnShape;
+    };
+
+    /**
+     * @return {SrlShape | SrlStroke} The object that is a result of the given IdChain
+     */
+    SrlSketch.prototype.getSubObjectByIdChain = function(idList) {
+        if (idList.length <= 0) {
+            throw "input list is empty";
+        }
+        var returnShape = this.getSubObjectById(idList[0]);
+        for (var i = 1; i < idList.length; i++) {
+            returnShape = returnShape.getSubObjectById(idList[i]);
+        }
+        return returnShape;
+    };
 
     SrlSketch.prototype.sendToProtobuf = function() {
         var protoSketch = CourseSketch.prutil.ProtoSrlSketch();

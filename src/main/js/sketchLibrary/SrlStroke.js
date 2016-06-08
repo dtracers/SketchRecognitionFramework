@@ -5,13 +5,15 @@ define(['./../generated_proto/sketch', // protoSketch
     './../protobufUtils/classCreator', // protobufUtils
     './../protobufUtils/sketchProtoConverter', // objectConversionUtils
     './SketchLibraryException', // SketchException
-    './SrlPoint' // SrlPoint
+    './SrlPoint', // SrlPoint
+    './SrlBoundingBox' // SrlBoundingBox
 ], function (
     protoSketch,
     protobufUtils,
     objectConversionUtils,
     SketchException,
-    SrlPoint
+    SrlPoint,
+    SrlBoundingBox
 ) {
 
     var sketch = protoSketch.protobuf.srl.sketch;
@@ -37,16 +39,19 @@ define(['./../generated_proto/sketch', // protoSketch
          * List of points in the stroke.
          */
         this.points = [];
+        var boundingBox = new SrlBoundingBox();
 
         /**
          * Adding another point to the stroke
          *
-         * @param point
+         * @param {SrlPoint} point
          */
         this.addPoint = function(point) {
             if (point instanceof SrlPoint) {
                 this.points.push(point);
                 this.getBoundingBox().addPoint(point);
+            } else {
+                throw new SketchException("Can not add an object that is not an SrlPoint to the stroke");
             }
         };
 
@@ -60,9 +65,9 @@ define(['./../generated_proto/sketch', // protoSketch
         }
 
         /**
-         * Gets the complete list of points in the stroke
+         * Gets the complete list of points in the stroke.
          *
-         * @return list of points in the stroke
+         * @return {Array<SrlPoint>} list of points in the stroke
          */
         this.getPoints = function() {
             return this.points;
@@ -74,14 +79,14 @@ define(['./../generated_proto/sketch', // protoSketch
         /**
          * Get the i'th point in the stroke The first point has index i = 0
          *
-         * @param i
+         * @param {Number} i
          *            the index of the stroke
-         * @return the point at index i
+         * @return {SrlPoint} the point at index i
          */
         this.getPoint = function(i) {
             if (typeof i === 'number') {
-                if (i >= this.points.length) {
-                    return null;
+                if (i >= this.points.length || i < 0) {
+                    throw new SketchException('Index out of bounds ' + i +' is not in bounds [0 - ' + this.points.length + ']');
                 }
                 return this.points[i];
             }
@@ -90,21 +95,21 @@ define(['./../generated_proto/sketch', // protoSketch
         /**
          * Goes through every object in this list of objects. (Brute force).
          *
-         * @return the object if it exist, returns false otherwise.
+         * @return {SrlPoint} The point if it exist, returns false otherwise.
          */
         this.getSubObjectById = function(objectId) {
-            for (var object in this.points) {
-                if (object.getId === objectId) {
-                    return object;
+            for (var point in this.points) {
+                if (point.getId() === objectId) {
+                    return point;
                 }
             }
-            return false;
+            return undefined;
         };
 
         /**
          * Goes through every object in this list of objects. (Brute force).
          *
-         * @return the object if it exist, returns false otherwise.
+         * @return {SrlPoint} The point if it exist, returns false otherwise.
          */
         this.removeSubObjectById = function(objectId) {
             for (var i = 0; i < this.points.length; i++) {
@@ -113,6 +118,7 @@ define(['./../generated_proto/sketch', // protoSketch
                     return removeObjectByIndex(this.points, i);
                 }
             }
+            return undefined
         };
 
         /**
@@ -167,14 +173,19 @@ define(['./../generated_proto/sketch', // protoSketch
         };
 
         /**
+         * Gets the bounding box of the object.
+         *
+         * @return {SrlBoundingBox} the bounding box of the object
+         */
+        this.getBoundingBox = function() {
+            return boundingBox;
+        };
+
+        /**
          * returns the minimum x value in a stroke return minimum x value in a
          * stroke
          */
         this.getMinX = function() {
-            /*
-             * var minx = this.getFirstPoint().getX(); for(var i=0; i<points.length;
-             * i++){ if(points[i].getX() < minx){ minx = points[i].getX(); } }
-             */
             return boundingBox.getLeft();// minx;
         };
 
@@ -183,10 +194,6 @@ define(['./../generated_proto/sketch', // protoSketch
          * stroke
          */
         this.getMinY = function() {
-            /*
-             * var miny = this.getFirstPoint().getY(); for(var i=0; i<points.length;
-             * i++){ if(points[i].getY() < miny){ miny = points[i].getY(); } }
-             */
             return boundingBox.getTop();// miny;
         };
 
@@ -195,11 +202,6 @@ define(['./../generated_proto/sketch', // protoSketch
          * stroke
          */
         this.getMaxX = function() {
-            /*
-             *
-             * var maxx = this.getFirstPoint().getX(); for(var i=0; i<points.length;
-             * i++){ if(points[i].getX() > maxx){ maxx = points[i].getX(); } }
-             */
             return boundingBox.getRight();// maxx;
         };
 
@@ -208,309 +210,7 @@ define(['./../generated_proto/sketch', // protoSketch
          * stroke
          */
         this.getMaxY = function() {
-            /*
-             * var maxy = this.getFirstPoint().getY(); for(var i=0; i<points.length;
-             * i++){ if(points[i].getY() > maxy){ maxy = points[i].getY(); } }
-             */
             return boundingBox.getBottom();// maxy;
-        };
-
-        /**
-         * Return the cosine of the starting angle of the stroke This takes the
-         * angle between the initial point and the point specified as the
-         * secondPoint If there are fewer than that many points, it uses the last
-         * point. If there are only 0 or 1 points, this returns NaN. Note that this
-         * is also feature 1 of Rubine.
-         *
-         * @param secondPoint
-         *            which number point should be used for the second point
-         * @return cosine of the starting angle of the stroke
-         */
-        this.getStartAngleCosine = function(inputSecondPoint) {
-            var secondPoint = inputSecondPoint;
-            if (typeof secondPoint === 'number') {
-                if (this.getNumPoints() <= 1) return Number.NaN;
-                if (this.getNumPoints() <= secondPoint) {
-                    secondPoint = this.getNumPoints() - 1;
-                }
-
-                var xStart, xEnd, yStart, yEnd;
-                xStart = this.getPoint(0).getX();
-                yStart = this.getPoint(0).getY();
-                xEnd = this.getPoint(secondPoint).getX();
-                yEnd = this.getPoint(secondPoint).getY();
-
-                if (xStart === xEnd && yStart === yEnd) {
-                    return Number.NaN;
-                }
-
-                var sectionWidth = xEnd - xStart;
-                var sectionHeight = yEnd - yStart;
-                var hypotenuse = Math.sqrt(sectionWidth * sectionWidth + sectionHeight * sectionHeight);
-                return sectionWidth / hypotenuse;
-            }
-            throw '.getStartAngleCosine needs an int argument';
-        };
-
-        /**
-         * Return the sine of the starting angle of the stroke This takes the angle
-         * between the initial point and the point specified as the secondPoint If
-         * there are fewer than that many points, it uses the last point. If there
-         * are only 0 or 1 points, this returns NaN. Note that this is also feature
-         * 1 of Rubine.
-         *
-         * @param secondPoint
-         *            which number point should be used for the second point
-         * @return cosine of the starting angle of the stroke
-         */
-        this.getStartAngleSine = function(inputSecondPoint) {
-            var secondPoint = inputSecondPoint;
-            if (typeof secondPoint === 'number') {
-                if (this.getNumPoints() <= 1) return Number.NaN;
-                if (this.getNumPoints() <= secondPoint) {
-                    secondPoint = this.getNumPoints() - 1;
-                }
-
-                var xStart, xEnd, yStart, yEnd;
-                xStart = this.getPoint(0).getX();
-                yStart = this.getPoint(0).getY();
-                xEnd = this.getPoint(secondPoint).getX();
-                yEnd = this.getPoint(secondPoint).getY();
-
-                if (xStart === xEnd && yStart === yEnd) {
-                    return Number.NaN;
-                }
-
-                var sectionWidth = xEnd - xStart;
-                var sectionHeight = yEnd - yStart;
-                var hypotenuse = Math.sqrt(sectionWidth * sectionWidth + sectionHeight * sectionHeight);
-                return sectionHeight / hypotenuse;
-            }
-        };
-
-        /**
-         * Return the Euclidean distance from the starting point to the ending point
-         * of the stroke
-         *
-         * @return the distance between the starting and ending points of the stroke
-         */
-        this.getEuclideanDistance = function() {
-            var x0, xn, y0, yn;
-            if (this.getPoints().length === 0) return 0;
-            x0 = this.getFirstPoint().getX();
-            y0 = this.getFirstPoint().getY();
-            xn = this.getLastPoint().getX();
-            yn = this.getLastPoint().getY();
-            return Math.sqrt(Math.pow(xn - x0, 2) + Math.pow(yn - y0, 2));
-        };
-
-        /**
-         * Return the cosine of the angle between the start and end point
-         *
-         * @return cosine of the ending angle
-         */
-        this.getEndAngleCosine = function() {
-            if (this.getNumPoints() <= 1) return Number.NaN;
-            if (this.getEuclideanDistance() === 0) return Number.NaN;
-            var xDistance = this.getLastPoint().getX() - this.getFirstPoint().getX();
-            return xDistance / this.getEuclideanDistance();
-        };
-
-        /**
-         * Return the cosine of the angle between the start and end point
-         *
-         * @return cosine of the ending angle
-         */
-        this.getEndAngleSine = function() {
-            if (this.getNumPoints() <= 1) return Number.NaN;
-            if (this.getEuclideanDistance() === 0) return Number.NaN;
-            var yDistance = this.getLastPoint().getY() - this.getFirstPoint().getY();
-            return yDistance / this.getEuclideanDistance();
-        };
-
-        /**
-         * Returns the length of the stroke, complete with all of its turns
-         *
-         * @return length of the stroke
-         */
-        this.getStrokeLength = function() {
-            var sum = 0;
-            var deltaX, deltaY;
-            for (var i = 0; i < this.getPoints().length - 1; i++) {
-                deltaX = this.getPoint(i + 1).getX() - this.getPoint(i).getX();
-                deltaY = this.getPoint(i + 1).getY() - this.getPoint(i).getY();
-                sum += Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
-            }
-            return sum;
-        };
-
-        /**
-         * Return the total stroke time
-         *
-         * @return total time of the stroke
-         */
-        this.getTotalTime = function() {
-            console.log('TODO - need to implement a .getTime()');
-            throw 'unspoorted function call: "getTotalTime"';
-            // if (this.getPoints().length === 0) return Number.NaN;
-            // return this.getLastPoint().getTime()-this.getFirstPoint().getTime();
-        };
-
-        /**
-         * Auxiliary method used to return a list containing all points but with
-         * duplicated (based on time) removed
-         *
-         * @return list of points with duplicates (based on time) removed
-         */
-        this.removeTimeDuplicates = function() {
-            console.log('TODO - need to implement a .getTime()');
-            throw 'unspoorted function call: "removeTimeDuplicates"';
-            /*
-             var points = [];
-             for (var i = 0; i < points.length; i++) {
-             if (points.length > 0) {
-             if(points[points.size()-1].getTime() === p.getTime()){
-             continue; } //
-             }
-             points.push(points[i]);
-             }
-             return points;
-             */
-        };
-
-        /**
-         * Auxiliary method used to return a list containing all points but with
-         * duplicated (based on X,Y coordinates) removed
-         *
-         * @return list of points with duplicates (based on coordinates) removed
-         */
-        this.removeCoordinateDuplicates = function() {
-            var p = [];
-            var x1, x2, y1, y2;
-            p.push(this.getPoint(0));
-            for (var i = 0; i < this.getPoints().length - 1; i++) {
-                x1 = this.getPoint(i).getX();
-                y1 = this.getPoint(i).getY();
-                x2 = this.getPoint(i + 1).getX();
-                y2 = this.getPoint(i + 1).getY();
-                if (x1 !== x2 || y1 !== y2) p.push(this.getPoint(i + 1));
-            }
-            return p;
-        };
-
-        /**
-         * Return the maximum stroke speed reached
-         *
-         * @return maximum stroke speed reached
-         */
-        this.getMaximumSpeed = function() {
-            console.log('TODO - need to implement a .getTime()');
-            throw 'unspoorted function call: "getMaximumSpeed"';
-            /*
-             if (this.getPoints().length === 0) return Number.NaN;
-             var max = 0;
-             var deltaX, deltaY;
-             var deltaT;
-             var p = this.removeTimeDuplicates();
-             for (var i = 0; i < p.length - 1; i++) {
-             deltaX = p[i + 1].getX() - p[i].getX();
-             deltaY = p[i + 1].getY() - p[i].getY();
-             // deltaT = p.get(i+1).getTime()-p.get(i).getTime();
-             var speed = (Math.pow(deltaX, 2) + Math.pow(deltaY, 2)) / Math.pow(deltaT, 2);
-             if (speed > max) max = speed;
-             }
-             return max;
-             */
-        };
-
-        /**
-         * Calculates the rotation from point startP to two points further.
-         * Calculates the line between startP and the next point, and then the next
-         * two points, and then returns the angle between the two.
-         *
-         * @param points
-         * @param startP
-         * @return
-         */
-        this.rotationAtAPoint = function(startP) {
-            if (this.points[0] instanceof SrlPoint && typeof startP === 'number') {
-                if (this.points.length < startP + 2) {
-                    return Number.NaN;
-                }
-                var mx = this.points.get[startP + 1].getX() - this.points.get[startP].getX();
-                var my = this.points.get[startP + 1].getY() - this.points.get[startP].getY();
-                return Math.atan2(my, mx);
-            }
-            throw 'and error occured! (probably because the argument was not a number)';
-        };
-
-        /**
-         * Return the total rotation of the stroke from start to end points
-         *
-         * @return total rotation of the stroke
-         */
-        this.getRotationSum = function() {
-            var p = this.removeCoordinateDuplicates();
-            var sum = 0;
-            var lastrot = Number.NaN;
-            for (var i = 1; i < p.length - 2; i++) {
-                var rot = this.rotationAtAPoint(p, i);
-                if (lastrot === Number.NaN) lastrot = rot;
-                while ((i > 0) && (rot - lastrot > Math.PI)) {
-                    rot = rot - 2 * Math.PI;
-                }
-                while ((i > 0) && (lastrot - rot > Math.PI)) {
-                    rot = rot + 2 * Math.PI;
-                }
-                sum += rot;
-            }
-            return sum;
-        };
-
-        /**
-         * Return the absolute rotation of the stroke from start to end points
-         *
-         * @return total absolute rotation of the stroke
-         */
-        this.getRotationAbsolute = function() {
-            var p = this.removeCoordinateDuplicates();
-            var sum = 0;
-            var lastrot = Number.NaN;
-            for (var i = 1; i < p.length - 2; i++) {
-                var rot = this.rotationAtAPoint(p, i);
-                if (lastrot === Number.NaN) lastrot = rot;
-                while ((i > 0) && (rot - lastrot > Math.PI)) {
-                    rot = rot - 2 * Math.PI;
-                }
-                while ((i > 0) && (lastrot - rot > Math.PI)) {
-                    rot = rot + 2 * Math.PI;
-                }
-                sum += Math.abs(rot);
-            }
-            return sum;
-        };
-
-        /**
-         * Return the squared rotation of the stroke from start to end points
-         *
-         * @return total squared rotation of the stroke
-         */
-        this.getRotationSquared = function() {
-            var p = this.removeCoordinateDuplicates();
-            var sum = 0;
-            var lastrot = Number.NaN;
-            for (var i = 1; i < p.length - 2; i++) {
-                var rot = this.rotationAtAPoint(p, i);
-                if (lastrot === Number.NaN) lastrot = rot;
-                while ((i > 0) && (rot - lastrot > Math.PI)) {
-                    rot = rot - 2 * Math.PI;
-                }
-                while ((i > 0) && (lastrot - rot > Math.PI)) {
-                    rot = rot + 2 * Math.PI;
-                }
-                sum += rot * rot;
-            }
-            return sum;
         };
 
         this.temp_print = function() {
@@ -580,6 +280,317 @@ define(['./../generated_proto/sketch', // protoSketch
      */
     SrlStroke.prototype.toArrayBuffer = function () {
         return this.sendToProtobuf().toArrayBuffer();
+    };
+
+    /******************************
+     * MATH METHODS
+     *****************************/
+
+    /**
+     * Return the cosine of the starting angle of the stroke This takes the
+     * angle between the initial point and the point specified as the
+     * secondPoint If there are fewer than that many points, it uses the last
+     * point. If there are only 0 or 1 points, this returns NaN. Note that this
+     * is also feature 1 of Rubine.
+     *
+     * @param secondPoint
+     *            which number point should be used for the second point
+     * @return cosine of the starting angle of the stroke
+     */
+    SrlStroke.prototype.getStartAngleCosine = function(inputSecondPoint) {
+        var secondPoint = inputSecondPoint;
+        if (typeof secondPoint === 'number') {
+            if (this.getNumPoints() <= 1) return Number.NaN;
+            if (this.getNumPoints() <= secondPoint) {
+                secondPoint = this.getNumPoints() - 1;
+            }
+
+            var xStart, xEnd, yStart, yEnd;
+            xStart = this.getPoint(0).getX();
+            yStart = this.getPoint(0).getY();
+            xEnd = this.getPoint(secondPoint).getX();
+            yEnd = this.getPoint(secondPoint).getY();
+
+            if (xStart === xEnd && yStart === yEnd) {
+                return Number.NaN;
+            }
+
+            var sectionWidth = xEnd - xStart;
+            var sectionHeight = yEnd - yStart;
+            var hypotenuse = Math.sqrt(sectionWidth * sectionWidth + sectionHeight * sectionHeight);
+            return sectionWidth / hypotenuse;
+        }
+        throw '.getStartAngleCosine needs an int argument';
+    };
+
+    /**
+     * Return the sine of the starting angle of the stroke This takes the angle
+     * between the initial point and the point specified as the secondPoint If
+     * there are fewer than that many points, it uses the last point. If there
+     * are only 0 or 1 points, this returns NaN. Note that this is also feature
+     * 1 of Rubine.
+     *
+     * @param secondPoint
+     *            which number point should be used for the second point
+     * @return cosine of the starting angle of the stroke
+     */
+    SrlStroke.prototype.getStartAngleSine = function(inputSecondPoint) {
+        var secondPoint = inputSecondPoint;
+        if (typeof secondPoint === 'number') {
+            if (this.getNumPoints() <= 1) return Number.NaN;
+            if (this.getNumPoints() <= secondPoint) {
+                secondPoint = this.getNumPoints() - 1;
+            }
+
+            var xStart, xEnd, yStart, yEnd;
+            xStart = this.getPoint(0).getX();
+            yStart = this.getPoint(0).getY();
+            xEnd = this.getPoint(secondPoint).getX();
+            yEnd = this.getPoint(secondPoint).getY();
+
+            if (xStart === xEnd && yStart === yEnd) {
+                return Number.NaN;
+            }
+
+            var sectionWidth = xEnd - xStart;
+            var sectionHeight = yEnd - yStart;
+            var hypotenuse = Math.sqrt(sectionWidth * sectionWidth + sectionHeight * sectionHeight);
+            return sectionHeight / hypotenuse;
+        }
+    };
+
+    /**
+     * Return the Euclidean distance from the starting point to the ending point
+     * of the stroke
+     *
+     * @return the distance between the starting and ending points of the stroke
+     */
+    SrlStroke.prototype.getEuclideanDistance = function() {
+        var x0, xn, y0, yn;
+        if (this.getPoints().length === 0) return 0;
+        x0 = this.getFirstPoint().getX();
+        y0 = this.getFirstPoint().getY();
+        xn = this.getLastPoint().getX();
+        yn = this.getLastPoint().getY();
+        return Math.sqrt(Math.pow(xn - x0, 2) + Math.pow(yn - y0, 2));
+    };
+
+    /**
+     * Return the cosine of the angle between the start and end point
+     *
+     * @return cosine of the ending angle
+     */
+    SrlStroke.prototype.getEndAngleCosine = function() {
+        if (this.getNumPoints() <= 1) return Number.NaN;
+        if (this.getEuclideanDistance() === 0) return Number.NaN;
+        var xDistance = this.getLastPoint().getX() - this.getFirstPoint().getX();
+        return xDistance / this.getEuclideanDistance();
+    };
+
+    /**
+     * Return the cosine of the angle between the start and end point
+     *
+     * @return cosine of the ending angle
+     */
+    SrlStroke.prototype.getEndAngleSine = function() {
+        if (this.getNumPoints() <= 1) return Number.NaN;
+        if (this.getEuclideanDistance() === 0) return Number.NaN;
+        var yDistance = this.getLastPoint().getY() - this.getFirstPoint().getY();
+        return yDistance / this.getEuclideanDistance();
+    };
+
+    /**
+     * Returns the length of the stroke, complete with all of its turns
+     *
+     * @return length of the stroke
+     */
+    SrlStroke.prototype.getStrokeLength = function() {
+        var sum = 0;
+        var deltaX, deltaY;
+        for (var i = 0; i < this.getPoints().length - 1; i++) {
+            deltaX = this.getPoint(i + 1).getX() - this.getPoint(i).getX();
+            deltaY = this.getPoint(i + 1).getY() - this.getPoint(i).getY();
+            sum += Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
+        }
+        return sum;
+    };
+
+    /**
+     * Returns an empty list because strokes can not contain anything but points.
+     *
+     * @return {Array<SrlObject>} an empty array of ojbects.
+     */
+    SrlStroke.prototype.getRecursiveSubObjects = function() {
+        return [];
+    };
+
+    /**
+     * Return the total stroke time
+     *
+     * @return total time of the stroke
+     */
+    SrlStroke.prototype.getTotalTime = function() {
+        console.log('TODO - need to implement a .getTime()');
+        throw 'unspoorted function call: "getTotalTime"';
+        // if (this.getPoints().length === 0) return Number.NaN;
+        // return this.getLastPoint().getTime()-this.getFirstPoint().getTime();
+    };
+
+    /**
+     * Auxiliary method used to return a list containing all points but with
+     * duplicated (based on time) removed
+     *
+     * @return list of points with duplicates (based on time) removed
+     */
+    SrlStroke.prototype.removeTimeDuplicates = function() {
+        console.log('TODO - need to implement a .getTime()');
+        throw 'unspoorted function call: "removeTimeDuplicates"';
+        /*
+         var points = [];
+         for (var i = 0; i < points.length; i++) {
+         if (points.length > 0) {
+         if(points[points.size()-1].getTime() === p.getTime()){
+         continue; } //
+         }
+         points.push(points[i]);
+         }
+         return points;
+         */
+    };
+
+    /**
+     * Auxiliary method used to return a list containing all points but with
+     * duplicated (based on X,Y coordinates) removed
+     *
+     * @return list of points with duplicates (based on coordinates) removed
+     */
+    SrlStroke.prototype.removeCoordinateDuplicates = function() {
+        var p = [];
+        var x1, x2, y1, y2;
+        p.push(this.getPoint(0));
+        for (var i = 0; i < this.getPoints().length - 1; i++) {
+            x1 = this.getPoint(i).getX();
+            y1 = this.getPoint(i).getY();
+            x2 = this.getPoint(i + 1).getX();
+            y2 = this.getPoint(i + 1).getY();
+            if (x1 !== x2 || y1 !== y2) p.push(this.getPoint(i + 1));
+        }
+        return p;
+    };
+
+    /**
+     * Return the maximum stroke speed reached
+     *
+     * @return maximum stroke speed reached
+     */
+    SrlStroke.prototype.getMaximumSpeed = function() {
+        console.log('TODO - need to implement a .getTime()');
+        throw 'unspoorted function call: "getMaximumSpeed"';
+        /*
+         if (this.getPoints().length === 0) return Number.NaN;
+         var max = 0;
+         var deltaX, deltaY;
+         var deltaT;
+         var p = this.removeTimeDuplicates();
+         for (var i = 0; i < p.length - 1; i++) {
+         deltaX = p[i + 1].getX() - p[i].getX();
+         deltaY = p[i + 1].getY() - p[i].getY();
+         // deltaT = p.get(i+1).getTime()-p.get(i).getTime();
+         var speed = (Math.pow(deltaX, 2) + Math.pow(deltaY, 2)) / Math.pow(deltaT, 2);
+         if (speed > max) max = speed;
+         }
+         return max;
+         */
+    };
+
+    /**
+     * Calculates the rotation from point startP to two points further.
+     * Calculates the line between startP and the next point, and then the next
+     * two points, and then returns the angle between the two.
+     *
+     * @param points
+     * @param startP
+     * @return
+     */
+    SrlStroke.prototype.rotationAtAPoint = function(startP) {
+        if (this.points[0] instanceof SrlPoint && typeof startP === 'number') {
+            if (this.points.length < startP + 2) {
+                return Number.NaN;
+            }
+            var mx = this.points.get[startP + 1].getX() - this.points.get[startP].getX();
+            var my = this.points.get[startP + 1].getY() - this.points.get[startP].getY();
+            return Math.atan2(my, mx);
+        }
+        throw 'and error occured! (probably because the argument was not a number)';
+    };
+
+    /**
+     * Return the total rotation of the stroke from start to end points
+     *
+     * @return total rotation of the stroke
+     */
+    SrlStroke.prototype.getRotationSum = function() {
+        var p = this.removeCoordinateDuplicates();
+        var sum = 0;
+        var lastrot = Number.NaN;
+        for (var i = 1; i < p.length - 2; i++) {
+            var rot = this.rotationAtAPoint(p, i);
+            if (lastrot === Number.NaN) lastrot = rot;
+            while ((i > 0) && (rot - lastrot > Math.PI)) {
+                rot = rot - 2 * Math.PI;
+            }
+            while ((i > 0) && (lastrot - rot > Math.PI)) {
+                rot = rot + 2 * Math.PI;
+            }
+            sum += rot;
+        }
+        return sum;
+    };
+
+    /**
+     * Return the absolute rotation of the stroke from start to end points
+     *
+     * @return total absolute rotation of the stroke
+     */
+    SrlStroke.prototype.getRotationAbsolute = function() {
+        var p = this.removeCoordinateDuplicates();
+        var sum = 0;
+        var lastrot = Number.NaN;
+        for (var i = 1; i < p.length - 2; i++) {
+            var rot = this.rotationAtAPoint(p, i);
+            if (lastrot === Number.NaN) lastrot = rot;
+            while ((i > 0) && (rot - lastrot > Math.PI)) {
+                rot = rot - 2 * Math.PI;
+            }
+            while ((i > 0) && (lastrot - rot > Math.PI)) {
+                rot = rot + 2 * Math.PI;
+            }
+            sum += Math.abs(rot);
+        }
+        return sum;
+    };
+
+    /**
+     * Return the squared rotation of the stroke from start to end points
+     *
+     * @return total squared rotation of the stroke
+     */
+    SrlStroke.prototype.getRotationSquared = function() {
+        var p = this.removeCoordinateDuplicates();
+        var sum = 0;
+        var lastrot = Number.NaN;
+        for (var i = 1; i < p.length - 2; i++) {
+            var rot = this.rotationAtAPoint(p, i);
+            if (lastrot === Number.NaN) lastrot = rot;
+            while ((i > 0) && (rot - lastrot > Math.PI)) {
+                rot = rot - 2 * Math.PI;
+            }
+            while ((i > 0) && (lastrot - rot > Math.PI)) {
+                rot = rot + 2 * Math.PI;
+            }
+            sum += rot * rot;
+        }
+        return sum;
     };
 
     return SrlStroke;

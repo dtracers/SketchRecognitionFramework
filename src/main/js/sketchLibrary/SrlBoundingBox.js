@@ -112,8 +112,6 @@ define(['./../generated_proto/sketch', // protoSketch
         }.bind(this);
 
         this.addSubObject = function (subObject) {
-            console.log('combining ');
-            console.log(subObject);
             this.union(subObject.getBoundingBox());
         };
 
