@@ -30,7 +30,7 @@ define([], function () {
 
         var callParent = function () {
             if (arguments.length >= 1) {
-                Parent.apply(this, Array.prototype.slice.call(arguments, 0));
+                Parent.apply(this, arguments);
             } else {
                 Parent.apply(this);
             }
@@ -48,7 +48,7 @@ define([], function () {
                 // special setting
                 this.superConstructor = parentConstructor;
                 // console.log('Setting parent constructor' + parent);
-                callParent.bind(this)(arguments);
+                callParent.bind(this).apply(this, arguments);
                 // console.log('Setting back to current constructor' +
                 // localConstructor);
                 this.superConstructor = localConstructor;
@@ -58,7 +58,7 @@ define([], function () {
              * SuperConstructor.
              */
             localScope.prototype.superConstructor = function () {
-                callParent.bind(this)(arguments);
+                callParent.bind(this).apply(this, arguments);
             };
         }
     };

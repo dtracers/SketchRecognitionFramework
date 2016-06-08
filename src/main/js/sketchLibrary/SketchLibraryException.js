@@ -12,7 +12,6 @@ define(['stacktrace-js'], function (StackTrace) {
      * @constructor
      */
     function SketchLibraryException(message, cause) {
-
         this.name = 'SketchLibraryException';
         /**
          * The level defines how bad it is. level 5 is the okayest exception
@@ -37,7 +36,7 @@ define(['stacktrace-js'], function (StackTrace) {
          *          of the the exception that occurred.
          */
         this.setMessage = function(messageValue) {
-            this.specificMessage = messageValue;
+            this.message = messageValue;
         };
 
         /**

@@ -46,7 +46,7 @@ define(['./../sketchLibrary/ProtoSketchFramework', // ProtoSketchFramework
             throw new ProtobufDecodingException('Data type is not supported:' + typeof data);
         }
 
-        if (protobufUtils.isUndefined(proto) || proto === null || typeof proto !== 'object') {
+        if (protobufUtils.isUndefined(proto) || proto === null) {
             throw new ProtobufDecodingException('Proto is not a valid object:' + typeof proto);
         }
         try {
@@ -220,7 +220,7 @@ define(['./../sketchLibrary/ProtoSketchFramework', // ProtoSketchFramework
      */
     var createNewSketch = function createNewSketch(id, x, y, width, height) {
         var command = createBaseCommand(Commands.CommandType.CREATE_SKETCH, false);
-        var idChain = sketchUtil.IdChain();
+        var idChain = new sketchUtil.IdChain();
         if (!protobufUtils.isUndefined(id)) {
             idChain.idChain = [ id ];
         } else {
