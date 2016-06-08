@@ -37,140 +37,10 @@ define(['./../generated_proto/sketch', // protoSketch
         this.superConstructor();
         /**
          * List of points in the stroke.
+         * @type {Array<SrlPoint>}
          */
         this.points = [];
         var boundingBox = new SrlBoundingBox();
-
-        /**
-         * Adding another point to the stroke
-         *
-         * @param {SrlPoint} point
-         */
-        this.addPoint = function(point) {
-            if (point instanceof SrlPoint) {
-                this.points.push(point);
-                this.getBoundingBox().addPoint(point);
-            } else {
-                throw new SketchException("Can not add an object that is not an SrlPoint to the stroke");
-            }
-        };
-
-        /**
-         * Constructor setting the initial point in the stroke
-         *
-         * @param startPoint
-         */
-        if (startPoint instanceof SrlPoint) {
-            this.addPoint(startPoint);
-        }
-
-        /**
-         * Gets the complete list of points in the stroke.
-         *
-         * @return {Array<SrlPoint>} list of points in the stroke
-         */
-        this.getPoints = function() {
-            return this.points;
-        };
-
-        this.finish = function() {
-        };
-
-        /**
-         * Get the i'th point in the stroke The first point has index i = 0
-         *
-         * @param {Number} i
-         *            the index of the stroke
-         * @return {SrlPoint} the point at index i
-         */
-        this.getPoint = function(i) {
-            if (typeof i === 'number') {
-                if (i >= this.points.length || i < 0) {
-                    throw new SketchException('Index out of bounds ' + i +' is not in bounds [0 - ' + this.points.length + ']');
-                }
-                return this.points[i];
-            }
-        };
-
-        /**
-         * Goes through every object in this list of objects. (Brute force).
-         *
-         * @return {SrlPoint} The point if it exist, returns false otherwise.
-         */
-        this.getSubObjectById = function(objectId) {
-            for (var point in this.points) {
-                if (point.getId() === objectId) {
-                    return point;
-                }
-            }
-            return undefined;
-        };
-
-        /**
-         * Goes through every object in this list of objects. (Brute force).
-         *
-         * @return {SrlPoint} The point if it exist, returns false otherwise.
-         */
-        this.removeSubObjectById = function(objectId) {
-            for (var i = 0; i < this.points.length; i++) {
-                var object = this.points[i];
-                if (object.getId() === objectId) {
-                    return removeObjectByIndex(this.points, i);
-                }
-            }
-            return undefined
-        };
-
-        /**
-         * Given an object, remove this instance of the object.
-         */
-        this.removeSubObject = function(srlObject) {
-            return removeObjectFromArray(this.points, srlObject);
-        };
-
-        /**
-         * Gets the list of subobjects
-         *
-         * @return list of objects that make up this object
-         */
-        this.getSubObjects = function() {
-            return this.points;
-        };
-
-        /**
-         * Gets the number of points in the stroke
-         *
-         * @return number of points in the stroke
-         */
-        this.getNumPoints = function() {
-            return this.points.length;
-        };
-
-        /**
-         * Returns the first point in the stroke. if the stroke has no points, it
-         * returns null.
-         *
-         * @return first point in the stroke
-         */
-        this.getFirstPoint = function() {
-            if (this.points.length === 0) {
-                return null;
-            }
-            return this.points[0];
-        };
-
-        /**
-         * Returns the last point in the stroke If the stroke has no points, it
-         * returns null.
-         *
-         * @return last point in the stroke.
-         */
-        this.getLastPoint = function() {
-            if (this.points.length === 0) {
-                return null;
-            }
-            return this.points[this.points.length - 1];
-        };
 
         /**
          * Gets the bounding box of the object.
@@ -181,45 +51,186 @@ define(['./../generated_proto/sketch', // protoSketch
             return boundingBox;
         };
 
-        /**
-         * returns the minimum x value in a stroke return minimum x value in a
-         * stroke
-         */
-        this.getMinX = function() {
-            return boundingBox.getLeft();// minx;
-        };
-
-        /**
-         * returns the minimum y value in a stroke return minimum y value in a
-         * stroke
-         */
-        this.getMinY = function() {
-            return boundingBox.getTop();// miny;
-        };
-
-        /**
-         * returns the maximum x value in a stroke return maximum x value in a
-         * stroke
-         */
-        this.getMaxX = function() {
-            return boundingBox.getRight();// maxx;
-        };
-
-        /**
-         * returns the maximum x value in a stroke return maximum x value in a
-         * stroke
-         */
-        this.getMaxY = function() {
-            return boundingBox.getBottom();// maxy;
-        };
-
         this.temp_print = function() {
             for (var i = 0; i < this.points.length; i++) {
                 this.points[i].temp_print();
             }
         };
+
+        /**
+         * Constructor setting the initial point in the stroke.
+         *
+         * @param startPoint
+         */
+        if (startPoint instanceof SrlPoint) {
+            this.addPoint(startPoint);
+        }
+
     }
     protobufUtils.Inherits(SrlStroke, StrokeMessage);
+
+    /**********************
+     * OBJECT METHODS
+     *********************/
+
+
+    /**
+     * Adding another point to the stroke
+     *
+     * @param {SrlPoint} point
+     */
+    SrlStroke.prototype.addPoint = function(point) {
+        if (point instanceof SrlPoint) {
+            this.points.push(point);
+            this.getBoundingBox().addPoint(point);
+        } else {
+            throw new SketchException("Can not add an object that is not an SrlPoint to the stroke");
+        }
+    };
+    /**
+     * Gets the complete list of points in the stroke.
+     *
+     * @return {Array<SrlPoint>} list of points in the stroke
+     */
+    SrlStroke.prototype.getPoints = function() {
+        return this.points;
+    };
+
+    SrlStroke.prototype.finish = function() {
+    };
+
+    /**
+     * Get the i'th point in the stroke The first point has index i = 0
+     *
+     * @param {Number} i
+     *            the index of the stroke
+     * @return {SrlPoint} the point at index i
+     */
+    SrlStroke.prototype.getPoint = function(i) {
+        if (typeof i === 'number') {
+            if (i >= this.points.length || i < 0) {
+                throw new SketchException('Index out of bounds ' + i +' is not in bounds [0 - ' + this.points.length + ']');
+            }
+            return this.points[i];
+        }
+    };
+
+    /**
+     * Goes through every object in this list of objects. (Brute force).
+     *
+     * @return {SrlPoint} The point if it exist, returns false otherwise.
+     */
+    SrlStroke.prototype.getSubObjectById = function(objectId) {
+        for (var point in this.points) {
+            if (point.getId() === objectId) {
+                return point;
+            }
+        }
+        return undefined;
+    };
+
+    /**
+     * Goes through every object in this list of objects. (Brute force).
+     *
+     * @return {SrlPoint} The point if it exist, returns false otherwise.
+     */
+    SrlStroke.prototype.removeSubObjectById = function(objectId) {
+        for (var i = 0; i < this.points.length; i++) {
+            var object = this.points[i];
+            if (object.getId() === objectId) {
+                return removeObjectByIndex(this.points, i);
+            }
+        }
+        return undefined
+    };
+
+    /**
+     * Given an object, remove this instance of the object.
+     */
+    SrlStroke.prototype.removeSubObject = function(srlObject) {
+        return removeObjectFromArray(this.points, srlObject);
+    };
+
+    /**
+     * Gets the list of subobjects
+     *
+     * @return {Array<SrlPoint> list of objects that make up this object
+     */
+    SrlStroke.prototype.getSubObjects = function() {
+        return this.points;
+    };
+
+    /**
+     * Gets the number of points in the stroke
+     *
+     * @return {Number} number of points in the stroke
+     */
+    SrlStroke.prototype.getNumPoints = function() {
+        return this.points.length;
+    };
+
+    /**
+     * Returns the first point in the stroke. if the stroke has no points, it
+     * returns null.
+     *
+     * @return {SrlPoint} first point in the stroke
+     */
+    SrlStroke.prototype.getFirstPoint = function() {
+        if (this.points.length === 0) {
+            return undefined;
+        }
+        return this.points[0];
+    };
+
+    /**
+     * Returns the last point in the stroke If the stroke has no points, it
+     * returns null.
+     *
+     * @return {SrlPoint} last point in the stroke.
+     */
+    SrlStroke.prototype.getLastPoint = function() {
+        if (this.points.length === 0) {
+            return undefined;
+        }
+        return this.points[this.getNumPoints() - 1];
+    };
+
+
+    /**
+     * @return {Number} The minimum x value in a stroke return minimum x value in a
+     * stroke
+     */
+    SrlStroke.prototype.getMinX = function() {
+        return this.getBoundingBox().getLeft();// minx;
+    };
+
+    /**
+     * @return {Number} The minimum y value in a stroke return minimum y value in a
+     * stroke
+     */
+    SrlStroke.prototype.getMinY = function() {
+        return this.getBoundingBox().getTop();// miny;
+    };
+
+    /**
+     * @return {Number} The maximum x value in a stroke return maximum x value in a
+     * stroke
+     */
+    SrlStroke.prototype.getMaxX = function() {
+        return this.getBoundingBox().getRight();// maxx;
+    };
+
+    /**
+     * @return {Number} The maximum x value in a stroke return maximum x value in a
+     * stroke.
+     */
+    SrlStroke.prototype.getMaxY = function() {
+        return this.getBoundingBox().getBottom();// maxy;
+    };
+
+    /*************************************
+     * PROTOBUF METHODS
+     ************************************/
 
     /**
      * Creates an SRL protobuf version of a stroke.
@@ -293,9 +304,9 @@ define(['./../generated_proto/sketch', // protoSketch
      * point. If there are only 0 or 1 points, this returns NaN. Note that this
      * is also feature 1 of Rubine.
      *
-     * @param secondPoint
+     * @param {Number} secondPoint
      *            which number point should be used for the second point
-     * @return cosine of the starting angle of the stroke
+     * @return {Number} cosine of the starting angle of the stroke
      */
     SrlStroke.prototype.getStartAngleCosine = function(inputSecondPoint) {
         var secondPoint = inputSecondPoint;
