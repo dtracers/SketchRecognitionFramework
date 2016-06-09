@@ -6,5 +6,6 @@ language: java
 
 before_install:
  - "sudo apt-get -qq update"
+
 install:
  - "mvn clean install"
