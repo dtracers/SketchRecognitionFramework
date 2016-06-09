@@ -38,15 +38,15 @@ module.exports = function(grunt) {
         jshint: {
             options: {
                 jshintrc: 'config/.jshintrc',
-                ignores: [ 'src/main/web/utilities/libraries/**/*.js', 'src/test/web/testUtilities/**/*.js' ],
+                ignores: [ 'src/main/js/utilities/libraries/**/*.js', 'src/test/js/testUtilities/**/*.js' ],
                 globals: {
                     module: true
                 },
                 reporter:'jslint',
                 reporterOutput: 'target/jshint.xml'
             },
-            files: [ 'Gruntfile.js', 'src/main/web/**/*.js', 'src/test/web/**/*.js',
-                '!src/main/web/utilities/libraries/**/*.js', '!src/test/web/**/*.js', '!src/main/web/sketching/srl/objects/**/*.js' ]
+            files: [ 'Gruntfile.js', 'src/main/js/**/*.js', 'src/test/js/**/*.js',
+                '!src/main/js/utilities/libraries/**/*.js', '!src/test/js/**/*.js', '!src/main/js/sketching/srl/objects/**/*.js' ]
         },
         jscs: {
             src: '<%= jshint.files %>',
@@ -54,22 +54,6 @@ module.exports = function(grunt) {
                 config: 'config/jscs.conf.jscsrc',
                 reporterOutput: 'target/jscsReport.txt',
                 maxErrors: 1000
-            }
-        },
-        /*
-         * This module is used to check the existence or the lack of existance of a pattern in the given files
-         */
-        'regex-check': {
-            head: {
-                files: {
-                    src: [ 'src/main/web/**/*.html', 'src/test/web/**/*.html', '!src/main/web/utilities/libraries/**/*.html',
-                        'src/main/web/utilities/libraries/**/*Include.html' ]
-                },
-                options: {
-                    // This looks for the head tag <head>
-                    pattern: /<head(\s|(.*lang=.*))*>/g,
-                    failIfMissing: true
-                }
             }
         },
         /**
