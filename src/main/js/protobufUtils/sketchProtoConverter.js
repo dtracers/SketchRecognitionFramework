@@ -1,11 +1,11 @@
 /**
  * Created by David Windows on 5/17/2016.
  */
-define(['./../sketchLibrary/ProtoSketchFramework', // ProtoSketchFramework
+define([ './../sketchLibrary/ProtoSketchFramework', // ProtoSketchFramework
     './../protobufUtils/classCreator', // protobufUtils
     './../sketchLibrary/SketchLibraryException', // SketchException
     "require" // require
-    ], function (
+    ], function(
     ProtoSketchFramework,
     protobufUtils,
     SketchException,

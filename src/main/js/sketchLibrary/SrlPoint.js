@@ -1,11 +1,11 @@
 /**
  * Created by David Windows on 5/17/2016.
  */
-define(['./../generated_proto/sketch', // protoSketch
+define([ './../generated_proto/sketch', // protoSketch
     './../protobufUtils/classCreator', // protobufUtils
     './../protobufUtils/sketchProtoConverter', // objectConversionUtils
     './SketchLibraryException' // SketchException
-    ], function (
+    ], function(
     protoSketch,
     protobufUtils,
     objectConversionUtils,
@@ -353,7 +353,7 @@ define(['./../generated_proto/sketch', // protoSketch
      * @param {ArrayBuffer} data
      * @return {SrlPoint}
      */
-    SrlPoint.decode = function (data) {
+    SrlPoint.decode = function(data) {
         return SrlPoint.createFromProtobuf(objectConversionUtils.decode(data, PointMessage));
     };
 
@@ -362,7 +362,7 @@ define(['./../generated_proto/sketch', // protoSketch
      *
      * @return {ArrayBuffer}
      */
-    SrlPoint.prototype.toArrayBuffer = function () {
+    SrlPoint.prototype.toArrayBuffer = function() {
         return this.sendToProtobuf().toArrayBuffer();
     };
 

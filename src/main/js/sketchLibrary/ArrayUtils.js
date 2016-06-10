@@ -1,4 +1,4 @@
-define([], function () {
+define([], function() {
 
     /**
      * Removes the object from an array.

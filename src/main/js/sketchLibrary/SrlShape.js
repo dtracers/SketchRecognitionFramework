@@ -1,14 +1,14 @@
 /**
  * Created by David Windows on 5/17/2016.
  */
-define(['./../generated_proto/sketch', // protoSketch
+define([ './../generated_proto/sketch', // protoSketch
     './../protobufUtils/classCreator', // protobufUtils
     './../protobufUtils/sketchProtoConverter', // objectConversionUtils
     './SketchLibraryException', // SketchException
     './SrlBoundingBox', // SrlBoundingBox
     './SrlStroke', // SrlStroke
     './ArrayUtils' // arrayUtils
-], function (
+], function(
     protoSketch,
     protobufUtils,
     objectConversionUtils,
@@ -183,7 +183,7 @@ define(['./../generated_proto/sketch', // protoSketch
             return upgradedSubComponents;
         };
 
-        this.toString = function () {
+        this.toString = function() {
             return "id: " + this.getId() + '\n' +
                 'name:' + this.getName() + '\n' +
                 'boundingBox: ' +boundingBox + '\n' +
@@ -268,7 +268,7 @@ define(['./../generated_proto/sketch', // protoSketch
      */
     SrlShape.prototype.getRecursiveStrokes = function() {
         var completeList = this.getRecursiveSubObjects();
-        return completeList.filter(function (arg) {
+        return completeList.filter(function(arg) {
             return arg instanceof SrlStroke;
         })
     };
@@ -330,7 +330,7 @@ define(['./../generated_proto/sketch', // protoSketch
      * @param {ArrayBuffer} data
      * @return {SrlShape}
      */
-    SrlShape.decode = function (data) {
+    SrlShape.decode = function(data) {
         return SrlShape.createFromProtobuf(objectConversionUtils.decode(data, ShapeMessage));
     };
 
@@ -339,7 +339,7 @@ define(['./../generated_proto/sketch', // protoSketch
      *
      * @return {ArrayBuffer}
      */
-    SrlShape.prototype.toArrayBuffer = function () {
+    SrlShape.prototype.toArrayBuffer = function() {
         return this.sendToProtobuf().toArrayBuffer();
     };
     return SrlShape;

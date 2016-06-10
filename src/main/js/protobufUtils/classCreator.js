@@ -2,7 +2,7 @@
  * Created by David Windows on 5/17/2016.
  */
 
-define([], function () {
+define([], function() {
 
     /**
      * Returns true if an object is not defined.
@@ -28,7 +28,7 @@ define([], function () {
         localScope.prototype = new Parent();
         localScope.prototype.constructor = localScope;
 
-        var callParent = function () {
+        var callParent = function() {
             if (arguments.length >= 1) {
                 Parent.apply(this, arguments);
             } else {
@@ -44,7 +44,7 @@ define([], function () {
              *
              * @type {Function}
              */
-            localConstructor = localScope.prototype.superConstructor = function () {
+            localConstructor = localScope.prototype.superConstructor = function() {
                 // special setting
                 this.superConstructor = parentConstructor;
                 // console.log('Setting parent constructor' + parent);
@@ -57,7 +57,7 @@ define([], function () {
             /**
              * SuperConstructor.
              */
-            localScope.prototype.superConstructor = function () {
+            localScope.prototype.superConstructor = function() {
                 callParent.bind(this).apply(this, arguments);
             };
         }

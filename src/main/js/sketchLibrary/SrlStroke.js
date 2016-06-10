@@ -1,13 +1,13 @@
 /**
  * Created by David Windows on 5/17/2016.
  */
-define(['./../generated_proto/sketch', // protoSketch
+define([ './../generated_proto/sketch', // protoSketch
     './../protobufUtils/classCreator', // protobufUtils
     './../protobufUtils/sketchProtoConverter', // objectConversionUtils
     './SketchLibraryException', // SketchException
     './SrlPoint', // SrlPoint
     './SrlBoundingBox' // SrlBoundingBox
-], function (
+], function(
     protoSketch,
     protobufUtils,
     objectConversionUtils,
@@ -109,7 +109,7 @@ define(['./../generated_proto/sketch', // protoSketch
     SrlStroke.prototype.getPoint = function(i) {
         if (typeof i === 'number') {
             if (i >= this.points.length || i < 0) {
-                throw new SketchException('Index out of bounds ' + i +' is not in bounds [0 - ' + this.points.length + ']');
+                throw new SketchException('Index out of bounds ' + i +' is not in bounds [0 - ' + this.points.length + ' ]');
             }
             return this.points[i];
         }
@@ -281,7 +281,7 @@ define(['./../generated_proto/sketch', // protoSketch
      * @param {ArrayBuffer} data
      * @return {SrlStroke}
      */
-    SrlStroke.decode = function (data) {
+    SrlStroke.decode = function(data) {
         return SrlStroke.createFromProtobuf(objectConversionUtils.decode(data, StrokeMessage));
     };
 
@@ -290,7 +290,7 @@ define(['./../generated_proto/sketch', // protoSketch
      *
      * @return {ArrayBuffer}
      */
-    SrlStroke.prototype.toArrayBuffer = function () {
+    SrlStroke.prototype.toArrayBuffer = function() {
         return this.sendToProtobuf().toArrayBuffer();
     };
 

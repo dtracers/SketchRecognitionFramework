@@ -9,21 +9,21 @@ var SrlPoint = require(basePath + srcPath + 'sketchLibrary/SrlPoint');
 var SketchException = require(basePath + srcPath + 'sketchLibrary/SketchLibraryException');
 var ProtoPoint = require(basePath + srcPath + 'generated_proto/sketch').protobuf.srl.sketch.SrlPoint;
 
-describe('Point Tests', function () {
+describe('Point Tests', function() {
     var x = 10;
     var y = 25.6;
     var time = 80;
     var id = 'id';
-    describe('initializations', function () {
-        it('should be able to create an instance of the point class', function () {
+    describe('initializations', function() {
+        it('should be able to create an instance of the point class', function() {
             var sketch = new SrlPoint();
         });
-        it('should be able to create an instance of the point class initialized with two values', function () {
+        it('should be able to create an instance of the point class initialized with two values', function() {
             var point = new SrlPoint(x, y);
             expect(point.getX()).to.equal(x);
             expect(point.getY()).to.equal(y);
         });
-        it('set all values of the point', function () {
+        it('set all values of the point', function() {
             var point = new SrlPoint(x, y);
             point.setTime(time);
             point.setId(id);
@@ -32,19 +32,19 @@ describe('Point Tests', function () {
             expect('' + point.getTime()).to.equal('' + time);
             expect(point.getId()).to.equal(id);
         });
-        it('can not set x and y separately', function () {
+        it('can not set x and y separately', function() {
             var point = new SrlPoint(x, y);
-            expect(function () {
+            expect(function() {
                 point.setX(5);
             }).to.throw(SketchException);
-            expect(function () {
+            expect(function() {
                 point.setY(5);
             }).to.throw(SketchException);
         });
     });
 
-    describe('protobuf', function () {
-        it('should be able to create an arraybuffer', function () {
+    describe('protobuf', function() {
+        it('should be able to create an arraybuffer', function() {
             var point = new SrlPoint();
             point.setP(x, y);
             point.setTime(time);
@@ -57,7 +57,7 @@ describe('Point Tests', function () {
             expect(decoded.getId()).to.equal(id);
         });
 
-        it('should be able to parse an array buffer', function () {
+        it('should be able to parse an array buffer', function() {
             var protoPoint = new ProtoPoint();
             protoPoint.setX(x);
             protoPoint.setY(y);

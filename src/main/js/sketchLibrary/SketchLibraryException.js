@@ -1,7 +1,7 @@
 /**
  * Created by dtracers on 5/17/2016.
  */
-define(['stacktrace-js'], function (StackTrace) {
+define([ 'stacktrace-js' ], function(StackTrace) {
     var errback = function(err) { console.log(err.message); };
 
     /**

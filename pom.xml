@@ -184,7 +184,7 @@
                         </goals>
                         <configuration>
                             <nodeVersion>${nodeVersion}</nodeVersion>
-                            <npmVersion>1.4.21</npmVersion>
+                            <npmVersion>3.9.5</npmVersion>
                         </configuration>
                     </execution>
 

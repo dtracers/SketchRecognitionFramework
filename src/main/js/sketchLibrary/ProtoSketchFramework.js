@@ -1,7 +1,7 @@
-define(['./../generated_proto/sketch', // protoSketch
+define([ './../generated_proto/sketch', // protoSketch
         './../generated_proto/commands', // protoCommands
         './../generated_proto/sketchUtil' // protoSketchUtil
-    ], function (
+    ], function(
         protoSketch,
         protoCommands,
         protoSketchUtil) {

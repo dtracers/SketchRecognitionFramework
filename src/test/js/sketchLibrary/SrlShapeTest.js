@@ -8,17 +8,17 @@ var SrlShape = require(basePath + srcPath + 'sketchLibrary/SrlShape');
 var SrlStroke = require(basePath + srcPath + 'sketchLibrary/SrlStroke');
 var SrlPoint = require(basePath + srcPath + 'sketchLibrary/SrlPoint');
 
-describe('Shape Tests', function () {
+describe('Shape Tests', function() {
     var x = 10;
     var y = 25.6;
     var time = 80;
     var id = 'id';
-    describe('initializations', function () {
-        it('should be able to create an instance of the shape class', function () {
+    describe('initializations', function() {
+        it('should be able to create an instance of the shape class', function() {
             var sketch = new SrlShape();
         });
 
-        it('should be able to create an instance of the stroke class and add a point', function () {
+        it('should be able to create an instance of the stroke class and add a point', function() {
             var stroke = new SrlStroke();
             stroke.addPoint(new SrlPoint(x, y));
 
@@ -28,10 +28,10 @@ describe('Shape Tests', function () {
         });
     });
 
-    describe('functions', function () {
+    describe('functions', function() {
         var strokeList = [];
         var shapeList = [];
-        beforeEach(function () {
+        beforeEach(function() {
             strokeList = [];
             shapeList = [];
             for (var i = 0; i < 10; i++) {
@@ -49,7 +49,7 @@ describe('Shape Tests', function () {
                 shapeList.push(shape);
             }
         });
-        it('should be able to get recursive sub objects', function () {
+        it('should be able to get recursive sub objects', function() {
             var result = [];
             for (var i = 0; i < 9; i++) {
                 shapeList[i].add(strokeList[i]);
@@ -60,7 +60,7 @@ describe('Shape Tests', function () {
             expect(shapeList[0].getRecursiveSubObjects()).to.have.members(result);
         });
 
-        it('should be able to get recursive strokes', function () {
+        it('should be able to get recursive strokes', function() {
             for (var i = 0; i < 9; i++) {
                 shapeList[i].add(strokeList[i]);
                 shapeList[i].add(shapeList[i + 1]);
@@ -69,7 +69,7 @@ describe('Shape Tests', function () {
             expect(shapeList[0].getRecursiveStrokes()).to.have.members(strokeList);
         });
 
-        it('should only have one stroke in it if the shape is removed', function () {
+        it('should only have one stroke in it if the shape is removed', function() {
             for (var i = 0; i < 9; i++) {
                 shapeList[i].add(strokeList[i]);
                 shapeList[i].add(shapeList[i + 1]);
@@ -79,7 +79,7 @@ describe('Shape Tests', function () {
             expect(shapeList[0].getRecursiveSubObjects()).to.have.members([strokeList[0]]);
         });
 
-        it('should be able to encode and decode from binary protobuf correctly', function () {
+        it('should be able to encode and decode from binary protobuf correctly', function() {
             for (var i = 0; i < 9; i++) {
                 shapeList[i].add(strokeList[i]);
                 shapeList[i].add(shapeList[i + 1]);

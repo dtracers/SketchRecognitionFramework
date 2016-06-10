@@ -1,6 +1,6 @@
-define(['./../generated_proto/sketch', // protoSketch
+define([ './../generated_proto/sketch', // protoSketch
     './../protobufUtils/classCreator' // protobufUtils
-    ], function (
+    ], function(
     protoSketch,
     protobufUtils) {
 
@@ -30,14 +30,14 @@ define(['./../generated_proto/sketch', // protoSketch
         /**
          * @see SRL_BoundingBox#addCoordinate(x,y)
          */
-        this.addPoint = function (point) {
+        this.addPoint = function(point) {
             this.addCoordinate(point.getX(), point.getY());
         };
 
         /**
          * expands the box if the given coordinate is outside of the current bounds;
          */
-        this.addCoordinate = function (newX, newY) {
+        this.addCoordinate = function(newX, newY) {
             if (firstCoordinate) {
                 internalLeft = internalRight = newX;
                 internalTop = internalBottom = newY;
@@ -51,7 +51,7 @@ define(['./../generated_proto/sketch', // protoSketch
             sync();
         };
 
-        this.setIndexes = function (firstI, lastI) {
+        this.setIndexes = function(firstI, lastI) {
             firstIndex = firstI;
             lastIndex = lastI;
         };
@@ -59,7 +59,7 @@ define(['./../generated_proto/sketch', // protoSketch
         /**
          * @see SrlBoundingBox#containsCoordinate(x,y)
          */
-        this.containsPoint = function (point) {
+        this.containsPoint = function(point) {
             return this.containsCoordinate(point.getX(), point.getY());
         };
 
@@ -70,11 +70,11 @@ define(['./../generated_proto/sketch', // protoSketch
          * containment is determined by being in or on the border of the bounding
          * box.
          */
-        this.containsCoordinate = function (checkX, checkY) {
+        this.containsCoordinate = function(checkX, checkY) {
             return internalLeft <= checkX && checkX <= internalRight && internalTop <= checkY && checkY <= internalBottom;
         };
 
-        this.union = function (other) {
+        this.union = function(other) {
             var extremes = other.getExtremeValues();
             if (firstCoordinate) {
                 internalLeft = internalRight = extremes.left;
@@ -93,7 +93,7 @@ define(['./../generated_proto/sketch', // protoSketch
          * Moves every egdge of the bounding box away from the center by this many
          * pixels.
          */
-        this.scale = function (pixels) {
+        this.scale = function(pixels) {
             internalLeft -= pixels;
             internalRight += pixels;
             internalTop -= pixels;
@@ -104,14 +104,14 @@ define(['./../generated_proto/sketch', // protoSketch
         /**
          * Makes the rectangle coordinates the same as the extreme coordinates.
          */
-        var sync = function () {
+        var sync = function() {
             this.setX(internalLeft);
             this.setY(internalTop);
             this.setWidth(internalRight - internalLeft);
             this.setHeight(internalBottom - internalTop);
         }.bind(this);
 
-        this.addSubObject = function (subObject) {
+        this.addSubObject = function(subObject) {
             this.union(subObject.getBoundingBox());
         };
 
@@ -120,7 +120,7 @@ define(['./../generated_proto/sketch', // protoSketch
          *
          * returns left, right, top, and bottom from this instance.
          */
-        this.getExtremeValues = function () {
+        this.getExtremeValues = function() {
             return {
                 left: internalLeft,
                 right: internalRight,
@@ -134,7 +134,7 @@ define(['./../generated_proto/sketch', // protoSketch
          *
          * returns left, right, top, and bottom from this instance.
          */
-        this.getRectangle = function () {
+        this.getRectangle = function() {
             return {
                 x: this.getX(),
                 y: this.getY(),
@@ -143,39 +143,39 @@ define(['./../generated_proto/sketch', // protoSketch
             };
         };
 
-        this.getArea = function () {
+        this.getArea = function() {
             return internalWidth * internalHeight;
         };
 
-        this.toString = function () {
+        this.toString = function() {
             return 'SrlBoundingBox: (' + this.getX() + ', ' + this.getY() + ') Width: ' + this.getWidth() + ' Height: ' + this.getHeight();
         };
 
         /**
          * @returns {Number} Leftmost point.
          */
-        this.getLeft = function () {
+        this.getLeft = function() {
             return internalLeft;
         };
 
         /**
          * @returns {number} Rightmost point.
          */
-        this.getRight = function () {
+        this.getRight = function() {
             return internalRight;
         };
 
         /**
          * @returns {Number} The Topmost point.
          */
-        this.getTop = function () {
+        this.getTop = function() {
             return internalTop;
         };
 
         /**
          * @returns {Number} The Bottommost point.
          */
-        this.getBottom = function () {
+        this.getBottom = function() {
             return internalTop;
         };
 

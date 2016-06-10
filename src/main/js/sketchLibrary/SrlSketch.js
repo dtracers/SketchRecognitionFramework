@@ -1,10 +1,10 @@
-define(['./../generated_proto/sketch', // protoSketch
+define([ './../generated_proto/sketch', // protoSketch
     './../protobufUtils/classCreator', // protobufUtils
     './../protobufUtils/sketchProtoConverter', // objectConversionUtils
     './SketchLibraryException', // SketchException
     './SrlBoundingBox', // SrlBoundingBox
     './ArrayUtils' // arrayUtils
-], function (
+], function(
     protoSketch,
     protobufUtils,
     objectConversionUtils,

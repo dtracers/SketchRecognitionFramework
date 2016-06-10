@@ -1,9 +1,9 @@
 /**
  * Created by David Windows on 5/17/2016.
  */
-define(['./../generated_proto/sketch', // protoSketch
+define([ './../generated_proto/sketch', // protoSketch
     './../protobufUtils/classCreator' // protobufUtils
-], function (
+], function(
     protoSketch,
     protobufUtils) {
 
