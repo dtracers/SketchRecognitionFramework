@@ -5,7 +5,6 @@ var exec = require('child_process').exec;
 
 module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-jscs');
-    grunt.loadNpmTasks('grunt-regex-check');
     grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-jsdoc');
     grunt.loadNpmTasks('grunt-babel');
@@ -214,8 +213,7 @@ module.exports = function(grunt) {
         printTaskGroup();
         grunt.task.run([
             'jscs',
-            'jshint',
-            'regex-check'
+            'jshint'
         ]);
     });
 

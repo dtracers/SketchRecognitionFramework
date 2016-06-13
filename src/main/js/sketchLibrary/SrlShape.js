@@ -75,7 +75,7 @@ define([ './../generated_proto/sketch', // protoSketch
         this.add = function(subObject) {
             var upgradedObject = objectConversionUtils.convertToUpgradedSketchObject(subObject);
             if (!(upgradedObject instanceof SrlStroke || upgradedObject instanceof SrlShape)) {
-                throw new SketchException("Can only add SrlStroke or SrlShape or their protobuf equivalent and SrlObject");
+                throw new SketchException('Can only add SrlStroke or SrlShape or their protobuf equivalent and SrlObject');
             }
             boundingBox.addSubObject(upgradedObject);
             upgradedSubComponents.push(upgradedObject);
@@ -85,6 +85,7 @@ define([ './../generated_proto/sketch', // protoSketch
          * Given an object, remove this instance of the object.
          *
          * @param {SrlStroke | SrlShape | SrlObject} srlObject - The sub object that is being removed from this shape.
+         * @return {SrlStroke | SrlSahpe | SrlObject} The element that was removed or undefined if it was not found.
          */
         this.removeSubObject = function(srlObject) {
             return arrayUtils.removeObjectFromArray(upgradedSubComponents, srlObject);
@@ -103,11 +104,11 @@ define([ './../generated_proto/sketch', // protoSketch
          * @returns {String} a String representation of the objects.
          */
         this.toString = function() {
-            return "id: " + this.getId() + '\n' +
+            return 'id: ' + this.getId() + '\n' +
                 'name:' + this.getName() + '\n' +
                 'boundingBox: ' + boundingBox + '\n' +
-                'subComponents' + upgradedSubComponents + '\n'
-        }
+                'subComponents' + upgradedSubComponents + '\n';
+        };
     }
     protobufUtils.Inherits(SrlShape, ShapeMessage);
 
@@ -158,7 +159,7 @@ define([ './../generated_proto/sketch', // protoSketch
      */
     SrlShape.prototype.getSubObjectByIdChain = function(idList) {
         if (idList.length <= 0) {
-            throw "input list is empty";
+            throw 'input list is empty';
         }
         var returnShape = this.getSubObjectById(idList[0]);
         for (var i = 1; i < idList.length; i++) {
@@ -199,7 +200,7 @@ define([ './../generated_proto/sketch', // protoSketch
         var completeList = this.getRecursiveSubObjects();
         return completeList.filter(function(arg) {
             return arg instanceof SrlStroke;
-        })
+        });
     };
 
     /**
@@ -368,7 +369,7 @@ define([ './../generated_proto/sketch', // protoSketch
      * Converts an array buffer to an upgraded SrlShape.
      *
      * @param {ArrayBuffer} data - Byte data of the point.
-     * @return {SrlPoint} A new object decoded from the binary data.
+     * @return {SrlShape} A new object decoded from the binary data.
      */
     SrlShape.decode = function(data) {
         return SrlShape.createFromProtobuf(objectConversionUtils.decode(data, ShapeMessage));
@@ -377,7 +378,7 @@ define([ './../generated_proto/sketch', // protoSketch
     /**
      * Creates a byte version of the protobuf data.
      *
-     * @return {ArrayBuffer} A binary version of the point.
+     * @return {ArrayBuffer} A binary version of the shape.
      */
     SrlShape.prototype.toArrayBuffer = function() {
         return this.sendToProtobuf().toArrayBuffer();

@@ -31,12 +31,14 @@ define([ './../generated_proto/sketch', // protoSketch
      *
      *
      * ******************************
+     *
+     * @param {SrlPoint} startPoint - Creates a stroke with a single point.
      */
-
     function SrlStroke(startPoint) {
         this.superConstructor();
         /**
          * List of points in the stroke.
+         *
          * @type {Array<SrlPoint>}
          */
         this.points = [];
@@ -45,15 +47,18 @@ define([ './../generated_proto/sketch', // protoSketch
         /**
          * Gets the bounding box of the object.
          *
-         * @return {SrlBoundingBox} the bounding box of the object
+         * @return {SrlBoundingBox} the bounding box of the object.
          */
         this.getBoundingBox = function() {
             return boundingBox;
         };
 
-        this.temp_print = function() {
+        /**
+         * Prints the string version of the stroke.
+         */
+        this.toString = function() {
             for (var i = 0; i < this.points.length; i++) {
-                this.points[i].temp_print();
+                this.points[i].toString();
             }
         };
 
@@ -73,18 +78,17 @@ define([ './../generated_proto/sketch', // protoSketch
      * OBJECT METHODS
      *********************/
 
-
     /**
      * Adding another point to the stroke
      *
-     * @param {SrlPoint} point
+     * @param {SrlPoint} point - The point that is being added to the stroke.
      */
     SrlStroke.prototype.addPoint = function(point) {
         if (point instanceof SrlPoint) {
             this.points.push(point);
             this.getBoundingBox().addPoint(point);
         } else {
-            throw new SketchException("Can not add an object that is not an SrlPoint to the stroke");
+            throw new SketchException('Can not add an object that is not an SrlPoint to the stroke');
         }
     };
     /**
@@ -96,6 +100,9 @@ define([ './../generated_proto/sketch', // protoSketch
         return this.points;
     };
 
+    /**
+     * Called when the stroke is done being edited.
+     */
     SrlStroke.prototype.finish = function() {
     };
 
@@ -109,7 +116,7 @@ define([ './../generated_proto/sketch', // protoSketch
     SrlStroke.prototype.getPoint = function(i) {
         if (typeof i === 'number') {
             if (i >= this.points.length || i < 0) {
-                throw new SketchException('Index out of bounds ' + i +' is not in bounds [0 - ' + this.points.length + ' ]');
+                throw new SketchException('Index out of bounds ' + i + ' is not in bounds [0 - ' + this.points.length + ' ]');
             }
             return this.points[i];
         }
@@ -118,6 +125,7 @@ define([ './../generated_proto/sketch', // protoSketch
     /**
      * Goes through every object in this list of objects. (Brute force).
      *
+     * @param {String} objectId - The id of the subObject that is being looked for.
      * @return {SrlPoint} The point if it exist, returns false otherwise.
      */
     SrlStroke.prototype.getSubObjectById = function(objectId) {
@@ -132,6 +140,7 @@ define([ './../generated_proto/sketch', // protoSketch
     /**
      * Goes through every object in this list of objects. (Brute force).
      *
+     * @param {String} objectId - The id of the subObject that is being looked for.
      * @return {SrlPoint} The point if it exist, returns false otherwise.
      */
     SrlStroke.prototype.removeSubObjectById = function(objectId) {
@@ -141,29 +150,32 @@ define([ './../generated_proto/sketch', // protoSketch
                 return removeObjectByIndex(this.points, i);
             }
         }
-        return undefined
+        return undefined;
     };
 
     /**
      * Given an object, remove this instance of the object.
+     *
+     * @param {SrlPoint} srlObject - The sub object that is being removed from this shape.
+     * @return {SrlPoint} The element that was removed or undefined if it was not found.
      */
     SrlStroke.prototype.removeSubObject = function(srlObject) {
         return removeObjectFromArray(this.points, srlObject);
     };
 
     /**
-     * Gets the list of subobjects
+     * Gets the list of subobjects.
      *
-     * @return {Array<SrlPoint> list of objects that make up this object
+     * @return {Array<SrlPoint>} list of objects that make up this object.
      */
     SrlStroke.prototype.getSubObjects = function() {
         return this.points;
     };
 
     /**
-     * Gets the number of points in the stroke
+     * Gets the number of points in the stroke.
      *
-     * @return {Number} number of points in the stroke
+     * @return {Number} number of points in the stroke.
      */
     SrlStroke.prototype.getNumPoints = function() {
         return this.points.length;
@@ -173,7 +185,7 @@ define([ './../generated_proto/sketch', // protoSketch
      * Returns the first point in the stroke. if the stroke has no points, it
      * returns null.
      *
-     * @return {SrlPoint} first point in the stroke
+     * @return {SrlPoint} first point in the stroke.
      */
     SrlStroke.prototype.getFirstPoint = function() {
         if (this.points.length === 0) {
@@ -197,8 +209,7 @@ define([ './../generated_proto/sketch', // protoSketch
 
 
     /**
-     * @return {Number} The minimum x value in a stroke return minimum x value in a
-     * stroke
+     * @return {Number} The minimum x value in a stroke return minimum x value in a stroke.
      */
     SrlStroke.prototype.getMinX = function() {
         return this.getBoundingBox().getLeft();// minx;
@@ -277,9 +288,10 @@ define([ './../generated_proto/sketch', // protoSketch
 
 
     /**
-     * Converts an array buffer to an upgraded SrlStroke
-     * @param {ArrayBuffer} data
-     * @return {SrlStroke}
+     * Converts an array buffer to an upgraded SrlStroke.
+     *
+     * @param {ArrayBuffer} data - Byte data of the point.
+     * @return {SrlStroke} A new object decoded from the binary data.
      */
     SrlStroke.decode = function(data) {
         return SrlStroke.createFromProtobuf(objectConversionUtils.decode(data, StrokeMessage));
@@ -288,7 +300,7 @@ define([ './../generated_proto/sketch', // protoSketch
     /**
      * Creates a byte version of the protobuf data.
      *
-     * @return {ArrayBuffer}
+     * @return {ArrayBuffer} A binary version of the stroke.
      */
     SrlStroke.prototype.toArrayBuffer = function() {
         return this.sendToProtobuf().toArrayBuffer();
@@ -305,19 +317,23 @@ define([ './../generated_proto/sketch', // protoSketch
      * point. If there are only 0 or 1 points, this returns NaN. Note that this
      * is also feature 1 of Rubine.
      *
-     * @param {Number} secondPoint
-     *            which number point should be used for the second point
+     * @param {Number} inputSecondPoint - which number point should be used for the second point
      * @return {Number} cosine of the starting angle of the stroke
      */
     SrlStroke.prototype.getStartAngleCosine = function(inputSecondPoint) {
         var secondPoint = inputSecondPoint;
         if (typeof secondPoint === 'number') {
-            if (this.getNumPoints() <= 1) return Number.NaN;
+            if (this.getNumPoints() <= 1) {
+                return Number.NaN;
+            }
             if (this.getNumPoints() <= secondPoint) {
                 secondPoint = this.getNumPoints() - 1;
             }
 
-            var xStart, xEnd, yStart, yEnd;
+            var xStart;
+            var xEnd;
+            var yStart;
+            var yEnd;
             xStart = this.getPoint(0).getX();
             yStart = this.getPoint(0).getY();
             xEnd = this.getPoint(secondPoint).getX();
@@ -342,19 +358,23 @@ define([ './../generated_proto/sketch', // protoSketch
      * are only 0 or 1 points, this returns NaN. Note that this is also feature
      * 1 of Rubine.
      *
-     * @param secondPoint
-     *            which number point should be used for the second point
-     * @return cosine of the starting angle of the stroke
+     * @param {Number} inputSecondPoint - which number point should be used for the second point
+     * @return {Number} cosine of the starting angle of the stroke
      */
     SrlStroke.prototype.getStartAngleSine = function(inputSecondPoint) {
         var secondPoint = inputSecondPoint;
         if (typeof secondPoint === 'number') {
-            if (this.getNumPoints() <= 1) return Number.NaN;
+            if (this.getNumPoints() <= 1) {
+                return Number.NaN;
+            }
             if (this.getNumPoints() <= secondPoint) {
                 secondPoint = this.getNumPoints() - 1;
             }
 
-            var xStart, xEnd, yStart, yEnd;
+            var xStart;
+            var xEnd;
+            var yStart;
+            var yEnd;
             xStart = this.getPoint(0).getX();
             yStart = this.getPoint(0).getY();
             xEnd = this.getPoint(secondPoint).getX();
@@ -373,13 +393,18 @@ define([ './../generated_proto/sketch', // protoSketch
 
     /**
      * Return the Euclidean distance from the starting point to the ending point
-     * of the stroke
+     * of the stroke.
      *
-     * @return the distance between the starting and ending points of the stroke
+     * @return {Number} the distance between the starting and ending points of the stroke.
      */
     SrlStroke.prototype.getEuclideanDistance = function() {
-        var x0, xn, y0, yn;
-        if (this.getPoints().length === 0) return 0;
+        var x0;
+        var xn;
+        var y0;
+        var yn;
+        if (this.getPoints().length === 0) {
+            return 0;
+        }
         x0 = this.getFirstPoint().getX();
         y0 = this.getFirstPoint().getY();
         xn = this.getLastPoint().getX();
@@ -388,37 +413,46 @@ define([ './../generated_proto/sketch', // protoSketch
     };
 
     /**
-     * Return the cosine of the angle between the start and end point
+     * Return the cosine of the angle between the start and end point.
      *
-     * @return cosine of the ending angle
+     * @return {Number} cosine of the ending angle.
      */
     SrlStroke.prototype.getEndAngleCosine = function() {
-        if (this.getNumPoints() <= 1) return Number.NaN;
-        if (this.getEuclideanDistance() === 0) return Number.NaN;
+        if (this.getNumPoints() <= 1) {
+            return Number.NaN;
+        }
+        if (this.getEuclideanDistance() === 0) {
+            return Number.NaN;
+        }
         var xDistance = this.getLastPoint().getX() - this.getFirstPoint().getX();
         return xDistance / this.getEuclideanDistance();
     };
 
     /**
-     * Return the cosine of the angle between the start and end point
+     * Return the cosine of the angle between the start and end point.
      *
-     * @return cosine of the ending angle
+     * @return {Number} cosine of the ending angle.
      */
     SrlStroke.prototype.getEndAngleSine = function() {
-        if (this.getNumPoints() <= 1) return Number.NaN;
-        if (this.getEuclideanDistance() === 0) return Number.NaN;
+        if (this.getNumPoints() <= 1) {
+            return Number.NaN;
+        }
+        if (this.getEuclideanDistance() === 0) {
+            return Number.NaN;
+        }
         var yDistance = this.getLastPoint().getY() - this.getFirstPoint().getY();
         return yDistance / this.getEuclideanDistance();
     };
 
     /**
-     * Returns the length of the stroke, complete with all of its turns
+     * Returns the length of the stroke, complete with all of its turns.
      *
-     * @return length of the stroke
+     * @return {Number} length of the stroke.
      */
     SrlStroke.prototype.getStrokeLength = function() {
         var sum = 0;
-        var deltaX, deltaY;
+        var deltaX;
+        var deltaY;
         for (var i = 0; i < this.getPoints().length - 1; i++) {
             deltaX = this.getPoint(i + 1).getX() - this.getPoint(i).getX();
             deltaY = this.getPoint(i + 1).getY() - this.getPoint(i).getY();
@@ -437,26 +471,31 @@ define([ './../generated_proto/sketch', // protoSketch
     };
 
     /**
-     * Return the total stroke time
+     * Return the total stroke time.
      *
-     * @return total time of the stroke
+     * @return {Number} total time of the stroke.
      */
     SrlStroke.prototype.getTotalTime = function() {
         console.log('TODO - need to implement a .getTime()');
-        throw 'unspoorted function call: "getTotalTime"';
-        // if (this.getPoints().length === 0) return Number.NaN;
+        if (this.getPoints().length === 0) {
+            return Number.NaN;
+        }
+        throw new SketchException('unspoorted function call: "getTotalTime"');
         // return this.getLastPoint().getTime()-this.getFirstPoint().getTime();
     };
 
     /**
      * Auxiliary method used to return a list containing all points but with
-     * duplicated (based on time) removed
+     * duplicated (based on time) removed.
      *
-     * @return list of points with duplicates (based on time) removed
+     * @return {Array<SrlPoint>} list of points with duplicates (based on time) removed.
      */
     SrlStroke.prototype.removeTimeDuplicates = function() {
         console.log('TODO - need to implement a .getTime()');
-        throw 'unspoorted function call: "removeTimeDuplicates"';
+        if (this.points.length <= 0) {
+            return [];
+        }
+        throw new SketchException('unspoorted function call: "removeTimeDuplicates"');
         /*
          var points = [];
          for (var i = 0; i < points.length; i++) {
@@ -472,32 +511,40 @@ define([ './../generated_proto/sketch', // protoSketch
 
     /**
      * Auxiliary method used to return a list containing all points but with
-     * duplicated (based on X,Y coordinates) removed
+     * duplicated (based on X,Y coordinates) removed.
      *
-     * @return list of points with duplicates (based on coordinates) removed
+     * @return {Array<SrlPoint>} list of points with duplicates (based on coordinates) removed.
      */
     SrlStroke.prototype.removeCoordinateDuplicates = function() {
         var p = [];
-        var x1, x2, y1, y2;
+        var x1;
+        var x2;
+        var y1;
+        var y2;
         p.push(this.getPoint(0));
         for (var i = 0; i < this.getPoints().length - 1; i++) {
             x1 = this.getPoint(i).getX();
             y1 = this.getPoint(i).getY();
             x2 = this.getPoint(i + 1).getX();
             y2 = this.getPoint(i + 1).getY();
-            if (x1 !== x2 || y1 !== y2) p.push(this.getPoint(i + 1));
+            if (x1 !== x2 || y1 !== y2) {
+                p.push(this.getPoint(i + 1));
+            }
         }
         return p;
     };
 
     /**
-     * Return the maximum stroke speed reached
+     * Return the maximum stroke speed reached.
      *
-     * @return maximum stroke speed reached
+     * @return {Number} Maximum stroke speed reached.
      */
     SrlStroke.prototype.getMaximumSpeed = function() {
         console.log('TODO - need to implement a .getTime()');
-        throw 'unspoorted function call: "getMaximumSpeed"';
+        if (this.getPoints().length === 0) {
+            return Number.NaN;
+        }
+        throw new SketchException('unspoorted function call: "getMaximumSpeed"');
         /*
          if (this.getPoints().length === 0) return Number.NaN;
          var max = 0;
@@ -516,30 +563,29 @@ define([ './../generated_proto/sketch', // protoSketch
     };
 
     /**
-     * Calculates the rotation from point startP to two points further.
-     * Calculates the line between startP and the next point, and then the next
+     * Calculates the rotation from point startIndex to two points further.
+     * Calculates the line between startIndex and the next point, and then the next
      * two points, and then returns the angle between the two.
      *
-     * @param points
-     * @param startP
-     * @return
+     * @param {Number} startIndex - The index to start the rotation calculation.
+     * @return {Number} The rotation.
      */
-    SrlStroke.prototype.rotationAtAPoint = function(startP) {
-        if (this.points[0] instanceof SrlPoint && typeof startP === 'number') {
-            if (this.points.length < startP + 2) {
+    SrlStroke.prototype.rotationAtAPoint = function(startIndex) {
+        if (this.points[0] instanceof SrlPoint && typeof startIndex === 'number') {
+            if (this.points.length < startIndex + 2) {
                 return Number.NaN;
             }
-            var mx = this.points.get[startP + 1].getX() - this.points.get[startP].getX();
-            var my = this.points.get[startP + 1].getY() - this.points.get[startP].getY();
+            var mx = this.points.get[startIndex + 1].getX() - this.points.get[startIndex].getX();
+            var my = this.points.get[startIndex + 1].getY() - this.points.get[startIndex].getY();
             return Math.atan2(my, mx);
         }
-        throw 'and error occured! (probably because the argument was not a number)';
+        throw new SketchException('and error occured! (probably because the argument was not a number)');
     };
 
     /**
-     * Return the total rotation of the stroke from start to end points
+     * Return the total rotation of the stroke from start to end points.
      *
-     * @return total rotation of the stroke
+     * @return {Number} total rotation of the stroke.
      */
     SrlStroke.prototype.getRotationSum = function() {
         var p = this.removeCoordinateDuplicates();
@@ -547,7 +593,9 @@ define([ './../generated_proto/sketch', // protoSketch
         var lastrot = Number.NaN;
         for (var i = 1; i < p.length - 2; i++) {
             var rot = this.rotationAtAPoint(p, i);
-            if (lastrot === Number.NaN) lastrot = rot;
+            if (lastrot === Number.NaN) {
+                lastrot = rot;
+            }
             while ((i > 0) && (rot - lastrot > Math.PI)) {
                 rot = rot - 2 * Math.PI;
             }
@@ -560,9 +608,9 @@ define([ './../generated_proto/sketch', // protoSketch
     };
 
     /**
-     * Return the absolute rotation of the stroke from start to end points
+     * Return the absolute rotation of the stroke from start to end points.
      *
-     * @return total absolute rotation of the stroke
+     * @return {Number}  total absolute rotation of the stroke.
      */
     SrlStroke.prototype.getRotationAbsolute = function() {
         var p = this.removeCoordinateDuplicates();
@@ -570,7 +618,9 @@ define([ './../generated_proto/sketch', // protoSketch
         var lastrot = Number.NaN;
         for (var i = 1; i < p.length - 2; i++) {
             var rot = this.rotationAtAPoint(p, i);
-            if (lastrot === Number.NaN) lastrot = rot;
+            if (lastrot === Number.NaN) {
+                lastrot = rot;
+            }
             while ((i > 0) && (rot - lastrot > Math.PI)) {
                 rot = rot - 2 * Math.PI;
             }
@@ -585,7 +635,7 @@ define([ './../generated_proto/sketch', // protoSketch
     /**
      * Return the squared rotation of the stroke from start to end points
      *
-     * @return total squared rotation of the stroke
+     * @return {Number}  total squared rotation of the stroke.
      */
     SrlStroke.prototype.getRotationSquared = function() {
         var p = this.removeCoordinateDuplicates();
@@ -593,7 +643,9 @@ define([ './../generated_proto/sketch', // protoSketch
         var lastrot = Number.NaN;
         for (var i = 1; i < p.length - 2; i++) {
             var rot = this.rotationAtAPoint(p, i);
-            if (lastrot === Number.NaN) lastrot = rot;
+            if (lastrot === Number.NaN) {
+                lastrot = rot;
+            }
             while ((i > 0) && (rot - lastrot > Math.PI)) {
                 rot = rot - 2 * Math.PI;
             }

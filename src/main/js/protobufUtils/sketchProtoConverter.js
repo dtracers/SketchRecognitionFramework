@@ -4,7 +4,7 @@
 define([ './../sketchLibrary/ProtoSketchFramework', // ProtoSketchFramework
     './../protobufUtils/classCreator', // protobufUtils
     './../sketchLibrary/SketchLibraryException', // SketchException
-    "require" // require
+    'require' // require
     ], function(
     ProtoSketchFramework,
     protobufUtils,
@@ -38,6 +38,7 @@ define([ './../sketchLibrary/ProtoSketchFramework', // ProtoSketchFramework
     }
     protobufUtils.Inherits(ProtobufDecodingException, SketchException);
 
+    /* jshint ignore:start */
     /**
      * Decodes the data and preserves the bytebuffer for later use.
      *
@@ -82,6 +83,7 @@ define([ './../sketchLibrary/ProtoSketchFramework', // ProtoSketchFramework
         }
         return decoded;
     };
+    /* jshint ignore:end */
 
     /**
      * Loads the circular dependencies.
@@ -165,7 +167,7 @@ define([ './../sketchLibrary/ProtoSketchFramework', // ProtoSketchFramework
         } else if (subObject instanceof StrokeMessage) {
             return SrlStroke.createFromProtobuf(subObject);
         } else {
-            throw "Given object is not an instance of an srlObject " + (typeof subObject);
+            throw 'Given object is not an instance of an srlObject ' + (typeof subObject);
         }
     };
 

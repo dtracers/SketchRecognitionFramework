@@ -24,10 +24,10 @@ define([ './../generated_proto/sketch', // protoSketch
      *
      * ******************************
      *
-     * @param {Number} x - The default x to start with.
-     * @param {Number} y - The default y to start with.
+     * @param {Number} initialX - The default x to start with.
+     * @param {Number} initialY - The default y to start with.
      */
-    function SrlPoint(x, y) {
+    function SrlPoint(initialX, initialY) {
         this.superConstructor();
 
         /**
@@ -53,12 +53,12 @@ define([ './../generated_proto/sketch', // protoSketch
          * Holds an history list of the x points Purpose is so that we can redo and
          * undo and go back to the original points
          */
-        var m_xList = new Array();
+        var m_xList = [];
         /**
          * Holds a history list of the y points Purpose is so that we can redo and
          * undo and go back to the original points
          */
-        var m_yList = new Array();
+        var m_yList = [];
         /**
          * A counter that keeps track of where you are in the history of points
          */
@@ -72,14 +72,14 @@ define([ './../generated_proto/sketch', // protoSketch
          * @param {Number} y - The new y location for the point.
          */
         this.setP = function(x, y) {
-            if (typeof x === "number" && typeof y === "number") {
+            if (typeof x === 'number' && typeof y === 'number') {
                 m_xList.push(x);
                 m_yList.push(y);
                 m_currentElement = m_xList.length - 1;
                 this.x = this.getX();
                 this.y = this.getY();
             } else {
-                throw "arguments of .setP must be 'number'";
+                throw 'arguments of .setP must be "number"';
             }
         };
 
@@ -89,8 +89,8 @@ define([ './../generated_proto/sketch', // protoSketch
          * @param {Number} x - The initial x point
          * @param {Number} y - The initial y point
          */
-        if (x != undefined && y != undefined) {
-            this.setP(x, y);
+        if (!protobufUtils.isUndefined(initialX) && !protobufUtils.isUndefined(initialY)) {
+            this.setP(initialX, initialY);
         }
 
         /**
@@ -123,12 +123,12 @@ define([ './../generated_proto/sketch', // protoSketch
             if (point instanceof SrlPoint) {
                 var distance = this.distance(point.getX(), point.getY());
                 var timeDiff = point.getTime() - this.getTime();
-                if (timeDiff == 0) {
+                if (timeDiff === 0) {
                     return false;
                 }
                 this.speed = distance / timeDiff;
                 return true;
-            } else if (typeof point === 'Number') {
+            } else if (typeof point === 'number') {
                 this.speed = point;
                 return true;
             } else {
@@ -143,12 +143,12 @@ define([ './../generated_proto/sketch', // protoSketch
          * @param {Number} y - New initial y location.
          */
         this.setOrigP = function(x, y) {
-            if (typeof x === "number" && typeof y === "number") {
+            if (typeof x === 'number' && typeof y === 'number') {
                 m_xList = [];
                 m_yList = [];
                 this.setP(x, y);
             } else {
-                throw "arguments of .setP must be 'number'";
+                throw 'arguments of .setP must be "number"';
             }
         };
 
@@ -222,7 +222,7 @@ define([ './../generated_proto/sketch', // protoSketch
      * @throws {SketchException} This method is not supported.
      */
     SrlPoint.prototype.setX = function(x) {
-        throw new SketchException("can't call set x must call setP");
+        throw new SketchException('can\'t call set x must call setP');
     };
 
     /**
@@ -232,7 +232,7 @@ define([ './../generated_proto/sketch', // protoSketch
      * @throws {SketchException} This method is not supported.
      */
     SrlPoint.prototype.setY = function(y) {
-        throw new SketchException("can't call set y must call setP");
+        throw new SketchException('can\'t call set y must call setP');
     };
 
     /**
@@ -282,9 +282,9 @@ define([ './../generated_proto/sketch', // protoSketch
      * </ol>
      *
      * @param {SrlPoint | Number} arg1 - A point that is being compared or the x position of a point being compared.
-     * @param {Number} arg2 - The Y coordinate of the first point being compared.
-     * @param {Number} arg3 - The X coordinate of the second point being compared.
-     * @param {Number} arg4 - The Y coordinate of the second point being compared.
+     * @param {Number} [arg2] - The Y coordinate of the first point being compared.
+     * @param {Number} [arg3] - The X coordinate of the second point being compared.
+     * @param {Number} [arg4] - The Y coordinate of the second point being compared.
      * @returns {Number} The distance between the two points.
      */
     SrlPoint.prototype.distance = function(arg1, arg2, arg3, arg4) {
@@ -304,7 +304,7 @@ define([ './../generated_proto/sketch', // protoSketch
              * @param y The y value of the other point
              * @return The distance
              */
-        } else if (typeof arg1 === "number" && typeof arg2 === "number" && arg3 === undefined && arg4 === undefined) {
+        } else if (typeof arg1 === 'number' && typeof arg2 === 'number' && arg3 === undefined && arg4 === undefined) {
             var xdiff = Math.abs(arg1 - this.getX());
             var ydiff = Math.abs(arg2 - this.getY());
             return Math.sqrt(xdiff * xdiff + ydiff * ydiff);
@@ -316,13 +316,13 @@ define([ './../generated_proto/sketch', // protoSketch
              * @param y - The y value of the other point
              * @return the distance
              */
-        } else if (typeof arg1 === "number" && typeof arg2 === "number" &&
-                typeof arg3 === "number" && typeof arg4 === "number") {
-            var xdiff = arg1 - arg3;
-            var ydiff = arg2 - arg4;
-            return Math.sqrt(xdiff * xdiff + ydiff * ydiff);
+        } else if (typeof arg1 === 'number' && typeof arg2 === 'number' &&
+                typeof arg3 === 'number' && typeof arg4 === 'number') {
+            var xdiff2 = arg1 - arg3;
+            var ydiff2 = arg2 - arg4;
+            return Math.sqrt(xdiff2 * xdiff2 + ydiff2 * ydiff2);
         } else {
-            throw new SketchException("arguments of .distance are wrong");
+            throw new SketchException('arguments of .distance are wrong');
         }
     };
 

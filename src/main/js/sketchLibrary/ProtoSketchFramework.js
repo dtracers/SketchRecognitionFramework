@@ -12,5 +12,5 @@ define([ './../generated_proto/sketch', // protoSketch
         Sketch: sketch,
         Commands: Commands,
         GeneralProtos: sketchUtil
-    }
+    };
 });

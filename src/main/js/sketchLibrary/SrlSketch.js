@@ -155,7 +155,7 @@ define([ './../generated_proto/sketch', // protoSketch
      */
     SrlSketch.prototype.removeSubObjectByIdChain = function(idList) {
         if (idList.length <= 0) {
-            throw new SketchException("input list is empty");
+            throw new SketchException('input list is empty');
         }
         // there is only 1 item in the list so remove from top level
         if (idList.length === 1) {
@@ -178,7 +178,7 @@ define([ './../generated_proto/sketch', // protoSketch
      */
     SrlSketch.prototype.getSubObjectByIdChain = function(idList) {
         if (idList.length <= 0) {
-            throw "input list is empty";
+            throw new SketchException('input list is empty');
         }
         var returnShape = this.getSubObjectById(idList[0]);
         for (var i = 1; i < idList.length; i++) {
@@ -193,7 +193,7 @@ define([ './../generated_proto/sketch', // protoSketch
      * @returns {SketchMessage} A protobuf version of the sketch.
      */
     SrlSketch.prototype.sendToProtobuf = function() {
-        var protoSketch = new SketchMessage();
+        var protobufSketch = new SketchMessage();
 
         var subObjects = this.getList();
         var protoSubObjects = [];
@@ -201,8 +201,8 @@ define([ './../generated_proto/sketch', // protoSketch
         for (var i = 0; i < subObjects.length; i++) {
             protoSubObjects.push(objectConversionUtils.encodeSrlObject(subObjects[i]));
         }
-        protoSketch.sketch = protoSubObjects;
-        return protoSketch;
+        protobufSketch.sketch = protoSubObjects;
+        return protobufSketch;
     };
     return SrlSketch;
 });

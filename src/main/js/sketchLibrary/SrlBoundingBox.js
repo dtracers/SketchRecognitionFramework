@@ -33,6 +33,16 @@ define([ './../generated_proto/sketch', // protoSketch
         var lastIndex;
 
         /**
+         * Makes the rectangle coordinates the same as the extreme coordinates.
+         */
+        var sync = function() {
+            this.setX(internalLeft);
+            this.setY(internalTop);
+            this.setWidth(internalRight - internalLeft);
+            this.setHeight(internalBottom - internalTop);
+        }.bind(this);
+
+        /**
          * Expands the box if the given coordinate is outside of the current bounds;
          *
          * @param {Number} newX - The coordinate in the x plane.
@@ -110,16 +120,6 @@ define([ './../generated_proto/sketch', // protoSketch
             internalBottom += pixels;
             sync();
         };
-
-        /**
-         * Makes the rectangle coordinates the same as the extreme coordinates.
-         */
-        var sync = function() {
-            this.setX(internalLeft);
-            this.setY(internalTop);
-            this.setWidth(internalRight - internalLeft);
-            this.setHeight(internalBottom - internalTop);
-        }.bind(this);
 
         /**
          * Returns the extreme values that make up this {@code SrlBoundingBox}.

@@ -47,5 +47,5 @@ define([], function() {
         removeObjectFromArray: removeObjectFromArray,
         removeObjectByIndex: removeObjectByIndex,
         isArray: isArray
-    }
+    };
 });

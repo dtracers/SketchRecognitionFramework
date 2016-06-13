@@ -1,6 +1,15 @@
 define([ 'stacktrace-js' ], function(StackTrace) {
 
     /**
+     * Generic error from stack trace creation.
+     *
+     * @param {Error} err - error.
+     */
+    var errback = function(err) {
+        console.log(err.message);
+    };
+
+    /**
      * Defines the base exception class that can be extended by all other exceptions.
      *
      * @class SketchLibraryException
@@ -30,7 +39,12 @@ define([ 'stacktrace-js' ], function(StackTrace) {
      * Assigns the stacktrace object to an existing stacktrace.
      */
     SketchLibraryException.prototype.createStackTrace = function() {
-        this.stackTrace = StackTrace();
+        this.stackTrace = StackTrace.getSync();
+
+        // does some much better resolving of stack frames,
+        StackTrace.get().then(function(stackframes) {
+            this.stackTrace = stackframes;
+        }).catch(errback);
     };
 
     /**
@@ -56,7 +70,7 @@ define([ 'stacktrace-js' ], function(StackTrace) {
      * Used to log the stacktrace object in BaseException.
      */
     SketchLibraryException.prototype.printStackTrace = function() {
-        if (typeof this.stackTrace === "undefined") {
+        if (typeof this.stackTrace === 'undefined') {
             this.createStackTrace();
         }
         console.log(this.stackTrace.join('\n\n'));
