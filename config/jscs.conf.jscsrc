@@ -87,7 +87,6 @@
         "checkTypes": "capitalizedNativeCase",
         "requireHyphenBeforeDescription": true,
         "requireNewlineAfterDescription": true,
-        "requireDescriptionCompleteSentence": true,
         "requireParamDescription": true,
         "requireReturnDescription": true
     }

@@ -24,9 +24,17 @@ define([ './../sketchLibrary/ProtoSketchFramework', // ProtoSketchFramework
     var SrlShape = undefined;
     var modulesLoaded = false;
 
+    /**
+     * Defines the base exception class that can be extended by all other exceptions.
+     *
+     * @class SketchLibraryException
+     * @param {String} message - The optional message of the exception.
+     * @param {Error | SketchLibraryException} cause - The optional cause of the exception.
+     * @constructor
+     */
     function ProtobufDecodingException(message, cause) {
-        this.name = 'ProtobufDecodingException';
         this.superConstructor(message, cause);
+        this.name = 'ProtobufDecodingException';
     }
     protobufUtils.Inherits(ProtobufDecodingException, SketchException);
 
@@ -75,6 +83,9 @@ define([ './../sketchLibrary/ProtoSketchFramework', // ProtoSketchFramework
         return decoded;
     };
 
+    /**
+     * Loads the circular dependencies.
+     */
     function loadModules() {
         if (protobufUtils.isUndefined(SrlPoint)) {
             SrlPoint = require('./../sketchLibrary/SrlPoint');
@@ -110,10 +121,10 @@ define([ './../sketchLibrary/ProtoSketchFramework', // ProtoSketchFramework
     };
 
     /**
-     * Used locally to encode an SRL_Object into its protobuf type.
+     * Used locally to encode an SrlObject into its protobuf type.
      *
-     * @param {SRL_Object} object - the object that is being turned into its proto type.
-     * @return {ProtoSrlObject} The protobuf form of an SRL_Object.
+     * @param {SrlObject} object - the object that is being turned into its proto type.
+     * @return {ProtoSrlObject} The protobuf form of an SrlObject.
      */
     function encodeSrlObject(object) {
         if (!modulesLoaded) {
@@ -135,6 +146,9 @@ define([ './../sketchLibrary/ProtoSketchFramework', // ProtoSketchFramework
 
     /**
      * Takes in a potential protobuf object and converts it to the upgraded version.
+     *
+     * @param {SrlObject|SrlStorke|SrlShape} subObject - The object that is being turned into its proto type.
+     * @return {ProtoSrlObject|SrlStroke|SrlShape} The protobuf form of an SrlObject.
      */
     var convertToUpgradedSketchObject = function(subObject) {
         if (!modulesLoaded) {

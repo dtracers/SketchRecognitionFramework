@@ -461,7 +461,7 @@ define([ './../generated_proto/sketch', // protoSketch
          var points = [];
          for (var i = 0; i < points.length; i++) {
          if (points.length > 0) {
-         if(points[points.size()-1].getTime() === p.getTime()){
+         if (points[points.size()-1].getTime() === p.getTime()){
          continue; } //
          }
          points.push(points[i]);
@@ -507,7 +507,7 @@ define([ './../generated_proto/sketch', // protoSketch
          for (var i = 0; i < p.length - 1; i++) {
          deltaX = p[i + 1].getX() - p[i].getX();
          deltaY = p[i + 1].getY() - p[i].getY();
-         // deltaT = p.get(i+1).getTime()-p.get(i).getTime();
+         // deltaT = p.get(i +1).getTime()-p.get(i).getTime();
          var speed = (Math.pow(deltaX, 2) + Math.pow(deltaY, 2)) / Math.pow(deltaT, 2);
          if (speed > max) max = speed;
          }

@@ -57,64 +57,6 @@ define([ './../generated_proto/sketch', // protoSketch
         this.superConstructor();
 
         /**
-         * Returns the center x of a shape.
-         *
-         * @return {Number} center x of a shape
-         */
-        this.getCenterX = function() {
-            return (this.getMinX() + this.getMaxX()) / 2.0;
-        };
-
-        /**
-         * Returns the center y of a shape
-         *
-         * @return {Number} center y of a shape
-         */
-        this.getCenterY = function() {
-            return (this.getMinY() + this.getMaxY()) / 2.0;
-        };
-
-        /**
-         * Returns the width of the object
-         *
-         * @return the width of the object
-         */
-        this.getWidth = function() {
-            return this.getBoundingBox().getWidth();// getMaxX() - getMinX();
-        };
-
-        /**
-         * Returns the height of the object
-         *
-         * @return the height of the object
-         */
-        this.getHeight = function() {
-            return this.getBoundingBox().getHeight();// getMaxY() - getMinY();
-        };
-
-        /**
-         * Returns the length times the height See also getLengthOfDiagonal() return
-         * area of shape
-         */
-        this.getArea = function() {
-            return this.getHeight() * this.getWidth();
-        };
-
-        this.getLengthOfDiagonal = boundingBox.getLengthOfDiagonal.bind(boundingBox);
-
-        /**
-         * This function just returns the same thing as the length of the diagonal
-         * as it is a good measure of size.
-         *
-         * @return size of the object.
-         */
-        this.getSize = function() {
-            return this.getLengthOfDiagonal();
-        };
-
-        this.getBoundingBoxDiagonalAngle = boundingBox.getBoundingBoxDiagonalAngle.bind(boundingBox);
-
-        /**
          * Gets the bounding box of the object.
          *
          * @return {SrlBoundingBox} the bounding box of the object
@@ -124,39 +66,11 @@ define([ './../generated_proto/sketch', // protoSketch
         };
 
         /**
-         * @returns {Number} the minimum x value in an object
-         */
-        this.getMinX = function() {
-            return boundingBox.getLeft();// minx;
-        };
-
-        /**
-         * @return {Number} minimum y value in an object
-         */
-        this.getMinY = function() {
-            return boundingBox.getTop();// miny;
-        };
-
-        /**
-         * @return {Number} maximum x value in an object
-         */
-        this.getMaxX = function() {
-            return boundingBox.getRight();// maxx;
-        };
-
-        /**
-         * @return {Number} maximum x value in an object
-         */
-        this.getMaxY = function() {
-            return boundingBox.getBottom();
-        };
-
-        /**
          * Adds a subObject to this object.
          *
          * If proto objects are added they are automatically converted to this libraryies version of the proto object.
          *
-         * @param {SrlStroke | SrlShape | SrlObject} subObject
+         * @param {SrlStroke | SrlShape | SrlObject} subObject - The sub object that is being added to this shape.
          */
         this.add = function(subObject) {
             var upgradedObject = objectConversionUtils.convertToUpgradedSketchObject(subObject);
@@ -169,24 +83,29 @@ define([ './../generated_proto/sketch', // protoSketch
 
         /**
          * Given an object, remove this instance of the object.
+         *
+         * @param {SrlStroke | SrlShape | SrlObject} srlObject - The sub object that is being removed from this shape.
          */
         this.removeSubObject = function(srlObject) {
             return arrayUtils.removeObjectFromArray(upgradedSubComponents, srlObject);
         };
 
         /**
-         * Gets the list of subobjects
+         * Gets the list of subObjects.
          *
-         * @return {Array<SrlObject>} list of objects that make up this object
+         * @return {Array<SrlObject>} list of objects that make up this object.
          */
         this.getSubObjects = function() {
             return upgradedSubComponents;
         };
 
+        /**
+         * @returns {String} a String representation of the objects.
+         */
         this.toString = function() {
             return "id: " + this.getId() + '\n' +
                 'name:' + this.getName() + '\n' +
-                'boundingBox: ' +boundingBox + '\n' +
+                'boundingBox: ' + boundingBox + '\n' +
                 'subComponents' + upgradedSubComponents + '\n'
         }
     }
@@ -196,11 +115,11 @@ define([ './../generated_proto/sketch', // protoSketch
      * OBJECT METHODS
      *************************************/
 
-
     /**
      * Goes through every object in this list of objects. (Brute force).
      *
-     * @return {SrlShape | SrlStroke} The object if it exist, returns false otherwise.
+     * @param {String} objectId - The id of the subObject that is being looked for.
+     * @return {SrlShape | SrlStroke | undefined} The object if it exist, returns undefined otherwise.
      */
     SrlShape.prototype.getSubObjectById = function(objectId) {
         var upgradedSubComponents = this.getSubObjects();
@@ -216,7 +135,8 @@ define([ './../generated_proto/sketch', // protoSketch
     /**
      * Goes through every object in this list of objects. (Brute force).
      *
-     * @return {SrlShape | SrlStroke} The object if it exist, returns false otherwise.
+     * @param {String} objectId - The id of the subObject that is being looked for.
+     * @return {SrlShape | SrlStroke | undefined} The object if it exist, returns undefined otherwise.
      */
     SrlShape.prototype.removeSubObjectById = function(objectId) {
         var upgradedSubComponents = this.getSubObjects();
@@ -229,6 +149,11 @@ define([ './../generated_proto/sketch', // protoSketch
     };
 
     /**
+     * Gets an object by its id chain.
+     *
+     * An id chain is a list of ids that are used to navigate the object tree.
+     *
+     * @param {IdChain | Array<String>} idList - The idChain of the subObject that is being looked for.
      * @return {SrlShape | SrlStroke} The object that is a result of the given IdChain.
      */
     SrlShape.prototype.getSubObjectByIdChain = function(idList) {
@@ -238,6 +163,10 @@ define([ './../generated_proto/sketch', // protoSketch
         var returnShape = this.getSubObjectById(idList[0]);
         for (var i = 1; i < idList.length; i++) {
             returnShape = returnShape.getSubObjectById(idList[i]);
+            if (protobufUtils.isUndefined(returnShape)) {
+                throw new SketchException('The given sub object does not exist in id chain with id: ' + idList[i] +
+                    'it navigated ' + i + 'objects in depth before finding one that did not exist');
+            }
         }
         return returnShape;
     };
@@ -274,7 +203,115 @@ define([ './../generated_proto/sketch', // protoSketch
     };
 
     /**
-     * Static function that returns an {@link SRL_Shape}.
+     * Returns the center x of a shape using the bounding box coordinates.
+     *
+     * NOTE: this is not the averaged center.
+     *
+     * @return {Number} center x of a shape.
+     */
+    SrlShape.prototype.getCenterX = function() {
+        return (this.getMinX() + this.getMaxX()) / 2.0;
+    };
+
+    /**
+     * Returns the center y of a shape using the bounding box coordinates.
+     *
+     * NOTE: this is not the averaged center.
+     *
+     * @return {Number} center y of a shape.
+     */
+    SrlShape.prototype.getCenterY = function() {
+        return (this.getMinY() + this.getMaxY()) / 2.0;
+    };
+
+    /**
+     * Returns the width of the object.
+     *
+     * @return {Number} The width of the object.
+     */
+    SrlShape.prototype.getWidth = function() {
+        return this.getBoundingBox().getWidth();// getMaxX() - getMinX();
+    };
+
+    /**
+     * Returns the height of the object.
+     *
+     * @return {Number} The height of the object.
+     */
+    SrlShape.prototype.getHeight = function() {
+        return this.getBoundingBox().getHeight();// getMaxY() - getMinY();
+    };
+
+    /**
+     * Returns the length times the height.
+     *
+     * @return {Number} area of shape.
+     */
+    SrlShape.prototype.getArea = function() {
+        return this.getBoundingBox().getArea();
+    };
+
+    /**
+     * @returns {Number} the minimum x value in an object
+     */
+    SrlShape.prototype.getMinX = function() {
+        return this.getBoundingBox().getLeft();// minx;
+    };
+
+    /**
+     * @return {Number} minimum y value in an object
+     */
+    SrlShape.prototype.getMinY = function() {
+        return this.getBoundingBox().getTop();// miny;
+    };
+
+    /**
+     * @return {Number} maximum x value in an object
+     */
+    SrlShape.prototype.getMaxX = function() {
+        return this.getBoundingBox().getRight();// maxx;
+    };
+
+    /**
+     * @return {Number} maximum x value in an object
+     */
+    SrlShape.prototype.getMaxY = function() {
+        return this.getBoundingBox().getBottom();
+    };
+
+    /**
+     * This returns the length of the diagonal of the bounding box. This might
+     * be a better measure of perceptual size than area.
+     *
+     * @return {Number} Euclidean distance of bounding box diagonal.
+     */
+    SrlShape.prototype.getLengthOfDiagonal = function() {
+        return this.getBoundingBox().getLengthOfDiagonal();
+    };
+
+    /**
+     * @return {Number} Angle of the diagonal of the bounding box of the shape.
+     */
+    SrlShape.prototype.getBoundingBoxDiagonalAngle = function() {
+        return this.getBoundingBox().getBoundingBoxDiagonalAngle();
+    };
+
+    /**
+     * This function just returns the same thing as the length of the diagonal
+     * as it is a good measure of size.
+     *
+     * @return {Number} Size of the object.
+     */
+    SrlShape.prototype.getSize = function() {
+        return this.getLengthOfDiagonal();
+    };
+
+    /**************************************
+     * PROTOBUF METHODS
+     *************************************/
+
+    /**
+     * Static function that returns an {@link SrlShape}.
      *
      * @param {ProtoSrlShape} shape - The proto object that is being turned into a sketch object.
      */
@@ -299,6 +336,8 @@ define([ './../generated_proto/sketch', // protoSketch
 
     /**
      * Creates an SRL protobuf version of a shape.
+     *
+     * @returns {ShapeMessage} A protobuf version of the shape.
      */
     SrlShape.prototype.sendToProtobuf = function() {
         var proto = new ShapeMessage();
@@ -326,9 +365,10 @@ define([ './../generated_proto/sketch', // protoSketch
     };
 
     /**
-     * Converts an array buffer to an upgraded SrlShape
-     * @param {ArrayBuffer} data
-     * @return {SrlShape}
+     * Converts an array buffer to an upgraded SrlShape.
+     *
+     * @param {ArrayBuffer} data - Byte data of the point.
+     * @return {SrlPoint} A new object decoded from the binary data.
      */
     SrlShape.decode = function(data) {
         return SrlShape.createFromProtobuf(objectConversionUtils.decode(data, ShapeMessage));
@@ -337,10 +377,12 @@ define([ './../generated_proto/sketch', // protoSketch
     /**
      * Creates a byte version of the protobuf data.
      *
-     * @return {ArrayBuffer}
+     * @return {ArrayBuffer} A binary version of the point.
      */
     SrlShape.prototype.toArrayBuffer = function() {
         return this.sendToProtobuf().toArrayBuffer();
     };
+
+
     return SrlShape;
 });

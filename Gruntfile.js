@@ -38,7 +38,7 @@ module.exports = function(grunt) {
         jshint: {
             options: {
                 jshintrc: 'config/.jshintrc',
-                ignores: [ 'src/main/js/utilities/libraries/**/*.js', 'src/test/js/testUtilities/**/*.js' ],
+                ignores: [ 'src/main/js/utilities/libraries/**/*.js', 'src/test/js/testUtilities/**/*.js', 'src/main/js/generated_proto/**/*.js' ],
                 globals: {
                     module: true
                 },
@@ -46,7 +46,7 @@ module.exports = function(grunt) {
                 reporterOutput: 'target/jshint.xml'
             },
             files: [ 'Gruntfile.js', 'src/main/js/**/*.js', 'src/test/js/**/*.js',
-                '!src/main/js/utilities/libraries/**/*.js', '!src/test/js/**/*.js', '!src/main/js/sketching/srl/objects/**/*.js' ]
+                '!src/main/js/utilities/libraries/**/*.js', '!src/test/js/**/*.js', '!src/main/js/generated_proto/**/*.js' ]
         },
         jscs: {
             src: '<%= jshint.files %>',

@@ -1,7 +1,3 @@
-/**
- * Created by David Windows on 5/17/2016.
- */
-
 define([], function() {
 
     /**
@@ -15,19 +11,24 @@ define([], function() {
     };
 
     /**
+     * Sets up inheritance for functions.
+     *
+     * {@code Inherits(SubClass, SuperClass);}
+     * Inside the sub class this method should be the first method called:
+     * {@code this.superConstructor(params)}.
+     *
      * @function Inherits
-     * sets up inheritance for functions
-     *
-     * this.Inherits(SuperClass); // super call inside object AND
-     * SubClass.Inherits(SuperClass);
-     *
-     * @param {*} Parent - The parent class.
+     * @param {*} Child - The class that is inheriting the super class.  It is the subclass.
+     * @param {*} Parent - The parent class. It is the super class.
      */
     var Inherits = function(Child, Parent) {
         var localScope = Child;
         localScope.prototype = new Parent();
         localScope.prototype.constructor = localScope;
 
+        /**
+         * Calls the parent class constructor.
+         */
         var callParent = function() {
             if (arguments.length >= 1) {
                 Parent.apply(this, arguments);
@@ -66,8 +67,9 @@ define([], function() {
     /**
      * Generates an rfc4122 version 4 compliant solution.
      *
-     * found at http://stackoverflow.com/a/2117523/2187510 and further improved at
-     * http://stackoverflow.com/a/8809472/2187510
+     * Found at {@link http://stackoverflow.com/a/2117523/2187510} and further improved at
+     * {@link http://stackoverflow.com/a/8809472/2187510}
+     *
      * @returns {String} A unique id.
      */
     function generateUuid() {
