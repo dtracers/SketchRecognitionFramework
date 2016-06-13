@@ -1,0 +1,12 @@
+{
+  "name": "coursesketchwebclient",
+  "version": "0.0.1",
+  "dependencies": {
+    "stacktrace-js": "stacktracejs/stacktrace.js#98574f0dfe3d831cde75772fd34e972e7b7f95f1",
+    "protobufjs": "trunerd/protobuf.js#75852bda552dd221b18f0026f8ae3db18e8324b0",
+    "bytebuffer": "5.0.1",
+    "long": "3.1.0",
+    "requirejs": "2.2.0"
+  },
+  "private": true
+}
