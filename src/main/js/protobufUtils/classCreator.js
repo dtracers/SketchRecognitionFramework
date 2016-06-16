@@ -3,11 +3,13 @@ define([], function() {
     /**
      * Returns true if an object is not defined.
      *
+     * This is if it is actually equal to undefined OR is null.
+     *
      * @param {Object} object - the object that is being tested.
      * @returns {Boolean} true if the object is not defined.  (Only not defined being null will return false)
      */
     var isUndefined = function(object) {
-        return typeof object === 'undefined';
+        return typeof object === 'undefined' || object == null;
     };
 
     /**
