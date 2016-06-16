@@ -6,7 +6,7 @@
         require.config({
             baseUrl: "/src",
             paths: {
-                "stacktrace-js": "/bower_components/stacktrace-js/dist/stacktrace.min",
+                "stacktrace": "/bower_components/stacktrace-js/dist/stacktrace.min",
                 "long": "/bower_components/long/dist/long",
                 "Long": "/bower_components/long/dist/long",
                 "bytebuffer": "/bower_components/bytebuffer/dist/bytebuffer",
@@ -15,8 +15,8 @@
             }
         });
 
-          require([ 'sketchLibrary/SrlPoint' ], function(SrlPoint) {
-              console.log(SrlPoint);
+          require([ 'protobufUtils/protobufUtils', 'sketchLibrary/SrlSketch' ], function(SrlSketch) {
+              console.log(SrlSketch);
           });
     </script>
 </head>

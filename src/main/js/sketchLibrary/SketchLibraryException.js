@@ -1,4 +1,4 @@
-define([ 'stacktrace-js' ], function(StackTrace) {
+define([ 'stacktrace' ], function(StackTrace) {
 
     /**
      * Generic error from stack trace creation.

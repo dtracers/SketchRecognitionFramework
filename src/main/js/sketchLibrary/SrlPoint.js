@@ -1,14 +1,15 @@
 define([ './../generated_proto/sketch', // protoSketch
-    './../protobufUtils/classCreator', // protobufUtils
-    './../protobufUtils/sketchProtoConverter', // objectConversionUtils
+    './../protobufUtils/protobufUtils', // protoUtils
     './SketchLibraryException' // SketchException
     ], function(
     protoSketch,
-    protobufUtils,
-    objectConversionUtils,
+    protoUtils,
     SketchException
     ) {
 
+    var protobufUtils = protoUtils.classUtils;
+    var objectConversionUtils = protoUtils.converterUtils;
+    var exceptionUtils = protoUtils.exceptionUtils;
     var sketch = protoSketch.protobuf.srl.sketch;
 
     var PointMessage = sketch.SrlPoint;
@@ -79,7 +80,7 @@ define([ './../generated_proto/sketch', // protoSketch
                 this.x = this.getX();
                 this.y = this.getY();
             } else {
-                throw 'arguments of .setP must be "number"';
+                throw new exceptionUtils.ArgumentException('arguments of .setP must be "number" x: ' + typeof x  + ' y: ' + typeof y);
             }
         };
 
@@ -132,7 +133,7 @@ define([ './../generated_proto/sketch', // protoSketch
                 this.speed = point;
                 return true;
             } else {
-                throw new SketchException('Invalid paramater given to set the speed');
+                throw new exceptionUtils.ArgumentException('Invalid paramater given to set the speed');
             }
         };
 
@@ -148,7 +149,7 @@ define([ './../generated_proto/sketch', // protoSketch
                 m_yList = [];
                 this.setP(x, y);
             } else {
-                throw 'arguments of .setP must be "number"';
+                throw new exceptionUtils.ArgumentException('arguments of .setP must be "number" x: ' + typeof x  + ' y: ' + typeof y);
             }
         };
 
@@ -222,7 +223,7 @@ define([ './../generated_proto/sketch', // protoSketch
      * @throws {SketchException} This method is not supported.
      */
     SrlPoint.prototype.setX = function(x) {
-        throw new SketchException('can\'t call set x must call setP');
+        throw new exceptionUtils.UnsupportedException('can\'t call set x must call setP');
     };
 
     /**
@@ -232,7 +233,7 @@ define([ './../generated_proto/sketch', // protoSketch
      * @throws {SketchException} This method is not supported.
      */
     SrlPoint.prototype.setY = function(y) {
-        throw new SketchException('can\'t call set y must call setP');
+        throw new exceptionUtils.UnsupportedException('can\'t call set y must call setP');
     };
 
     /**
@@ -322,7 +323,7 @@ define([ './../generated_proto/sketch', // protoSketch
             var ydiff2 = arg2 - arg4;
             return Math.sqrt(xdiff2 * xdiff2 + ydiff2 * ydiff2);
         } else {
-            throw new SketchException('arguments of .distance are wrong');
+            throw new exceptionUtils.ArgumentException('arguments of .distance are wrong');
         }
     };
 

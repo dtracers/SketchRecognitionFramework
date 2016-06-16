@@ -2,10 +2,18 @@ var Mocha = require('mocha'),
     fs = require('fs'),
     path = require('path');
 
+var requirejs = require('requirejs');
+
+requirejs.config({
+    paths: {
+        'stacktrace': '../../../node_modules/stacktrace-js/dist/stacktrace.min'
+    }
+});
+
 // Instantiate a Mocha instance.
 var mocha = new Mocha();
 
-var testDir = 'sketchLibrary'
+var testDir = 'sketchLibrary';
 
 // Add each .js file to the mocha instance
 fs.readdirSync(testDir).filter(function(file){

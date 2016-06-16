@@ -2,22 +2,22 @@
  * Created by David Windows on 5/17/2016.
  */
 define([ './../generated_proto/sketch', // protoSketch
-    './../protobufUtils/classCreator', // protobufUtils
-    './../protobufUtils/sketchProtoConverter', // objectConversionUtils
+    './../protobufUtils/protobufUtils', // protobufUtils
     './SketchLibraryException', // SketchException
     './SrlBoundingBox', // SrlBoundingBox
-    './SrlStroke', // SrlStroke
-    './ArrayUtils' // arrayUtils
+    './SrlStroke' // SrlStroke
 ], function(
     protoSketch,
-    protobufUtils,
-    objectConversionUtils,
+    protoUtils,
     SketchException,
     SrlBoundingBox,
-    SrlStroke,
-    arrayUtils
+    SrlStroke
 ) {
 
+    var protobufUtils = protoUtils.classUtils;
+    var objectConversionUtils = protoUtils.converterUtils;
+    var arrayUtils = protoUtils.arrayUtils;
+    var exceptionUtils = protoUtils.exceptionUtils;
     var sketch = protoSketch.protobuf.srl.sketch;
 
     var ShapeMessage = sketch.SrlShape;
@@ -159,7 +159,7 @@ define([ './../generated_proto/sketch', // protoSketch
      */
     SrlShape.prototype.getSubObjectByIdChain = function(idList) {
         if (idList.length <= 0) {
-            throw 'input list is empty';
+            throw new arrayUtils.ArrayException('input array is empty');
         }
         var returnShape = this.getSubObjectById(idList[0]);
         for (var i = 1; i < idList.length; i++) {

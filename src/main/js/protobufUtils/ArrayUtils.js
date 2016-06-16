@@ -1,4 +1,18 @@
-define([], function() {
+define([ './../sketchLibrary/SketchLibraryException', './classCreator' ], function(SketchException, protobufUtils) {
+
+    /**
+     * An exception for general problems with arrays.
+     *
+     * @param {String} message - The optional message of the exception.
+     * @param {Error | SketchLibraryException} cause - The optional cause of the exception.
+     * @constructor
+     * @extends SketchLibraryException
+     */
+    function ArrayException(message, cause) {
+        this.superConstructor(message, cause);
+        this.name = 'ArrayException';
+    }
+    protobufUtils.Inherits(ArrayException, SketchException);
 
     /**
      * Removes the object from an array.
@@ -46,6 +60,7 @@ define([], function() {
     return {
         removeObjectFromArray: removeObjectFromArray,
         removeObjectByIndex: removeObjectByIndex,
-        isArray: isArray
+        isArray: isArray,
+        ArrayException: ArrayException
     };
 });

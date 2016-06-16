@@ -2,19 +2,22 @@
  * Created by David Windows on 5/17/2016.
  */
 define([ './../generated_proto/sketch', // protoSketch
-    './../protobufUtils/classCreator', // protobufUtils
-    './../protobufUtils/sketchProtoConverter', // objectConversionUtils
+    './../protobufUtils/protobufUtils', // protoUtils
     './SketchLibraryException', // SketchException
     './SrlPoint', // SrlPoint
     './SrlBoundingBox' // SrlBoundingBox
 ], function(
     protoSketch,
-    protobufUtils,
-    objectConversionUtils,
+    protoUtils,
     SketchException,
     SrlPoint,
     SrlBoundingBox
 ) {
+
+    var protobufUtils = protoUtils.classUtils;
+    var objectConversionUtils = protoUtils.converterUtils;
+    var arrayUtils = protoUtils.arrayUtils;
+    var exceptionUtils = protoUtils.exceptionUtils;
 
     var sketch = protoSketch.protobuf.srl.sketch;
 
@@ -116,7 +119,7 @@ define([ './../generated_proto/sketch', // protoSketch
     SrlStroke.prototype.getPoint = function(i) {
         if (typeof i === 'number') {
             if (i >= this.points.length || i < 0) {
-                throw new SketchException('Index out of bounds ' + i + ' is not in bounds [0 - ' + this.points.length + ' ]');
+                throw new arrayUtils.ArrayException('Index out of bounds ' + i + ' is not in bounds [0 - ' + this.points.length + ' ]');
             }
             return this.points[i];
         }
@@ -348,7 +351,7 @@ define([ './../generated_proto/sketch', // protoSketch
             var hypotenuse = Math.sqrt(sectionWidth * sectionWidth + sectionHeight * sectionHeight);
             return sectionWidth / hypotenuse;
         }
-        throw '.getStartAngleCosine needs an int argument';
+        throw new exceptionUtils.ArgumentException('.getStartAngleCosine needs a number argument');
     };
 
     /**
@@ -480,7 +483,7 @@ define([ './../generated_proto/sketch', // protoSketch
         if (this.getPoints().length === 0) {
             return Number.NaN;
         }
-        throw new SketchException('unspoorted function call: "getTotalTime"');
+        throw new exceptionUtils.UnsupportedException('unsupported function call: "getTotalTime"');
         // return this.getLastPoint().getTime()-this.getFirstPoint().getTime();
     };
 
@@ -495,7 +498,7 @@ define([ './../generated_proto/sketch', // protoSketch
         if (this.points.length <= 0) {
             return [];
         }
-        throw new SketchException('unspoorted function call: "removeTimeDuplicates"');
+        throw new exceptionUtils.UnsupportedException('unsupported function call: "removeTimeDuplicates"');
         /*
          var points = [];
          for (var i = 0; i < points.length; i++) {
@@ -544,7 +547,7 @@ define([ './../generated_proto/sketch', // protoSketch
         if (this.getPoints().length === 0) {
             return Number.NaN;
         }
-        throw new SketchException('unspoorted function call: "getMaximumSpeed"');
+        throw new exceptionUtils.UnsupportedException('unsupported function call: "getMaximumSpeed"');
         /*
          if (this.getPoints().length === 0) return Number.NaN;
          var max = 0;
@@ -571,6 +574,9 @@ define([ './../generated_proto/sketch', // protoSketch
      * @return {Number} The rotation.
      */
     SrlStroke.prototype.rotationAtAPoint = function(startIndex) {
+        if (this.points.length === 0) {
+            throw new arrayUtils.ArrayException('can not call this method with an empty stroke');
+        }
         if (this.points[0] instanceof SrlPoint && typeof startIndex === 'number') {
             if (this.points.length < startIndex + 2) {
                 return Number.NaN;
@@ -579,7 +585,7 @@ define([ './../generated_proto/sketch', // protoSketch
             var my = this.points.get[startIndex + 1].getY() - this.points.get[startIndex].getY();
             return Math.atan2(my, mx);
         }
-        throw new SketchException('and error occured! (probably because the argument was not a number)');
+        throw new exceptionUtils.ArgumentException('Invalid arguments startIndex must be a number: ' + typeof startIndex);
     };
 
     /**

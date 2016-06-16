@@ -1,18 +1,19 @@
 define([ './../generated_proto/sketch', // protoSketch
-    './../protobufUtils/classCreator', // protobufUtils
-    './../protobufUtils/sketchProtoConverter', // objectConversionUtils
+    './../protobufUtils/protobufUtils', // protoUtils
     './SketchLibraryException', // SketchException
     './SrlBoundingBox', // SrlBoundingBox
-    './ArrayUtils' // arrayUtils
+    './SrlShape' // SrlBoundingBox
 ], function(
     protoSketch,
-    protobufUtils,
-    objectConversionUtils,
+    protoUtils,
     SketchException,
     SrlBoundingBox,
-    arrayUtils
+    SrlShape // This is included for completeness
 ) {
-
+    var protobufUtils = protoUtils.classUtils;
+    var objectConversionUtils = protoUtils.converterUtils;
+    var arrayUtils = protoUtils.arrayUtils;
+    var exceptionUtils = protoUtils.exceptionUtils;
     var sketch = protoSketch.protobuf.srl.sketch;
 
     var SketchMessage = sketch.SrlSketch;
@@ -44,7 +45,6 @@ define([ './../generated_proto/sketch', // protoSketch
          */
         this.add = function(srlObject) {
             var upgraded = objectConversionUtils.convertToUpgradedSketchObject(srlObject);
-            console.log('add id ', upgraded.getId());
             objectList.push(upgraded);
             objectIdMap.set(upgraded.getId(), upgraded);
         };
@@ -155,7 +155,7 @@ define([ './../generated_proto/sketch', // protoSketch
      */
     SrlSketch.prototype.removeSubObjectByIdChain = function(idList) {
         if (idList.length <= 0) {
-            throw new SketchException('input list is empty');
+            throw new arrayUtils.ArrayException('input list is empty');
         }
         // there is only 1 item in the list so remove from top level
         if (idList.length === 1) {
@@ -178,7 +178,7 @@ define([ './../generated_proto/sketch', // protoSketch
      */
     SrlSketch.prototype.getSubObjectByIdChain = function(idList) {
         if (idList.length <= 0) {
-            throw new SketchException('input list is empty');
+            throw new arrayUtils.ArrayException('input list is empty');
         }
         var returnShape = this.getSubObjectById(idList[0]);
         for (var i = 1; i < idList.length; i++) {
