@@ -2,7 +2,11 @@
   "name": "SketchRecognitionFramework",
   "version": "0.0.5",
   "dependencies": {
-    "stacktrace-js": "stacktracejs/stacktrace.js#98574f0dfe3d831cde75772fd34e972e7b7f95f1"
+    "stacktrace-js": "stacktracejs/stacktrace.js#98574f0dfe3d831cde75772fd34e972e7b7f95f1",
+    "node-define": "0.1.1",
+    "requirejs": "2.2.0",
+    "protobufjs": "5.0.1",
+    "node-amd-require": "0.2.2"
   },
   "devDependencies": {
     "grunt": "~0.4.2",
@@ -24,16 +28,11 @@
     "mocha": "2.3.3",
     "xunit-file": "0.0.9",
     "grunt-mkdir": "0.1.2",
-    "jquery": "2.1.4",
     "jsdom": "7.0.0",
     "barrier": "dtracers/node-barrier#v1.0.1",
     "chai": "*",
     "hooker": "0.2.3",
-    "protobufjs": "5.0.1",
     "grunt-exec": "0.4.6",
-    "requirejs": "2.2.0",
-    "node-define": "0.1.1",
-    "node-amd-require": "0.2.2",
     "babel-polyfill": "6.9.1"
   }
 }

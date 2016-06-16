@@ -9,7 +9,7 @@ define([], function() {
      * @returns {Boolean} true if the object is not defined.  (Only not defined being null will return false)
      */
     var isUndefined = function(object) {
-        return typeof object === 'undefined' || object == null;
+        return typeof object === 'undefined' || object === null;
     };
 
     /**
