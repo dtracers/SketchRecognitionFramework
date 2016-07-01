@@ -67,6 +67,14 @@ public interface RecognitionInterface {
     public void addTemplate(String templateId, Sketch.SrlInterpretation interpretation, Sketch.SrlStroke template) throws TemplateException;
 
     /**
+     * Adds a template that is used to immediately train a system.
+     *
+     * @param template The template that is being saved.
+     * @throws TemplateException Thrown if there is a recognition Problem.
+     */
+    public void trainTemplate(Sketch.RecognitionTemplate template) throws TemplateException;
+
+    /**
      * Recognizes the sketch as a list of changes producing a list of changes as a result.
      *
      * @param sketchId The Id that uniquely identifies a single sketch.
@@ -74,7 +82,7 @@ public interface RecognitionInterface {
      * @return A list representing the changes that occurred.
      * @throws RecognitionException Thrown if there is a recognition Problem.
      */
-    public Commands.SrlUpdateList recognize(String sketchId, Commands.SrlUpdateList updateList) throws RecognitionException;;
+    public Commands.SrlUpdateList recognize(String sketchId, Commands.SrlUpdateList updateList) throws RecognitionException;
 
     /**
      * Recognizes the sketch as a single entity producing a recognized sketch as a result.
@@ -87,6 +95,17 @@ public interface RecognitionInterface {
     public SrlSketch recognize(String sketchId, SrlSketch sketch) throws RecognitionException;
 
     /**
+     * Recognizes a template that is used to evaluate the sketch.
+     *
+     * @param sketchId The Id that uniquely identifies a single sketch.
+     * @param template The template that is being recognized.
+     * @return A list of interpretations representing the results.
+     * @throws RecognitionException Thrown if there is a recognition Problem.
+     */
+    public List<Sketch.SrlInterpretation> recognize(String sketchId, Sketch.RecognitionTemplate template)
+            throws RecognitionException;
+
+    /**
      * Generates other possible templates using this method.
      *
      * @param original The template that is modified to produce new similar templates.
@@ -94,4 +113,9 @@ public interface RecognitionInterface {
      * @throws RecognitionException Thrown if there is a recognition Problem.
      */
     public List<Sketch.RecognitionTemplate> generateTemplates(Sketch.RecognitionTemplate original) throws RecognitionException;
+
+    /**
+     * Called for an initialization or training to setup for recognition.
+     */
+    public void initialize();
 }
