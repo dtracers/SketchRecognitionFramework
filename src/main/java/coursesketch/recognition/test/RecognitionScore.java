@@ -10,7 +10,7 @@ import coursesketch.recognition.framework.exceptions.RecognitionException;
  * number of false negatives, true positives and true negatives
  */
 public class RecognitionScore {
-    private RecognitionInterface recognitionSystem;
+    private final RecognitionInterface recognitionSystem;
     private Exception exception;
     private boolean recognized;
     private double scoreValue;
@@ -18,7 +18,6 @@ public class RecognitionScore {
     private boolean notRecognized;
 
     public RecognitionScore(RecognitionInterface recognitionSystem) {
-
         this.recognitionSystem = recognitionSystem;
     }
 
@@ -56,5 +55,13 @@ public class RecognitionScore {
 
     public boolean isRecognized() {
         return recognized;
+    }
+
+    public Exception getException() {
+        return exception;
+    }
+
+    public RecognitionInterface getRecognitionSystem() {
+        return recognitionSystem;
     }
 }

@@ -17,4 +17,12 @@ public class RecognitionScoreMetrics {
     public int getNumberOfTrainingException() {
         return exceptions.size();
     }
+
+    public int getAverageScore() {
+        int score = 0;
+        for (RecognitionScore recognitionScore : recognitionScores) {
+            score += (recognitionScore.getScoreValue() / recognitionScores.size());
+        }
+        return score;
+    }
 }
