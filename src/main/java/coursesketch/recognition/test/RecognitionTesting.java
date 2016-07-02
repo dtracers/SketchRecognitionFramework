@@ -85,12 +85,11 @@ public class RecognitionTesting {
                     List<Sketch.SrlInterpretation>
                             recognize = recognitionSystem.recognize(testTemplate.getTemplateId(), testTemplate);
                     if (recognize == null) {
-                        score.setFailed(new RecognitionException("",
-                                new NullPointerException("List of returned interpretations is null")));
+                        score.setFailed(new NullPointerException("List of returned interpretations is null"));
                         continue;
                     }
                     generateScore(score, recognize, testTemplate.getInterpretation());
-                } catch (RecognitionException e) {
+                } catch (Exception e) {
                     score.setFailed(e);
                 }
                 recognitionScoreList.add(score);
@@ -116,7 +115,7 @@ public class RecognitionTesting {
             for (Sketch.RecognitionTemplate template : templates) {
                 try {
                     recognitionSystem.trainTemplate(template);
-                } catch (TemplateException e) {
+                } catch (Exception e) {
                     trainingExceptions.add(
                             new RecognitionTestException("Error with training template " + template.getTemplateId(),
                                     e, recognitionSystem));

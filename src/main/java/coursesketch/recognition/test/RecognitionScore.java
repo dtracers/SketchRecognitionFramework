@@ -28,7 +28,7 @@ public class RecognitionScore {
         this.templateId = templateId;
     }
 
-    public void setFailed(RecognitionException exception) {
+    public void setFailed(Exception exception) {
         this.exception = exception;
     }
 
