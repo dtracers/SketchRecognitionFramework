@@ -51,13 +51,19 @@ public class RecognitionScoreMetrics {
     public RecognitionMetric computeMetrics(List<RecognitionScore> recognitionScores) {
         double averageScore = 0;
         double averageScoreOfCorrect = 0;
-        int numberCorrect = 0;
+        double numberCorrect = 0;
+        double numTemplates = 0;
         List<RecognitionScore> nonRecognizedIds = new ArrayList<>();
         List<RecognitionScore> potentialMisRecognized = new ArrayList<>();
         List<Exception> recognitionException = new ArrayList<>();
         LOG.debug("Computing metrics");
         for (RecognitionScore recognitionScore : recognitionScores) {
-            averageScore += recognitionScore.getScoreValue()  / ((double) recognitionScores.size());
+            if (recognitionScore == null) {
+                LOG.debug("RECOGNITION SCORE IS NULL");
+                continue;
+            }
+            numTemplates++;
+            averageScore += recognitionScore.getScoreValue();
             if (recognitionScore.isRecognized()) {
                 averageScoreOfCorrect += recognitionScore.getScoreValue();
                 numberCorrect++;
@@ -72,9 +78,10 @@ public class RecognitionScoreMetrics {
                 recognitionException.add(recognitionScore.getException());
             }
         }
-        averageScoreOfCorrect /= (double) numberCorrect;
+        averageScore /= numTemplates;
+        averageScoreOfCorrect /= numberCorrect;
         LOG.debug("Finished Computing metrics");
         return new RecognitionMetric(averageScore, averageScoreOfCorrect,
-                numberCorrect, nonRecognizedIds, potentialMisRecognized, recognitionScores.size(), recognitionException);
+                (int) numberCorrect, nonRecognizedIds, potentialMisRecognized, (int) numTemplates, recognitionException);
     }
 }

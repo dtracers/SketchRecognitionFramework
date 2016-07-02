@@ -72,13 +72,12 @@ public class RecognitionTesting {
         return metrics;
     }
 
-
     private Map<RecognitionInterface, List<RecognitionScore>> recognizeAgainstTemplates(
             List<Sketch.RecognitionTemplate> testTemplates) {
         Map<RecognitionInterface, List<RecognitionScore>> scoreMap = new HashMap<>();
 
-        // For the specific number of theads needed
-        executor = Executors.newFixedThreadPool(Math.min(MAX_THREADS, Math.max(1, testTemplates.size() / 20)));
+        // For the specific number of threads needed
+        executor = Executors.newFixedThreadPool(Math.min(MAX_THREADS, Math.max(1, testTemplates.size() / 10)));
 
         LOG.debug("Running recognition test for {} templates", testTemplates.size());
         int percent = (int) Math.round(Math.max(1.0, testTemplates.size() / 100.0));
@@ -99,6 +98,7 @@ public class RecognitionTesting {
                                     recognize = recognitionSystem.recognize(testTemplate.getTemplateId(), testTemplate);
                             if (recognize == null) {
                                 score.setFailed(new NullPointerException("List of returned interpretations is null"));
+                                recognitionScoreList.add(score);
                                 return null;
                             }
                             generateScore(score, recognize, testTemplate.getInterpretation());
@@ -116,6 +116,7 @@ public class RecognitionTesting {
                 counter++;
             }
 
+            LOG.debug("Waiting for all tasks to finish");
             // Waits for the executor to finish
             for (Future taskFuture : taskFutures) {
                 try {
@@ -126,7 +127,7 @@ public class RecognitionTesting {
                     LOG.debug("EXECUTION EXCEPTION", e);
                 }
             }
-
+            LOG.debug("All recognition testing tasks have finished");
         }
         return scoreMap;
     }
