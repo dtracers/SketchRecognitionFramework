@@ -147,7 +147,7 @@ message RecognitionTemplate {
     /**
      * A list of intepretations this template applies to.
      */
-    repeated SrlInterpretation interpretation = 7;
+    repeated SrlInterpretation interpretations = 7;
 }
 
 /**
