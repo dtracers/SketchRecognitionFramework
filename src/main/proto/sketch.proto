@@ -131,7 +131,7 @@ message RecognitionTemplate {
         optional SrlShape shape = 3;
         optional SrlSketch sketch = 4;
     // }
-    optional SrlInterpretation interpretation = 5;
+    optional SrlInterpretation interpretation = 5; // DEPRECATED
 
     /**
      * How the template should be used for training.
@@ -143,6 +143,11 @@ message RecognitionTemplate {
         UNKNOWN = 0;
         NEGATIVE = -1;
     }
+
+    /**
+     * A list of intepretations this template applies to.
+     */
+    repeated SrlInterpretation interpretation = 7;
 }
 
 /**
