@@ -2,7 +2,6 @@ package coursesketch.recognition.test;
 
 import coursesketch.recognition.framework.RecognitionInterface;
 import coursesketch.recognition.framework.TemplateDatabaseInterface;
-import coursesketch.recognition.framework.exceptions.RecognitionException;
 import coursesketch.recognition.framework.exceptions.TemplateException;
 import protobuf.srl.sketch.Sketch;
 
@@ -11,6 +10,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.*;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,6 +27,9 @@ public class RecognitionTesting {
 
     private TemplateDatabaseInterface databaseInterface;
     private RecognitionInterface[] recognitionSystems;
+    private int MAX_THREADS = 500;
+
+    ExecutorService executor;
 
     /**
      *
@@ -68,9 +72,13 @@ public class RecognitionTesting {
         return metrics;
     }
 
+
     private Map<RecognitionInterface, List<RecognitionScore>> recognizeAgainstTemplates(
             List<Sketch.RecognitionTemplate> testTemplates) {
         Map<RecognitionInterface, List<RecognitionScore>> scoreMap = new HashMap<>();
+
+        // For the specific number of theads needed
+        executor = Executors.newFixedThreadPool(Math.min(MAX_THREADS, Math.max(1, testTemplates.size() / 100)));
 
         LOG.debug("Running recognition test for {} templates", testTemplates.size());
         int percent = (int) Math.round(Math.max(1.0, testTemplates.size() / 100.0));
@@ -79,25 +87,46 @@ public class RecognitionTesting {
             scoreMap.put(recognitionSystem, recognitionScoreList);
             int counter = 0;
             LOG.debug("testing recognition system: {}", recognitionSystem.getClass().getSimpleName());
+            List<Future> taskFutures = new ArrayList<>();
             for (Sketch.RecognitionTemplate testTemplate : testTemplates) {
-                RecognitionScore score = new RecognitionScore(recognitionSystem, testTemplate.getTemplateId());
-                try {
-                    List<Sketch.SrlInterpretation>
-                            recognize = recognitionSystem.recognize(testTemplate.getTemplateId(), testTemplate);
-                    if (recognize == null) {
-                        score.setFailed(new NullPointerException("List of returned interpretations is null"));
-                        continue;
+                final int thisCount = counter;
+                taskFutures.add(executor.submit(new Callable(){
+                    @Override
+                    public Object call() throws Exception {
+                        RecognitionScore score = new RecognitionScore(recognitionSystem, testTemplate.getTemplateId());
+                        try {
+                            List<Sketch.SrlInterpretation>
+                                    recognize = recognitionSystem.recognize(testTemplate.getTemplateId(), testTemplate);
+                            if (recognize == null) {
+                                score.setFailed(new NullPointerException("List of returned interpretations is null"));
+                                return null;
+                            }
+                            generateScore(score, recognize, testTemplate.getInterpretation());
+                        } catch (Exception e) {
+                            LOG.error("Excpetion occured while recognizering", e);
+                            score.setFailed(e);
+                        }
+                        recognitionScoreList.add(score);
+                        if (thisCount % percent == 0) {
+                            LOG.debug("gone through {} sketches, {} left", thisCount, testTemplates.size() - thisCount);
+                        }
+                        return null;
                     }
-                    generateScore(score, recognize, testTemplate.getInterpretation());
-                } catch (Exception e) {
-                    score.setFailed(e);
-                }
-                recognitionScoreList.add(score);
+                }));
                 counter++;
-                if (counter % percent == 0) {
-                    LOG.debug("gone through {} sketches, {} left", counter, testTemplates.size() - counter);
+            }
+
+            // Waits for the executor to finish
+            for (Future taskFuture : taskFutures) {
+                try {
+                    taskFuture.get();
+                } catch (InterruptedException e) {
+                    LOG.debug("INTERUPTIONS EXCEPTION", e);
+                } catch (ExecutionException e) {
+                    LOG.debug("EXECUTION EXCEPTION", e);
                 }
             }
+
         }
         return scoreMap;
     }
@@ -116,6 +145,7 @@ public class RecognitionTesting {
                 try {
                     recognitionSystem.trainTemplate(template);
                 } catch (Exception e) {
+                    LOG.error("Exception occured while training", e);
                     trainingExceptions.add(
                             new RecognitionTestException("Error with training template " + template.getTemplateId(),
                                     e, recognitionSystem));

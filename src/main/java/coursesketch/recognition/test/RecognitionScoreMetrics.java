@@ -28,6 +28,10 @@ public class RecognitionScoreMetrics {
         return exceptions.size();
     }
 
+    public List<Exception> getTrainingExceptions() {
+        return exceptions;
+    }
+
     public double getAverageScore() {
         double score = 0;
         for (RecognitionScore recognitionScore : recognitionScores) {
@@ -50,6 +54,7 @@ public class RecognitionScoreMetrics {
         int numberCorrect = 0;
         List<RecognitionScore> nonRecognizedIds = new ArrayList<>();
         List<RecognitionScore> potentialMisRecognized = new ArrayList<>();
+        List<Exception> recognitionException = new ArrayList<>();
         LOG.debug("Computing metrics");
         for (RecognitionScore recognitionScore : recognitionScores) {
             averageScore += recognitionScore.getScoreValue()  / ((double) recognitionScores.size());
@@ -63,10 +68,13 @@ public class RecognitionScoreMetrics {
             if (recognitionScore.isPotentialMissRecognized()) {
                 potentialMisRecognized.add(recognitionScore);
             }
+            if (recognitionScore.getException() != null) {
+                recognitionException.add(recognitionScore.getException());
+            }
         }
         averageScoreOfCorrect /= (double) numberCorrect;
         LOG.debug("Finished Computing metrics");
         return new RecognitionMetric(averageScore, averageScoreOfCorrect,
-                numberCorrect, nonRecognizedIds, potentialMisRecognized, recognitionScores.size());
+                numberCorrect, nonRecognizedIds, potentialMisRecognized, recognitionScores.size(), recognitionException);
     }
 }

@@ -12,16 +12,18 @@ public class RecognitionMetric {
     private final List<RecognitionScore> nonRecognizedIds;
     private final List<RecognitionScore> potentialMisRecognized;
     private int totalTemplates;
+    private List<Exception> recognitionException;
 
     public RecognitionMetric(double averageScore, double averageScoreOfCorrect, int numberCorrect,
                              List<RecognitionScore> nonRecognizedIds, List<RecognitionScore> potentialMisRecognized,
-                             int totalTemplates) {
+                             int totalTemplates, List<Exception> recognitionException) {
         this.averageScore = averageScore;
         this.averageScoreOfCorrect = averageScoreOfCorrect;
         this.numberCorrect = numberCorrect;
         this.nonRecognizedIds = nonRecognizedIds;
         this.potentialMisRecognized = potentialMisRecognized;
         this.totalTemplates = totalTemplates;
+        this.recognitionException = recognitionException;
     }
 
     public double getAverageScore() {
@@ -46,7 +48,7 @@ public class RecognitionMetric {
 
     public String toString() {
         return "Metrics: " +
-                "\n\tTotal Number of templates" +
+                "\n\tTotal Number of templates:" + totalTemplates +
                 "\n\tTotal Average Score:" + averageScore +
                 "\n\tCorrectness:" +
                 "\n\t\tNumber Correct: " + numberCorrect +
@@ -56,10 +58,15 @@ public class RecognitionMetric {
                 "\n\t\tNonRecognized Percentage: " + (((double) nonRecognizedIds.size())/ ((double) totalTemplates)) +
                 "\n\tFalse Positives:" +
                 "\n\t\tNumber of False Positives " + potentialMisRecognized.size() +
-                "\n\t\tNonRecognized Percentage: " + (((double) potentialMisRecognized.size())/ ((double) totalTemplates));
+                "\n\t\tNonRecognized Percentage: " + (((double) potentialMisRecognized.size())/ ((double) totalTemplates)) +
+                "\n\tNumber fo recognition exceptions: " + recognitionException.size();
     }
 
     public int getTotalTemplates() {
         return totalTemplates;
+    }
+
+    public List<Exception> getRecognitionExceptions() {
+        return recognitionException;
     }
 }
