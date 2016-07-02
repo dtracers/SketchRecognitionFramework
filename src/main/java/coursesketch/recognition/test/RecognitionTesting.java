@@ -78,7 +78,7 @@ public class RecognitionTesting {
         Map<RecognitionInterface, List<RecognitionScore>> scoreMap = new HashMap<>();
 
         // For the specific number of theads needed
-        executor = Executors.newFixedThreadPool(Math.min(MAX_THREADS, Math.max(1, testTemplates.size() / 100)));
+        executor = Executors.newFixedThreadPool(Math.min(MAX_THREADS, Math.max(1, testTemplates.size() / 20)));
 
         LOG.debug("Running recognition test for {} templates", testTemplates.size());
         int percent = (int) Math.round(Math.max(1.0, testTemplates.size() / 100.0));
