@@ -80,7 +80,7 @@ public class RecognitionTesting {
             int counter = 0;
             LOG.debug("testing recognition system: {}", recognitionSystem.getClass().getSimpleName());
             for (Sketch.RecognitionTemplate testTemplate : testTemplates) {
-                RecognitionScore score = new RecognitionScore(recognitionSystem);
+                RecognitionScore score = new RecognitionScore(recognitionSystem, testTemplate.getTemplateId());
                 try {
                     List<Sketch.SrlInterpretation>
                             recognize = recognitionSystem.recognize(testTemplate.getTemplateId(), testTemplate);
@@ -135,6 +135,8 @@ public class RecognitionTesting {
         double scoreValue = 1;
         int topGuesses = Math.min(5, recognize.size());
         int subtractAmount = 1/topGuesses;
+        score.setRecognizedInterpretations(recognize);
+        score.setCorrectInterpretations(interpretation);
         for (int i = 0; i < topGuesses; i++) {
             if (recognize.get(i).getLabel().equals(interpretation.getLabel())) {
                 score.setRecognized(true);

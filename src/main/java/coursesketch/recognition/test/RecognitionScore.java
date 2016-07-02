@@ -2,6 +2,9 @@ package coursesketch.recognition.test;
 
 import coursesketch.recognition.framework.RecognitionInterface;
 import coursesketch.recognition.framework.exceptions.RecognitionException;
+import protobuf.srl.sketch.Sketch;
+
+import java.util.List;
 
 /**
  * A score of the recognition system.
@@ -11,14 +14,18 @@ import coursesketch.recognition.framework.exceptions.RecognitionException;
  */
 public class RecognitionScore {
     private final RecognitionInterface recognitionSystem;
+    private String templateId;
     private Exception exception;
     private boolean recognized;
     private double scoreValue;
     private boolean potentialMissRecognized;
     private boolean notRecognized;
+    private List<Sketch.SrlInterpretation> recognizedInterpretations;
+    private Sketch.SrlInterpretation correctInterpretations;
 
-    public RecognitionScore(RecognitionInterface recognitionSystem) {
+    public RecognitionScore(RecognitionInterface recognitionSystem, String templateId) {
         this.recognitionSystem = recognitionSystem;
+        this.templateId = templateId;
     }
 
     public void setFailed(RecognitionException exception) {
@@ -63,5 +70,25 @@ public class RecognitionScore {
 
     public RecognitionInterface getRecognitionSystem() {
         return recognitionSystem;
+    }
+
+    public String getTemplateId() {
+        return templateId;
+    }
+
+    public void setRecognizedInterpretations(List<Sketch.SrlInterpretation> recognizedInterpretations) {
+        this.recognizedInterpretations = recognizedInterpretations;
+    }
+
+    public void setCorrectInterpretations(Sketch.SrlInterpretation correctInterpretations) {
+        this.correctInterpretations = correctInterpretations;
+    }
+
+    public Sketch.SrlInterpretation getCorrectInterpretations() {
+        return correctInterpretations;
+    }
+
+    public List<Sketch.SrlInterpretation> getRecognizedInterpretations() {
+        return recognizedInterpretations;
     }
 }
