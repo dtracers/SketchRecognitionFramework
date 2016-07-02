@@ -4,6 +4,14 @@ message SrlSketch {
     optional string id = 1;
     optional string domainId = 4; // used to find the domain for recognition
     repeated SrlObject sketch = 5;
+
+    optional string author = 6;
+    optional Pen pen = 7;
+    optional Device device = 8;
+    repeated SketchAttribute attributes = 9;
+    optional string unit = 10;
+    repeated SrlPoint points = 11;
+    repeated SrlSubStroke subStrokes = 12;
 }
 
 /**
@@ -31,9 +39,11 @@ message SrlShape {
     required uint64 time = 2;
     optional string name = 3;
     optional bool isUserCreated = 4;
-    repeated SrlInterpretation interpretations = 5;
+    repeated SrlInterpretation interpretations = 5; // DEPRECATED
     repeated SrlObject subComponents = 6;
     optional SrlBoundingBox boundingbox = 7;
+    optional SrlInterpretation interpretation = 8;
+    repeated SketchAttribute attributes = 9;
 }
 
 message SrlStroke {
@@ -42,6 +52,26 @@ message SrlStroke {
     optional string name = 3;
     repeated SrlPoint points = 4;
     optional SrlBoundingBox boundingbox = 5;
+    optional string author = 6;
+    optional Pen pen = 7;
+    optional Device device = 8;
+    repeated SketchAttribute attributes = 9;
+    optional bool isUserCreated = 10;
+}
+
+/**
+ * A part of a stroke or a set of points.
+ */
+message SrlSubStroke {
+    optional string id = 1;
+    // This is the id of the parent stroke
+    optional string stroke = 2;
+    optional string startIndex = 3;
+    optional string stopIndex = 4;
+    // list of point ids
+    repeated string points = 5;
+    repeated SketchAttribute attributes = 6;
+    optional string name = 7;
 }
 
 // If a point is added directly on the sketch surface then it is in a SrlStroke
@@ -78,6 +108,8 @@ message SrlInterpretation {
     optional string recognizerId = 5;
     optional string isEndState = 6;
     optional string isForced = 7;
+    optional string description = 8;
+    optional string domain = 9;
 }
 
 message SrlBoundingBox {
@@ -111,4 +143,39 @@ message RecognitionTemplate {
         UNKNOWN = 0;
         NEGATIVE = -1;
     }
+}
+
+/**
+ * The person who created the sketch.
+ */
+message Sketcher {
+    optional string id = 1;
+    optional string nickname = 2;
+}
+
+message Device {
+    optional string id = 1;
+    optional int32 dpi = 2;
+    optional string os = 3;
+    optional bool penEnabled = 4;
+    optional bool touchEnabled = 5;
+    optional bool mouseEnables = 6;
+    optional bool physicalKeyboard = 7;
+}
+
+message Pen {
+    optional string id = 1;
+    optional string productName = 2;
+    optional string brandName = 3;
+    optional string isPenFinger = 4;
+    optional string isPenMouse = 5;
+    optional string penDigit = 6;
+}
+
+/**
+ * An attribute that can be applied to a stroke.
+ */
+message SketchAttribute {
+    optional string key = 1;
+    optional string value = 2;
 }

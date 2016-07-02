@@ -11,11 +11,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A class used to test Recognition systems.
  */
 public class RecognitionTesting {
+
+    /**
+     * Declaration and Definition of Logger.
+     */
+    private static final Logger LOG = LoggerFactory.getLogger(RecognitionTesting.class);
 
     private TemplateDatabaseInterface databaseInterface;
     private RecognitionInterface[] recognitionSystems;
@@ -65,19 +72,32 @@ public class RecognitionTesting {
             List<Sketch.RecognitionTemplate> testTemplates) {
         Map<RecognitionInterface, List<RecognitionScore>> scoreMap = new HashMap<>();
 
+        LOG.debug("Running recognition test for {} templates", testTemplates.size());
+        int percent = (int) Math.round(Math.max(1.0, testTemplates.size() / 100.0));
         for (RecognitionInterface recognitionSystem : recognitionSystems) {
             List<RecognitionScore> recognitionScoreList = new ArrayList<>();
             scoreMap.put(recognitionSystem, recognitionScoreList);
+            int counter = 0;
+            LOG.debug("testing recognition system: {}", recognitionSystem.getClass().getSimpleName());
             for (Sketch.RecognitionTemplate testTemplate : testTemplates) {
                 RecognitionScore score = new RecognitionScore(recognitionSystem);
                 try {
                     List<Sketch.SrlInterpretation>
                             recognize = recognitionSystem.recognize(testTemplate.getTemplateId(), testTemplate);
+                    if (recognize == null) {
+                        score.setFailed(new RecognitionException("",
+                                new NullPointerException("List of returned interpretations is null")));
+                        continue;
+                    }
                     generateScore(score, recognize, testTemplate.getInterpretation());
                 } catch (RecognitionException e) {
                     score.setFailed(e);
                 }
                 recognitionScoreList.add(score);
+                counter++;
+                if (counter % percent == 0) {
+                    LOG.debug("gone through {} sketches, {} left", counter, testTemplates.size() - counter);
+                }
             }
         }
         return scoreMap;
@@ -85,9 +105,14 @@ public class RecognitionTesting {
 
     public Map<RecognitionInterface, List<Exception>> trainAgainstTemplates(List<Sketch.RecognitionTemplate> templates) {
         Map<RecognitionInterface, List<Exception>> exceptionMap = new HashMap<>();
+
+        LOG.debug("Running recognition training for {} templates", templates.size());
+        int percent = (int) Math.round(Math.max(1.0, templates.size() / 10.0));
         for (RecognitionInterface recognitionSystem : recognitionSystems) {
             List<Exception> trainingExceptions = new ArrayList<>();
             exceptionMap.put(recognitionSystem, trainingExceptions);
+            int counter = 0;
+            LOG.debug("training recognition system: {}", recognitionSystem.getClass().getSimpleName());
             for (Sketch.RecognitionTemplate template : templates) {
                 try {
                     recognitionSystem.trainTemplate(template);
@@ -95,6 +120,10 @@ public class RecognitionTesting {
                     trainingExceptions.add(
                             new RecognitionTestException("Error with training template " + template.getTemplateId(),
                                     e, recognitionSystem));
+                }
+                counter++;
+                if (counter % percent == 0) {
+                    LOG.debug("gone through {} sketches, {} left", counter, templates.size() - counter);
                 }
             }
         }
@@ -121,19 +150,21 @@ public class RecognitionTesting {
     }
 
     /**
-     * splits training and test templates.
+     * Splits training and test templates.
      *
-     * Does modify the training tempalte list
-     * @param allTemplates
-     * @return
+     * Does modify the input template list.
+     * @param allTemplates The list of templates to be split (does modify this list).
+     * @return A list of test templates.
      */
     private List<Sketch.RecognitionTemplate> splitTrainingAndTest(List<Sketch.RecognitionTemplate> allTemplates) {
         Random r = new Random();
         List<Sketch.RecognitionTemplate> testTemplates = new ArrayList<>();
         int amountToTakeOut = (int) (((double) allTemplates.size()) * .10);
+        LOG.debug("Splitting out {} testing templates", amountToTakeOut);
         for (int i = 0; i < amountToTakeOut; i++) {
             testTemplates.add(allTemplates.remove(r.nextInt(allTemplates.size())));
         }
+        LOG.debug("TrainingSet: {}, TestingSet: {}", allTemplates.size(), testTemplates.size());
         return testTemplates;
     }
 }
