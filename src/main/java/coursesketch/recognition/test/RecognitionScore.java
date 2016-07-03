@@ -22,6 +22,10 @@ public class RecognitionScore {
     private boolean notRecognized;
     private List<Sketch.SrlInterpretation> recognizedInterpretations;
     private Sketch.SrlInterpretation correctInterpretations;
+    /**
+     * The time the recognition took in nano seconds
+     */
+    private long recognitionTime;
 
     public RecognitionScore(RecognitionInterface recognitionSystem, String templateId) {
         this.recognitionSystem = recognitionSystem;
@@ -90,5 +94,13 @@ public class RecognitionScore {
 
     public List<Sketch.SrlInterpretation> getRecognizedInterpretations() {
         return recognizedInterpretations;
+    }
+
+    public void setRecognitionTime(long recognitionTime) {
+        this.recognitionTime = recognitionTime;
+    }
+
+    public long getRecognitionTime() {
+        return recognitionTime;
     }
 }

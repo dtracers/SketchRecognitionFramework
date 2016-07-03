@@ -13,10 +13,11 @@ public class RecognitionMetric {
     private final List<RecognitionScore> potentialMisRecognized;
     private int totalTemplates;
     private List<Exception> recognitionException;
+    private double averageRecognitionTime;
 
     public RecognitionMetric(double averageScore, double averageScoreOfCorrect, int numberCorrect,
                              List<RecognitionScore> nonRecognizedIds, List<RecognitionScore> potentialMisRecognized,
-                             int totalTemplates, List<Exception> recognitionException) {
+                             int totalTemplates, List<Exception> recognitionException, double averageRecognitionTime) {
         this.averageScore = averageScore;
         this.averageScoreOfCorrect = averageScoreOfCorrect;
         this.numberCorrect = numberCorrect;
@@ -24,6 +25,7 @@ public class RecognitionMetric {
         this.potentialMisRecognized = potentialMisRecognized;
         this.totalTemplates = totalTemplates;
         this.recognitionException = recognitionException;
+        this.averageRecognitionTime = averageRecognitionTime;
     }
 
     public double getAverageScore() {
@@ -59,7 +61,10 @@ public class RecognitionMetric {
                 "\n\tFalse Positives:" +
                 "\n\t\tNumber of False Positives " + potentialMisRecognized.size() +
                 "\n\t\tNonRecognized Percentage: " + (((double) potentialMisRecognized.size())/ ((double) totalTemplates)) +
-                "\n\tNumber fo recognition exceptions: " + recognitionException.size();
+                "\n\tNumber fo recognition exceptions: " + recognitionException.size() +
+                "\n\tTime:" +
+                "\n\t\tRecognitionTimeNanos: " + averageRecognitionTime +
+                "\n\t\tRecognitionTimeMillis: " + (averageRecognitionTime / 1000000.);
     }
 
     public int getTotalTemplates() {

@@ -54,19 +54,19 @@ public class RecognitionTesting {
     /**
      * This uses cross validation to test against templates.
      */
-    private List<RecognitionScoreMetrics> testAgainstTemplates(List<Sketch.RecognitionTemplate> allTemplates)
+    public List<RecognitionScoreMetrics> testAgainstTemplates(List<Sketch.RecognitionTemplate> allTemplates)
             throws TemplateException {
 
         List<Sketch.RecognitionTemplate> testTemplates = splitTrainingAndTest(allTemplates);
 
-        Map<RecognitionInterface, List<Exception>> exceptions = trainAgainstTemplates(allTemplates);
+        Map<RecognitionInterface, List<TrainingScore>> trainingScores = trainAgainstTemplates(allTemplates);
 
         Map<RecognitionInterface, List<RecognitionScore>> recognitionScore =
                 recognizeAgainstTemplates(testTemplates);
 
         List<RecognitionScoreMetrics> metrics = new ArrayList<>();
         for (RecognitionInterface recognitionSystem : recognitionSystems) {
-            metrics.add(new RecognitionScoreMetrics(exceptions.get(recognitionSystem),
+            metrics.add(new RecognitionScoreMetrics(recognitionSystem.getClass().getSimpleName(), trainingScores.get(recognitionSystem),
                     recognitionScore.get(recognitionSystem)));
         }
         return metrics;
@@ -77,7 +77,7 @@ public class RecognitionTesting {
         Map<RecognitionInterface, List<RecognitionScore>> scoreMap = new HashMap<>();
 
         // For the specific number of threads needed
-        executor = Executors.newFixedThreadPool(Math.min(MAX_THREADS, Math.max(1, testTemplates.size() / 10)));
+        executor = Executors.newFixedThreadPool(Math.min(MAX_THREADS, Math.max(1, testTemplates.size() / 20)));
 
         LOG.debug("Running recognition test for {} templates", testTemplates.size());
         int percent = (int) Math.round(Math.max(1.0, testTemplates.size() / 100.0));
@@ -93,9 +93,12 @@ public class RecognitionTesting {
                     @Override
                     public Object call() throws Exception {
                         RecognitionScore score = new RecognitionScore(recognitionSystem, testTemplate.getTemplateId());
+                        long startTime = System.nanoTime();
                         try {
                             List<Sketch.SrlInterpretation>
                                     recognize = recognitionSystem.recognize(testTemplate.getTemplateId(), testTemplate);
+                            long endTime = System.nanoTime();
+                            score.setRecognitionTime(endTime - startTime);
                             if (recognize == null) {
                                 score.setFailed(new NullPointerException("List of returned interpretations is null"));
                                 recognitionScoreList.add(score);
@@ -132,32 +135,60 @@ public class RecognitionTesting {
         return scoreMap;
     }
 
-    public Map<RecognitionInterface, List<Exception>> trainAgainstTemplates(List<Sketch.RecognitionTemplate> templates) {
-        Map<RecognitionInterface, List<Exception>> exceptionMap = new HashMap<>();
+    public Map<RecognitionInterface, List<TrainingScore>> trainAgainstTemplates(List<Sketch.RecognitionTemplate> templates) {
+        Map<RecognitionInterface, List<TrainingScore>> scoreMap = new HashMap<>();
+
+        executor = Executors.newFixedThreadPool(Math.min(MAX_THREADS, Math.max(1, templates.size() / 5)));
 
         LOG.debug("Running recognition training for {} templates", templates.size());
         int percent = (int) Math.round(Math.max(1.0, templates.size() / 10.0));
         for (RecognitionInterface recognitionSystem : recognitionSystems) {
-            List<Exception> trainingExceptions = new ArrayList<>();
-            exceptionMap.put(recognitionSystem, trainingExceptions);
+            List<TrainingScore> trainingScores = new ArrayList<>();
+            scoreMap.put(recognitionSystem, trainingScores);
             int counter = 0;
             LOG.debug("training recognition system: {}", recognitionSystem.getClass().getSimpleName());
+            List<Future> taskFutures = new ArrayList<>();
             for (Sketch.RecognitionTemplate template : templates) {
-                try {
-                    recognitionSystem.trainTemplate(template);
-                } catch (Exception e) {
-                    LOG.error("Exception occured while training", e);
-                    trainingExceptions.add(
-                            new RecognitionTestException("Error with training template " + template.getTemplateId(),
+                final int thisCount = counter;
+                taskFutures.add(executor.submit(new Callable() {
+                    @Override
+                    public Object call() throws Exception {
+                        TrainingScore score = new TrainingScore();
+                        long startTime = System.nanoTime();
+                        try {
+                            recognitionSystem.trainTemplate(template);
+                        } catch (Exception e) {
+                            LOG.error("Exception occured while training", e);
+                            score.addException(new RecognitionTestException("Error with training template " + template.getTemplateId(),
                                     e, recognitionSystem));
-                }
+                        }
+                        long endTime = System.nanoTime();
+                        score.setTrainingTime(endTime - startTime);
+                        trainingScores.add(score);
+
+                        if (thisCount % percent == 0) {
+                            LOG.debug("gone through {} sketches, {} left", thisCount, templates.size() - thisCount);
+                        }
+                        return null;
+                    }
+                }));
                 counter++;
-                if (counter % percent == 0) {
-                    LOG.debug("gone through {} sketches, {} left", counter, templates.size() - counter);
+            }
+
+            LOG.debug("Waiting for all tasks to finish");
+            // Waits for the executor to finish
+            for (Future taskFuture : taskFutures) {
+                try {
+                    taskFuture.get();
+                } catch (InterruptedException e) {
+                    LOG.debug("INTERUPTIONS EXCEPTION", e);
+                } catch (ExecutionException e) {
+                    LOG.debug("EXECUTION EXCEPTION", e);
                 }
             }
+            LOG.debug("All trainings tasks have finished");
         }
-        return exceptionMap;
+        return scoreMap;
     }
 
     private void generateScore(RecognitionScore score,
