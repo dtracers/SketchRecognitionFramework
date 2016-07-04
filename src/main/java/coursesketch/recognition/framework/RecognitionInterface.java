@@ -19,7 +19,7 @@ public interface RecognitionInterface {
      * @return A list representing the changes that occurred.
      * @throws RecognitionException Thrown if there is a recognition Problem.
      */
-    public Commands.SrlUpdateList addUpdate(String sketchId, Commands.SrlUpdate update) throws RecognitionException;
+    Commands.SrlUpdateList addUpdate(String sketchId, Commands.SrlUpdate update) throws RecognitionException;
 
     /**
      *
@@ -28,7 +28,7 @@ public interface RecognitionInterface {
      * @return A list representing the changes that occurred.
      * @throws RecognitionException Thrown if there is a recognition Problem.
      */
-    public Commands.SrlUpdateList setUpdateList(String sketchId, Commands.SrlUpdateList updateList) throws RecognitionException;
+    Commands.SrlUpdateList setUpdateList(String sketchId, Commands.SrlUpdateList updateList) throws RecognitionException;
 
     /**
      *
@@ -37,7 +37,7 @@ public interface RecognitionInterface {
      * @return A sketch representing the recognized result.
      * @throws RecognitionException Thrown if there is a recognition Problem.
      */
-    public SrlSketch setSketch(String sketchId, SrlSketch sketch) throws RecognitionException;
+    SrlSketch setSketch(String sketchId, SrlSketch sketch) throws RecognitionException;
 
     /**
      * Adds a template to be saved for use in recognition later.
@@ -46,7 +46,7 @@ public interface RecognitionInterface {
      * @param template The template that is being saved.
      * @throws TemplateException Thrown if there is a recognition Problem.
      */
-    public void addTemplate(String templateId, Sketch.SrlInterpretation interpretation, SrlSketch template) throws TemplateException;
+    void addTemplate(String templateId, Sketch.SrlInterpretation interpretation, SrlSketch template) throws TemplateException;
 
     /**
      * Adds a template to be saved for use in recognition later.
@@ -55,7 +55,7 @@ public interface RecognitionInterface {
      * @param template The template that is being saved.
      * @throws TemplateException Thrown if there is a recognition Problem.
      */
-    public void addTemplate(String templateId, Sketch.SrlInterpretation interpretation, Sketch.SrlShape template) throws TemplateException;
+    void addTemplate(String templateId, Sketch.SrlInterpretation interpretation, Sketch.SrlShape template) throws TemplateException;
 
     /**
      * Adds a template to be saved for use in recognition later.
@@ -64,7 +64,7 @@ public interface RecognitionInterface {
      * @param template The template that is being saved.
      * @throws TemplateException Thrown if there is a recognition Problem.
      */
-    public void addTemplate(String templateId, Sketch.SrlInterpretation interpretation, Sketch.SrlStroke template) throws TemplateException;
+    void addTemplate(String templateId, Sketch.SrlInterpretation interpretation, Sketch.SrlStroke template) throws TemplateException;
 
     /**
      * Adds a template that is used to immediately train a system.
@@ -72,14 +72,14 @@ public interface RecognitionInterface {
      * @param template The template that is being saved.
      * @throws TemplateException Thrown if there is a recognition Problem.
      */
-    public void trainTemplate(Sketch.RecognitionTemplate template) throws TemplateException;
+    void trainTemplate(Sketch.RecognitionTemplate template) throws TemplateException;
 
     /**
      * Called when Training is finished to show perform any cleanup that is needed.
      *
      * @throws RecognitionException Thrown if there is a recognition Problem.
      */
-    public void finishTraining() throws RecognitionException;
+    void finishTraining() throws RecognitionException;
 
     /**
      * Recognizes the sketch as a list of changes producing a list of changes as a result.
@@ -89,7 +89,7 @@ public interface RecognitionInterface {
      * @return A list representing the changes that occurred.
      * @throws RecognitionException Thrown if there is a recognition Problem.
      */
-    public Commands.SrlUpdateList recognize(String sketchId, Commands.SrlUpdateList updateList) throws RecognitionException;
+    Commands.SrlUpdateList recognize(String sketchId, Commands.SrlUpdateList updateList) throws RecognitionException;
 
     /**
      * Recognizes the sketch as a single entity producing a recognized sketch as a result.
@@ -99,7 +99,7 @@ public interface RecognitionInterface {
      * @return A sketch representing the recognized result.
      * @throws RecognitionException Thrown if there is a recognition Problem.
      */
-    public SrlSketch recognize(String sketchId, SrlSketch sketch) throws RecognitionException;
+    SrlSketch recognize(String sketchId, SrlSketch sketch) throws RecognitionException;
 
     /**
      * Recognizes a template that is used to evaluate the sketch.
@@ -109,7 +109,7 @@ public interface RecognitionInterface {
      * @return A list of interpretations representing the results.
      * @throws RecognitionException Thrown if there is a recognition Problem.
      */
-    public List<Sketch.SrlInterpretation> recognize(String sketchId, Sketch.RecognitionTemplate template)
+    List<Sketch.SrlInterpretation> recognize(String sketchId, Sketch.RecognitionTemplate template)
             throws RecognitionException;
 
     /**
@@ -119,10 +119,12 @@ public interface RecognitionInterface {
      * @return A list of modified versions of the original sketch that is used to guess templates.
      * @throws RecognitionException Thrown if there is a recognition Problem.
      */
-    public List<Sketch.RecognitionTemplate> generateTemplates(Sketch.RecognitionTemplate original) throws RecognitionException;
+    List<Sketch.RecognitionTemplate> generateTemplates(Sketch.RecognitionTemplate original) throws RecognitionException;
 
     /**
      * Called for an initialization or training to setup for recognition.
+     *
+     * @throws RecognitionException Thrown if there is a recognition Problem.
      */
-    public void initialize() throws RecognitionException;
+    void initialize() throws RecognitionException;
 }
