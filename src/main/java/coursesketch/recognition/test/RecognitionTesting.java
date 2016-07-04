@@ -2,6 +2,7 @@ package coursesketch.recognition.test;
 
 import coursesketch.recognition.framework.RecognitionInterface;
 import coursesketch.recognition.framework.TemplateDatabaseInterface;
+import coursesketch.recognition.framework.exceptions.RecognitionException;
 import coursesketch.recognition.framework.exceptions.TemplateException;
 import protobuf.srl.sketch.Sketch;
 
@@ -72,7 +73,7 @@ public class RecognitionTesting {
         return metrics;
     }
 
-    private Map<RecognitionInterface, List<RecognitionScore>> recognizeAgainstTemplates(
+    public Map<RecognitionInterface, List<RecognitionScore>> recognizeAgainstTemplates(
             List<Sketch.RecognitionTemplate> testTemplates) {
         Map<RecognitionInterface, List<RecognitionScore>> scoreMap = new HashMap<>();
 
@@ -106,7 +107,6 @@ public class RecognitionTesting {
                             }
                             generateScore(score, recognize, testTemplate.getInterpretation());
                         } catch (Exception e) {
-                            LOG.error("Excpetion occured while recognizering", e);
                             score.setFailed(e);
                         }
                         recognitionScoreList.add(score);
@@ -158,7 +158,6 @@ public class RecognitionTesting {
                         try {
                             recognitionSystem.trainTemplate(template);
                         } catch (Exception e) {
-                            LOG.error("Exception occured while training", e);
                             score.addException(new RecognitionTestException("Error with training template " + template.getTemplateId(),
                                     e, recognitionSystem));
                         }
@@ -185,6 +184,11 @@ public class RecognitionTesting {
                 } catch (ExecutionException e) {
                     LOG.debug("EXECUTION EXCEPTION", e);
                 }
+            }
+            try {
+                recognitionSystem.finishTraining();
+            } catch (RecognitionException e) {
+                LOG.debug("EXCEPTION WHEN TRAINING", e);
             }
             LOG.debug("All trainings tasks have finished");
         }

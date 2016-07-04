@@ -75,6 +75,13 @@ public interface RecognitionInterface {
     public void trainTemplate(Sketch.RecognitionTemplate template) throws TemplateException;
 
     /**
+     * Called when Training is finished to show perform any cleanup that is needed.
+     *
+     * @throws RecognitionException Thrown if there is a recognition Problem.
+     */
+    public void finishTraining() throws RecognitionException;
+
+    /**
      * Recognizes the sketch as a list of changes producing a list of changes as a result.
      *
      * @param sketchId The Id that uniquely identifies a single sketch.
@@ -117,5 +124,5 @@ public interface RecognitionInterface {
     /**
      * Called for an initialization or training to setup for recognition.
      */
-    public void initialize();
+    public void initialize() throws RecognitionException;
 }
