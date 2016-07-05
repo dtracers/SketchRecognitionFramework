@@ -1,4 +1,4 @@
-package coursesketch.recognition.test;
+package coursesketch.recognition.test.score;
 
 import coursesketch.recognition.framework.RecognitionInterface;
 import coursesketch.recognition.framework.exceptions.RecognitionException;
@@ -16,7 +16,7 @@ public class RecognitionScore {
     private final RecognitionInterface recognitionSystem;
     private String templateId;
     private Exception exception;
-    private boolean recognized;
+    private int recognizedIndex = -1;
     private double scoreValue;
     private boolean potentialMissRecognized;
     private boolean notRecognized;
@@ -36,8 +36,8 @@ public class RecognitionScore {
         this.exception = exception;
     }
 
-    public void setRecognized(boolean recognized) {
-        this.recognized = recognized;
+    public void setRecognized(int recognizedIndex) {
+        this.recognizedIndex = recognizedIndex;
     }
 
     public void setScoreValue(double scoreValue) {
@@ -65,7 +65,22 @@ public class RecognitionScore {
     }
 
     public boolean isRecognized() {
-        return recognized;
+        return recognizedIndex > 0;
+    }
+
+    public boolean isTrueRecognized() {
+        return recognizedIndex == 0;
+    }
+
+    /**
+     * The order at which it was recognized.
+     *
+     * 0 being the best option and the larger the number the worse it is
+     * -1 is not recognized
+     * @return
+     */
+    public int getRecognizedIndex() {
+        return recognizedIndex;
     }
 
     public Exception getException() {
