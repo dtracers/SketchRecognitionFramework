@@ -3,8 +3,6 @@ package coursesketch.recognition.framework;
 import coursesketch.recognition.framework.exceptions.ShapeConversionException;
 import protobuf.srl.sketch.Sketch;
 
-import java.util.Map;
-
 /**
  * Created by David Windows on 4/20/2016.
  */

@@ -359,6 +359,12 @@
             <artifactId>logback-core</artifactId>
             <version>${logbackVersion}</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.github.tracyhammond</groupId>
+            <artifactId>SRLShapes</artifactId>
+            <version>2.1</version>
+        </dependency>
     </dependencies>
 
 </project>

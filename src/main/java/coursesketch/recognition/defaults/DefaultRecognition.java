@@ -4,6 +4,7 @@ import coursesketch.recognition.framework.RecognitionInterface;
 import coursesketch.recognition.framework.TemplateDatabaseInterface;
 import coursesketch.recognition.framework.exceptions.TemplateException;
 
+import edu.tamu.srl.sketch.core.virtual.SrlTemplate;
 import protobuf.srl.sketch.Sketch;
 import protobuf.srl.sketch.Sketch.SrlSketch;
 
@@ -35,11 +36,11 @@ public abstract class DefaultRecognition implements RecognitionInterface {
         templateDatabase.addTemplate(templateId, interpretation, template);
     }
 
-    protected List<Sketch.RecognitionTemplate> getTemplates(final Sketch.SrlInterpretation interpretation) throws TemplateException {
+    protected List<SrlTemplate> getTemplates(final Sketch.SrlInterpretation interpretation) throws TemplateException {
         return templateDatabase.getTemplate(interpretation);
     }
 
-    protected List<Sketch.RecognitionTemplate> getAllTemplates() throws TemplateException {
+    protected List<SrlTemplate> getAllTemplates() throws TemplateException {
         return templateDatabase.getAllTemplates();
     }
 
