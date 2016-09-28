@@ -33,7 +33,7 @@
     "chai": "*",
     "hooker": "0.2.3",
     "grunt-exec": "0.4.6",
-    "babel-polyfill": "6.9.1"
+    "babel-polyfill": "6.16.0"
   }
 }
 
