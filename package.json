@@ -5,7 +5,7 @@
     "stacktrace-js": "stacktracejs/stacktrace.js#98574f0dfe3d831cde75772fd34e972e7b7f95f1",
     "node-define": "0.1.1",
     "requirejs": "2.2.0",
-    "protobufjs": "5.0.1",
+    "protobufjs": "6.4.0",
     "node-amd-require": "0.2.2"
   },
   "devDependencies": {
