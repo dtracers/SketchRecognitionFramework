@@ -28,7 +28,7 @@
     "mocha": "2.3.3",
     "xunit-file": "0.0.9",
     "grunt-mkdir": "0.1.2",
-    "jsdom": "7.0.0",
+    "jsdom": "10.0.0",
     "barrier": "dtracers/node-barrier#v1.0.1",
     "chai": "*",
     "hooker": "0.2.3",
