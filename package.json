@@ -30,7 +30,7 @@
     "grunt-mkdir": "0.1.2",
     "jsdom": "7.0.0",
     "barrier": "dtracers/node-barrier#v1.0.1",
-    "chai": "*",
+    "chai": "4.0.0",
     "hooker": "0.2.3",
     "grunt-exec": "0.4.6",
     "babel-polyfill": "6.9.1"
