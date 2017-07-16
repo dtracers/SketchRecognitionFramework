@@ -1,6 +1,7 @@
 package coursesketch.recognition.framework;
 
 import coursesketch.recognition.framework.exceptions.TemplateException;
+import edu.tamu.srl.sketch.core.virtual.SrlTemplate;
 import protobuf.srl.commands.Commands;
 import protobuf.srl.sketch.Sketch;
 import java.util.List;
@@ -38,17 +39,23 @@ public interface TemplateDatabaseInterface {
     public void addTemplate(String templateId, Sketch.SrlInterpretation interpretation, Sketch.SrlStroke template);
 
     /**
+     * Adds an SrlTemplate to the database.
+     * @param template The template that is being added to the database.
+     */
+    public void addTemplate(SrlTemplate template);
+
+    /**
      * Returns a Template based on it's interpretation
      *
      * @param interpretation The interpretation of the template.
      * @return Returns a list of SrlObjects based on the interpretation.
      */
-    public List<Sketch.RecognitionTemplate> getTemplate(Sketch.SrlInterpretation interpretation) throws TemplateException;
+    public List<SrlTemplate> getTemplate(Sketch.SrlInterpretation interpretation) throws TemplateException;
 
     /**
      * @return All templates stored.
      */
-    public List<Sketch.RecognitionTemplate> getAllTemplates() throws TemplateException;
+    public List<SrlTemplate> getAllTemplates() throws TemplateException;
 
     /**
      * @return All interpretations stored.

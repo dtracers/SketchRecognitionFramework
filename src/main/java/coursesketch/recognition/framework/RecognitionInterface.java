@@ -2,9 +2,9 @@ package coursesketch.recognition.framework;
 
 import coursesketch.recognition.framework.exceptions.RecognitionException;
 import coursesketch.recognition.framework.exceptions.TemplateException;
+import edu.tamu.srl.sketch.core.virtual.SrlTemplate;
 import protobuf.srl.commands.Commands;
 import protobuf.srl.sketch.Sketch;
-import protobuf.srl.sketch.Sketch.SrlSketch;
 
 import java.util.List;
 
@@ -37,7 +37,7 @@ public interface RecognitionInterface {
      * @return A sketch representing the recognized result.
      * @throws RecognitionException Thrown if there is a recognition Problem.
      */
-    SrlSketch setSketch(String sketchId, SrlSketch sketch) throws RecognitionException;
+    Sketch.SrlSketch setSketch(String sketchId, Sketch.SrlSketch sketch) throws RecognitionException;
 
     /**
      * Adds a template to be saved for use in recognition later.
@@ -46,7 +46,7 @@ public interface RecognitionInterface {
      * @param template The template that is being saved.
      * @throws TemplateException Thrown if there is a recognition Problem.
      */
-    void addTemplate(String templateId, Sketch.SrlInterpretation interpretation, SrlSketch template) throws TemplateException;
+    void addTemplate(String templateId, Sketch.SrlInterpretation interpretation, Sketch.SrlSketch template) throws TemplateException;
 
     /**
      * Adds a template to be saved for use in recognition later.
@@ -72,7 +72,7 @@ public interface RecognitionInterface {
      * @param template The template that is being saved.
      * @throws TemplateException Thrown if there is a recognition Problem.
      */
-    void trainTemplate(Sketch.RecognitionTemplate template) throws TemplateException;
+    void trainTemplate(SrlTemplate template) throws TemplateException;
 
     /**
      * Called when Training is finished to show perform any cleanup that is needed.
@@ -99,7 +99,7 @@ public interface RecognitionInterface {
      * @return A sketch representing the recognized result.
      * @throws RecognitionException Thrown if there is a recognition Problem.
      */
-    SrlSketch recognize(String sketchId, SrlSketch sketch) throws RecognitionException;
+    Sketch.SrlSketch recognize(String sketchId, Sketch.SrlSketch sketch) throws RecognitionException;
 
     /**
      * Recognizes a template that is used to evaluate the sketch.
@@ -109,7 +109,7 @@ public interface RecognitionInterface {
      * @return A list of interpretations representing the results.
      * @throws RecognitionException Thrown if there is a recognition Problem.
      */
-    List<Sketch.SrlInterpretation> recognize(String sketchId, Sketch.RecognitionTemplate template)
+    List<Sketch.SrlInterpretation> recognize(String sketchId, SrlTemplate template)
             throws RecognitionException;
 
     /**
@@ -119,7 +119,7 @@ public interface RecognitionInterface {
      * @return A list of modified versions of the original sketch that is used to guess templates.
      * @throws RecognitionException Thrown if there is a recognition Problem.
      */
-    List<Sketch.RecognitionTemplate> generateTemplates(Sketch.RecognitionTemplate original) throws RecognitionException;
+    List<SrlTemplate> generateTemplates(SrlTemplate original) throws RecognitionException;
 
     /**
      * Called for an initialization or training to setup for recognition.
