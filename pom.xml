@@ -38,7 +38,7 @@
     <properties>
         <parentConfigLocationDir>${basedir}</parentConfigLocationDir>
         <protocLocation>/usr/local/bin/protoc</protocLocation>
-        <protobufVersion>2.6.1</protobufVersion>
+        <protobufVersion>3.3.1</protobufVersion>
         <mockitoVersion>1.9.5</mockitoVersion>
         <puppyVersion>[5.6,)</puppyVersion>
         <junitVersion>4.11</junitVersion>
@@ -130,6 +130,13 @@
     </pluginRepositories>
 
     <build>
+        <extensions>
+            <extension>
+                <groupId>kr.motd.maven</groupId>
+                <artifactId>os-maven-plugin</artifactId>
+                <version>1.5.0.Final</version>
+            </extension>
+        </extensions>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -147,7 +154,7 @@
                 <configuration>
                     <checkStaleness>true</checkStaleness>
                     <staleMillis>10000</staleMillis>
-                    <protocExecutable>${protocLocation}</protocExecutable>
+                    <protocArtifact>com.google.protobuf:protoc:3.3.0:exe:${os.detected.classifier}</protocArtifact>
                 </configuration>
                 <executions>
                     <execution>

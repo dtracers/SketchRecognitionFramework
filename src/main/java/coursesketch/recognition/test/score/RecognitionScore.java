@@ -3,6 +3,7 @@ package coursesketch.recognition.test.score;
 import coursesketch.recognition.framework.RecognitionInterface;
 import coursesketch.recognition.framework.exceptions.RecognitionException;
 import protobuf.srl.sketch.Sketch;
+import protobuf.srl.sketch.Interpretation;
 
 import java.util.List;
 
@@ -20,8 +21,8 @@ public class RecognitionScore {
     private double scoreValue;
     private boolean potentialMissRecognized;
     private boolean notRecognized;
-    private List<Sketch.SrlInterpretation> recognizedInterpretations;
-    private Sketch.SrlInterpretation correctInterpretations;
+    private List<Interpretation.SrlInterpretation> recognizedInterpretations;
+    private Interpretation.SrlInterpretation correctInterpretations;
     /**
      * The time the recognition took in nano seconds
      */
@@ -95,19 +96,19 @@ public class RecognitionScore {
         return templateId;
     }
 
-    public void setRecognizedInterpretations(List<Sketch.SrlInterpretation> recognizedInterpretations) {
+    public void setRecognizedInterpretations(List<Interpretation.SrlInterpretation> recognizedInterpretations) {
         this.recognizedInterpretations = recognizedInterpretations;
     }
 
-    public void setCorrectInterpretations(Sketch.SrlInterpretation correctInterpretations) {
+    public void setCorrectInterpretations(Interpretation.SrlInterpretation correctInterpretations) {
         this.correctInterpretations = correctInterpretations;
     }
 
-    public Sketch.SrlInterpretation getCorrectInterpretations() {
+    public Interpretation.SrlInterpretation getCorrectInterpretations() {
         return correctInterpretations;
     }
 
-    public List<Sketch.SrlInterpretation> getRecognizedInterpretations() {
+    public List<Interpretation.SrlInterpretation> getRecognizedInterpretations() {
         return recognizedInterpretations;
     }
 

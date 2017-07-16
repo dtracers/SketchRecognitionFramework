@@ -3,6 +3,7 @@ package coursesketch.recognition.framework;
 import coursesketch.recognition.framework.exceptions.RecognitionException;
 import coursesketch.recognition.framework.exceptions.TemplateException;
 import protobuf.srl.commands.Commands;
+import protobuf.srl.sketch.Interpretation;
 import protobuf.srl.sketch.Sketch;
 import protobuf.srl.sketch.Sketch.SrlSketch;
 
@@ -46,7 +47,7 @@ public interface RecognitionInterface {
      * @param template The template that is being saved.
      * @throws TemplateException Thrown if there is a recognition Problem.
      */
-    void addTemplate(String templateId, Sketch.SrlInterpretation interpretation, SrlSketch template) throws TemplateException;
+    void addTemplate(String templateId, Interpretation.SrlInterpretation interpretation, SrlSketch template) throws TemplateException;
 
     /**
      * Adds a template to be saved for use in recognition later.
@@ -55,7 +56,7 @@ public interface RecognitionInterface {
      * @param template The template that is being saved.
      * @throws TemplateException Thrown if there is a recognition Problem.
      */
-    void addTemplate(String templateId, Sketch.SrlInterpretation interpretation, Sketch.SrlShape template) throws TemplateException;
+    void addTemplate(String templateId, Interpretation.SrlInterpretation interpretation, Sketch.SrlShape template) throws TemplateException;
 
     /**
      * Adds a template to be saved for use in recognition later.
@@ -64,7 +65,7 @@ public interface RecognitionInterface {
      * @param template The template that is being saved.
      * @throws TemplateException Thrown if there is a recognition Problem.
      */
-    void addTemplate(String templateId, Sketch.SrlInterpretation interpretation, Sketch.SrlStroke template) throws TemplateException;
+    void addTemplate(String templateId, Interpretation.SrlInterpretation interpretation, Sketch.SrlStroke template) throws TemplateException;
 
     /**
      * Adds a template that is used to immediately train a system.
@@ -109,7 +110,7 @@ public interface RecognitionInterface {
      * @return A list of interpretations representing the results.
      * @throws RecognitionException Thrown if there is a recognition Problem.
      */
-    List<Sketch.SrlInterpretation> recognize(String sketchId, Sketch.RecognitionTemplate template)
+    List<Interpretation.SrlInterpretation> recognize(String sketchId, Sketch.RecognitionTemplate template)
             throws RecognitionException;
 
     /**

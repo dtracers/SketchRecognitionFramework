@@ -10,6 +10,7 @@ import coursesketch.recognition.test.score.RecognitionScore;
 import coursesketch.recognition.test.score.RecognitionScoreFactory;
 import coursesketch.recognition.test.score.TrainingScore;
 import coursesketch.recognition.test.score.TrainingScoreFactory;
+import protobuf.srl.sketch.Interpretation;
 import protobuf.srl.sketch.Sketch;
 
 import java.util.ArrayList;
@@ -68,7 +69,7 @@ public class RecognitionTesting {
         return testAgainstTemplates(databaseInterface.getAllTemplates());
     }
 
-    public List<ScoreMetricsConverter> testAgainstInterpretation(Sketch.SrlInterpretation interpretation)
+    public List<ScoreMetricsConverter> testAgainstInterpretation(Interpretation.SrlInterpretation interpretation)
             throws TemplateException {
         return testAgainstTemplates(databaseInterface.getTemplate(interpretation));
     }
@@ -96,10 +97,10 @@ public class RecognitionTesting {
         return metrics;
     }
 
-    protected List<Sketch.SrlInterpretation> testTemplate(Sketch.RecognitionTemplate testTemplate,
+    protected List<Interpretation.SrlInterpretation> testTemplate(Sketch.RecognitionTemplate testTemplate,
                                                           RecognitionInterface recognitionSystem,
                                                           RecognitionScore score) {
-        List<Sketch.SrlInterpretation> recognize = null;
+        List<Interpretation.SrlInterpretation> recognize = null;
         try {
             recognize = recognitionSystem.recognize(testTemplate.getTemplateId(), testTemplate);
         } catch (Exception e) {
@@ -130,7 +131,7 @@ public class RecognitionTesting {
                     RecognitionScore score = recognitionFactory.createRecognitionScore(recognitionSystem,
                             testTemplate.getTemplateId());
                     long startTime = System.nanoTime();
-                    final List<Sketch.SrlInterpretation> interpretations =
+                    final List<Interpretation.SrlInterpretation> interpretations =
                             testTemplate(testTemplate, recognitionSystem, score);
                     generateScore(score, interpretations, testTemplate.getInterpretation());
                     long endTime = System.nanoTime();
@@ -222,7 +223,7 @@ public class RecognitionTesting {
     }
 
     protected void generateScore(RecognitionScore score,
-                               List<Sketch.SrlInterpretation> recognize, Sketch.SrlInterpretation interpretation) {
+                               List<Interpretation.SrlInterpretation> recognize, Interpretation.SrlInterpretation interpretation) {
         if (recognize == null) {
             score.setNotRecognized(true);
             score.setFailed(new NullPointerException("List of returned interpretations is null"));

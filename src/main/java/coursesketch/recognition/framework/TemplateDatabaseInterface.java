@@ -2,6 +2,7 @@ package coursesketch.recognition.framework;
 
 import coursesketch.recognition.framework.exceptions.TemplateException;
 import protobuf.srl.commands.Commands;
+import protobuf.srl.sketch.Interpretation;
 import protobuf.srl.sketch.Sketch;
 import java.util.List;
 
@@ -17,7 +18,7 @@ public interface TemplateDatabaseInterface {
      * @param interpretation The interpretation of the template.
      * @param template The template that is being saved.
      */
-    public void addTemplate(String templateId, Sketch.SrlInterpretation interpretation, Sketch.SrlSketch template);
+    public void addTemplate(String templateId, Interpretation.SrlInterpretation interpretation, Sketch.SrlSketch template);
 
     /**
      * Adds a template to be saved for use in recognition later.
@@ -26,7 +27,7 @@ public interface TemplateDatabaseInterface {
      * @param interpretation The interpretation of the template.
      * @param template The template that is being saved.
      */
-    public void addTemplate(String templateId, Sketch.SrlInterpretation interpretation, Sketch.SrlShape template);
+    public void addTemplate(String templateId, Interpretation.SrlInterpretation interpretation, Sketch.SrlShape template);
 
     /**
      * Adds a template to be saved for use in recognition later.
@@ -35,7 +36,7 @@ public interface TemplateDatabaseInterface {
      * @param interpretation The interpretation of the template.
      * @param template The template that is being saved.
      */
-    public void addTemplate(String templateId, Sketch.SrlInterpretation interpretation, Sketch.SrlStroke template);
+    public void addTemplate(String templateId, Interpretation.SrlInterpretation interpretation, Sketch.SrlStroke template);
 
     /**
      * Returns a Template based on it's interpretation
@@ -43,7 +44,7 @@ public interface TemplateDatabaseInterface {
      * @param interpretation The interpretation of the template.
      * @return Returns a list of SrlObjects based on the interpretation.
      */
-    public List<Sketch.RecognitionTemplate> getTemplate(Sketch.SrlInterpretation interpretation) throws TemplateException;
+    public List<Sketch.RecognitionTemplate> getTemplate(Interpretation.SrlInterpretation interpretation) throws TemplateException;
 
     /**
      * @return All templates stored.
@@ -53,5 +54,5 @@ public interface TemplateDatabaseInterface {
     /**
      * @return All interpretations stored.
      */
-    public List<Sketch.SrlInterpretation> getAllInterpretations() throws TemplateException;
+    public List<Interpretation.SrlInterpretation> getAllInterpretations() throws TemplateException;
 }

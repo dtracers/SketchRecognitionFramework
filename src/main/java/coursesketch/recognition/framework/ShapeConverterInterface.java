@@ -1,6 +1,7 @@
 package coursesketch.recognition.framework;
 
 import coursesketch.recognition.framework.exceptions.ShapeConversionException;
+import protobuf.srl.sketch.Interpretation;
 import protobuf.srl.sketch.Sketch;
 
 import java.util.Map;
@@ -55,7 +56,7 @@ public interface ShapeConverterInterface<E> {
      * @return A map in a format that can be stored in the database.
      * @throws ShapeConversionException thrown during a failed conversion.
      */
-    E makeDbInterpretation(final Sketch.SrlInterpretation srlInterpretation) throws ShapeConversionException;
+    E makeDbInterpretation(final Interpretation.SrlInterpretation srlInterpretation) throws ShapeConversionException;
 
     /**
      * Parses the interpretation from the database.
@@ -63,7 +64,7 @@ public interface ShapeConverterInterface<E> {
      * @return A parsed interpretation.
      * @throws ShapeConversionException thrown during a failed conversion.
      */
-    Sketch.SrlInterpretation parseInterpretation(final E interpretationObject) throws ShapeConversionException;
+    Interpretation.SrlInterpretation parseInterpretation(final E interpretationObject) throws ShapeConversionException;
 
     /**
      * Parses the Sketch from the database.

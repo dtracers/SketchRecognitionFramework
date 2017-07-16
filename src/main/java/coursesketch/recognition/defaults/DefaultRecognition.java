@@ -4,6 +4,7 @@ import coursesketch.recognition.framework.RecognitionInterface;
 import coursesketch.recognition.framework.TemplateDatabaseInterface;
 import coursesketch.recognition.framework.exceptions.TemplateException;
 
+import protobuf.srl.sketch.Interpretation;
 import protobuf.srl.sketch.Sketch;
 import protobuf.srl.sketch.Sketch.SrlSketch;
 
@@ -23,19 +24,19 @@ public abstract class DefaultRecognition implements RecognitionInterface {
         this.templateDatabase = templateDatabase;
     }
 
-    public void addTemplate(final String templateId, final Sketch.SrlInterpretation interpretation, final SrlSketch template) throws TemplateException {
+    public void addTemplate(final String templateId, final Interpretation.SrlInterpretation interpretation, final SrlSketch template) throws TemplateException {
         templateDatabase.addTemplate(templateId, interpretation, template);
     }
 
-    public void addTemplate(final String templateId, final Sketch.SrlInterpretation interpretation, final Sketch.SrlShape template) throws TemplateException {
+    public void addTemplate(final String templateId, final Interpretation.SrlInterpretation interpretation, final Sketch.SrlShape template) throws TemplateException {
         templateDatabase.addTemplate(templateId, interpretation, template);
     }
 
-    public void addTemplate(final String templateId, final Sketch.SrlInterpretation interpretation, final Sketch.SrlStroke template) throws TemplateException {
+    public void addTemplate(final String templateId, final Interpretation.SrlInterpretation interpretation, final Sketch.SrlStroke template) throws TemplateException {
         templateDatabase.addTemplate(templateId, interpretation, template);
     }
 
-    protected List<Sketch.RecognitionTemplate> getTemplates(final Sketch.SrlInterpretation interpretation) throws TemplateException {
+    protected List<Sketch.RecognitionTemplate> getTemplates(final Interpretation.SrlInterpretation interpretation) throws TemplateException {
         return templateDatabase.getTemplate(interpretation);
     }
 
