@@ -1,5 +1,7 @@
 syntax = "proto3";
 
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/any.proto";
 import "interpretation.proto";
 
 package protobuf.srl.sketch;
@@ -12,7 +14,7 @@ message SrlSketch {
     string author = 6;
     Pen pen = 7;
     Device device = 8;
-    repeated SketchAttribute attributes = 9;
+    SketchAttribute attributes = 9;
     string unit = 10;
     repeated SrlPoint points = 11;
     repeated SrlSubStroke subStrokes = 12;
@@ -41,26 +43,26 @@ enum ObjectType {
 
 message SrlShape {
     string id = 1;
-    uint64 time = 2;
+    google.protobuf.Timestamp time = 2;
     string name = 3;
     bool isUserCreated = 4;
     repeated SrlInterpretation interpretations = 5; // DEPRECATED
     repeated SrlObject subComponents = 6;
     SrlBoundingBox boundingbox = 7;
     SrlInterpretation interpretation = 8;
-    repeated SketchAttribute attributes = 9;
+    SketchAttribute attributes = 9;
 }
 
 message SrlStroke {
     string id = 1;
-    uint64 time = 2; // the time is equal to when the stroke is finished.
+    google.protobuf.Timestamp time = 2; // the time is equal to when the stroke is finished.
     string name = 3;
     repeated SrlPoint points = 4;
     SrlBoundingBox boundingbox = 5;
     string author = 6;
     Pen pen = 7;
     Device device = 8;
-    repeated SketchAttribute attributes = 9;
+    SketchAttribute attributes = 9;
     bool isUserCreated = 10;
 }
 
@@ -75,7 +77,7 @@ message SrlSubStroke {
     string stopIndex = 4;
     // list of point ids
     repeated string points = 5;
-    repeated SketchAttribute attributes = 6;
+    SketchAttribute attributes = 6;
     string name = 7;
 }
 
@@ -83,7 +85,7 @@ message SrlSubStroke {
 // in a SrlObject all with the same id and time and name.
 message SrlPoint {
     string id = 1;
-    uint64 time = 2;
+    google.protobuf.Timestamp time = 2;
     string name = 3;
     double x = 4;
     double y = 5;
@@ -108,11 +110,6 @@ message SrlBoundingBox {
     double y = 2;
     double width = 3;
     double height = 4;
-}
-
-message SrlAttributes {
-    repeated string keys = 1;
-    repeated string values = 2;
 }
 
 message RecognitionTemplate {
@@ -169,9 +166,8 @@ message Pen {
 }
 
 /**
- * An attribute that can be applied to a stroke.
+ * An attribute that can be applied to a part of a sketch.
  */
 message SketchAttribute {
-    string key = 1;
-    string value = 2;
+    map<string, google.protobuf.Any> attributes = 1;
 }

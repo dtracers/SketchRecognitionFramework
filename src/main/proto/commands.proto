@@ -1,5 +1,6 @@
 syntax = "proto3";
 
+import "google/protobuf/timestamp.proto";
 import "interpretation.proto";
 import "sketchUtil.proto";
 import "google/protobuf/any.proto";
@@ -13,7 +14,7 @@ message SrlUpdateList {
 
 message SrlUpdate {
     string updateId = 1;
-    int64 time = 2;
+    google.protobuf.Timestamp time = 2;
     repeated SrlCommand commands = 3;
     int32 commandNumber = 4; // this is only mainly used in a SYNC Command
 }

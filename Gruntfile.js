@@ -1,6 +1,5 @@
 //jscs:disable jsDoc
 
-var pbjs = require('protobufjs/cli/pbjs.js');
 var exec = require('child_process').exec;
 
 module.exports = function(grunt) {
@@ -88,12 +87,11 @@ module.exports = function(grunt) {
                     var jsFiles = grunt.file.expandMapping(protoFiles, 'src/main/js/generated_proto', { flatten: true, ext: '.js' });
                     var command = '';
                     for (var i = 0; i < protoFiles.length; i++) {
-                        grunt.log.write('cimpiling protofile ' + protoFiles[i]);
-                        grunt.log.write('');
+                        grunt.log.write('compiling protofile ' + protoFiles[i]);
+                        grunt.log.write('\n');
                         var jsFile = jsFiles[i].dest;
-                        command+= '"./node_modules/.bin/pbjs" ' + protoFiles[i] + ' --source=proto' +
-                                ' --dependency="protobufjs"' +
-                            ' --target=amd --path=src/main/proto > ' + jsFile + ' & ';
+                        command+= '"./node_modules/.bin/pbjs" ' + protoFiles[i] +
+                            ' --target=proto3 --wrap=closure --path=src/main/proto > ' + jsFile + ' & ';
                     }
                     console.log(command);
                     return command + 'echo "completed compile"';
