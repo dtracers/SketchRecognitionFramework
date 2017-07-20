@@ -6,7 +6,7 @@
 
     <groupId>com.coursesketch</groupId>
     <artifactId>recognition.framework</artifactId>
-    <version>3.0.4</version>
+    <version>4.0.1</version>
     <name>SketchRecognitionFramework</name>
     <packaging>jar</packaging>
 
